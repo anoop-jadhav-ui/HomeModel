@@ -25,7 +25,7 @@ window.showSceneError=function(message){
 };
 window.addEventListener('unhandledrejection',event=>window.showSceneError('Visualization error: '+String(event.reason?.message||event.reason)));
 window.addEventListener('error',event=>{if(event.message)window.showSceneError('Visualization error: '+event.message)});
-window.sceneLoadTimer=setTimeout(()=>{if(!window.homeScene)window.showSceneError('The 3D scene has not initialized. Check that the local server is running and all local JavaScript modules are available.')},15000);
+window.sceneLoadTimer=setTimeout(()=>{if(!window.homeScene)window.showSceneError('The 3D scene has not initialized. Check that all published JavaScript modules are available, then reload the page.')},15000);
 </script>
 <script src="review-data.js"></script><script type="module">import('./scene.js').catch(error=>window.showSceneError('Could not load the Three.js scene or one of its local modules: '+error.message));</script>
 </body></html>

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "",
+  "buildCommand": "npm run build",
+  "outputDirectory": "output",
+  "headers": [
+    {
+      "source": "/(.*\\.js)",
+      "headers": [
+        { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/Home.FCStd",
+      "headers": [
+        { "key": "Content-Type", "value": "application/octet-stream" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"Home.FCStd\"" }
+      ]
+    },
+    {
+      "source": "/Home.ifc",
+      "headers": [
+        { "key": "Content-Type", "value": "application/octet-stream" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"Home.ifc\"" }
+      ]
+    }
+  ]
+}

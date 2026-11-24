@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "node validate-deployment.mjs",
+    "test:deployment": "node --test validate-deployment.test.mjs",
     "vendor": "node vendor-three.mjs",
     "validate": "node validate-scene.mjs"
   },
