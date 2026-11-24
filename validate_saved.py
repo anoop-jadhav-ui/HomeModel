@@ -39,7 +39,7 @@ for label, expected in {
     assert abs(box.XLength/ft-expected[0])<1e-6, label
     assert abs(box.YLength/ft-expected[1])<1e-6, label
 front=by_label["Front E"]
-assert abs(front.Shape.Volume/ft**3-236.25)<1e-5
+assert abs(front.Shape.Volume/ft**3-241.875)<1e-5
 if parameters["hall_dining_full_bay"]:
     assert "Hall Dining" not in by_label
     assert not any(label.startswith("Hall to dining") for label in by_label)
@@ -97,6 +97,17 @@ baseline=App.openDocument(os.path.join(root,"archives","before-grade-change","Ho
 old={o.Label:o for o in baseline.Objects if hasattr(o,"Shape")}
 for current in objects:
     previous=old[current.Label]
+    if current.Label in ("Front E","Rear W"):
+        e=parameters["external_wall"]*ft
+        y=0 if current.Label=="Front E" else slab.YMax-e
+        additions=[Part.makeBox(e/2,e,parameters["wall_height"]*ft,App.Vector(x,y,4*ft))
+                   for x in (0,slab.XMax-e/2)]
+        expected=additions[0].fuse(additions[1])
+        added=current.Shape.cut(previous.Shape)
+        assert previous.Shape.cut(current.Shape).Volume<1e-3,current.Label+" lost approved geometry"
+        assert abs(added.Volume-expected.Volume)<1e-3,current.Label
+        assert added.cut(expected).Volume<1e-3,current.Label+" changed outside the corner closures"
+        continue
     assert abs(current.Shape.Volume-previous.Shape.Volume)<1e-3,current.Label+" changed geometry with grade"
     for field in ("XMin","XMax","YMin","YMax","ZMin","ZMax"):
         assert abs(getattr(current.Shape.BoundBox,field)-getattr(previous.Shape.BoundBox,field))<1e-5,current.Label
@@ -147,6 +158,12 @@ for product in ifc.by_type("IfcDoor")+ifc.by_type("IfcWindow"):
     assert abs(product.OverallHeight*units-native.Height.Value/1000)<1e-7, product.Name
 settings=ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS,True)
+for label in ("Front E","Rear W"):
+    product=next(p for p in ifc.by_type("IfcWall") if p.Name==label)
+    shape=ifcopenshell.geom.create_shape(settings,product)
+    verts=shape.geometry.verts
+    assert abs(min(verts[0::3]))<1e-6,label
+    assert abs(max(verts[0::3])-slab.XMax/1000)<1e-6,label
 for vent in vents:
     product=next(p for p in ifc.by_type("IfcWindow") if p.Name==vent.Label)
     shape=ifcopenshell.geom.create_shape(settings,product)
@@ -175,7 +192,8 @@ result={"saved_native_reopened":True,"valid_bim_solids":len(objects),
         "uniform_service_vents_ft":{"width":1.5,"height":2,"count":len(vents)},
         "hall_dining_full_height_clear_width_ft":review["passages"][0]["width"],
         "shared_local_levels_ft":{"ground":grade,"finished_floor":4,"floor_above_grade":4-grade},
-        "native_solids_unchanged_by_grade":len(objects),
+        "native_solids_unchanged_except_corner_closures":len(objects)-2,
+        "native_and_ifc_exterior_corner_closures":4,
         "monitor_enclosure_native_and_ifc_elements":len(screen_names) if enclosed else 0,
         "exterior_ft":[slab.XLength/ft,slab.YLength/ft],
         "main_clear_rooms_verified":7,"opening_host_and_portal_checks":"passed",

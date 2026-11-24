@@ -49,21 +49,34 @@ export function createSite(model){
   }
   const t=S.wall.thickness,c=S.wall.copingWidth,post=S.gateway.postWidth,cap=S.gateway.capWidth;
   const gateY=bounds.minY+Math.max(c,cap)/2;
+  const left=bounds.minX+c/2,right=bounds.maxX-c/2,rear=bounds.maxY-c/2;
   const postCenters=[corridor.minX-cap/2,corridor.maxX+cap/2];
   if(postCenters[0]-post/2<=bounds.minX+c||postCenters[1]+post/2>=bounds.maxX-c)
     throw new Error('D_ entrance is too close to the illustrative site edge.');
-  function wall(name,x1,x2,y1,y2,alongX){
-    box(name,'boundary-wall',true,x1,x2,y1,y2,ground,ground+S.wall.height,M.plaster);
-    const over=(c-t)/2;
-    box(name+' coping','coping',true,
-      x1-(alongX?0:over),x2+(alongX?0:over),y1-(alongX?over:0),y2+(alongX?over:0),
-      ground+S.wall.height,ground+S.wall.height+S.wall.copingHeight,M.coping);
+  function prism(name,kind,outline,minZ,maxZ,mat){
+    const shape=new THREE.Shape(outline.map(([x,y])=>new THREE.Vector2(x*FT,y*FT)));
+    const geometry=new THREE.ExtrudeGeometry(shape,{depth:(maxZ-minZ)*FT,bevelEnabled:false,steps:1});
+    const mesh=new THREE.Mesh(geometry,mat);
+    mesh.rotation.x=-Math.PI/2;mesh.position.y=minZ*FT;
+    const xs=outline.map(p=>p[0]),ys=outline.map(p=>p[1]);
+    mesh.userData.footprint=outline;
+    return record(mesh,name,kind,true,{minX:Math.min(...xs),maxX:Math.max(...xs),
+      minY:Math.min(...ys),maxY:Math.max(...ys),minZ,maxZ});
   }
-  wall('Front left wall',bounds.minX+c/2,postCenters[0]-post/2,gateY-t/2,gateY+t/2,true);
-  wall('Front right wall',postCenters[1]+post/2,bounds.maxX-c/2,gateY-t/2,gateY+t/2,true);
-  wall('Rear wall',bounds.minX+c/2,bounds.maxX-c/2,bounds.maxY-c/2-t/2,bounds.maxY-c/2+t/2,true);
-  for(const [name,x] of [['Left',bounds.minX+c/2],['Right',bounds.maxX-c/2]])
-    wall(name+' wall',x-t/2,x+t/2,gateY,bounds.maxY-c/2,false);
+  const gateLeft=postCenters[0]-post/2,gateRight=postCenters[1]+post/2;
+  // Matching 45-degree end planes close both the plaster and overhanging coping.
+  const runs=[
+    ['Front left wall',s=>[[left-s,gateY-s],[gateLeft,gateY-s],[gateLeft,gateY+s],[left+s,gateY+s]]],
+    ['Front right wall',s=>[[gateRight,gateY-s],[right+s,gateY-s],[right-s,gateY+s],[gateRight,gateY+s]]],
+    ['Rear wall',s=>[[left-s,rear+s],[left+s,rear-s],[right-s,rear-s],[right+s,rear+s]]],
+    ['Left wall',s=>[[left-s,gateY-s],[left+s,gateY+s],[left+s,rear-s],[left-s,rear+s]]],
+    ['Right wall',s=>[[right-s,gateY+s],[right+s,gateY-s],[right+s,rear+s],[right-s,rear-s]]],
+  ];
+  for(const [name,outline] of runs){
+    prism(name,'boundary-wall',outline(t/2),ground,ground+S.wall.height,M.plaster);
+    prism(name+' coping','coping',outline(c/2),ground+S.wall.height,
+      ground+S.wall.height+S.wall.copingHeight,M.coping);
+  }
   for(let i=0;i<S.gateway.postCount;i++){
     const x=postCenters[i];
     box('Open gateway timber post '+i,'gateway-post',true,x-post/2,x+post/2,gateY-post/2,gateY+post/2,ground,ground+S.gateway.postHeight,M.timber);

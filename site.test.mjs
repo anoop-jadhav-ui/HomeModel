@@ -79,6 +79,22 @@ test('low boundary solids have nonzero thickness including coping',()=>{
     close(b.minZ,model.dimensions.ground_elevation);
   }
 });
+test('all four boundary corners have matched mitres and complete nonoverlapping top surfaces',()=>{
+  const joins=[['Front left wall','Left wall'],['Front right wall','Right wall'],
+    ['Rear wall','Left wall'],['Rear wall','Right wall']];
+  for(const suffix of ['', ' coping'])for(const pair of joins){
+    const meshes=pair.map(name=>site.root.getObjectByName(name+suffix));
+    const [a,b]=meshes.map(m=>m.userData.footprint);
+    const shared=a.filter(p=>b.some(q=>Math.hypot(p[0]-q[0],p[1]-q[1])<1e-8));
+    assert.equal(shared.length,2,pair.join(' / ')+suffix);
+    const center=shared[0].map((v,i)=>(v+shared[1][i])/2),half=(suffix?S.wall.copingWidth:S.wall.thickness)/2;
+    for(const x of [-.87,-.31,.23,.79])for(const y of [-.83,-.27,.29,.85]){
+      const ray=new THREE.Raycaster(new THREE.Vector3((center[0]+x*half)*FT,10*FT,-(center[1]+y*half)*FT),
+        new THREE.Vector3(0,-1,0));
+      assert.equal(ray.intersectObjects(meshes).length,1,'Gap or overlapping top at '+pair.join(' / ')+suffix);
+    }
+  }
+});
 test('gateway follows source D_ center and leaves the entire approach corridor empty',()=>{
   const door=model.doorways.find(d=>d.name.startsWith('D_')),corridor=meta.reservedEntranceCorridor;
   assert.equal(meta.gateway.sourceDoor,door.name);

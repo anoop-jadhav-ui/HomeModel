@@ -12,7 +12,8 @@
     "finished_floor": 4,
     "floor_above_grade": 2
   },
-  "native_solids_unchanged_by_grade": 70,
+  "native_solids_unchanged_except_corner_closures": 68,
+  "native_and_ifc_exterior_corner_closures": 4,
   "monitor_enclosure_native_and_ifc_elements": 8,
   "exterior_ft": [
     42.25,

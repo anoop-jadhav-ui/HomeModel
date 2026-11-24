@@ -1,5 +1,5 @@
 {
-  "native_file": "C:\\Users\\anoopjadhav\\Documents\\PersonalProjects\\HomeModel\\output\\Home.FCStd",
+  "native_file": "C:\\Users\\anoopjadhav\\Documents\\PersonalProjects\\HomeModel\\tools\\realistic-assets\\output\\Home.FCStd",
   "valid_solid_objects": 70,
   "invalid_objects": [],
   "opening_counts": {
@@ -24,7 +24,7 @@
     "ground_elevation": 2,
     "floor_above_grade": 2
   },
-  "front_wall_cut_volume_ft3": 236.25,
+  "front_wall_cut_volume_ft3": 241.87500000000006,
   "rooms": [
     {
       "name": "Kitchen",

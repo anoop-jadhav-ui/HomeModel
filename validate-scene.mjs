@@ -5,7 +5,7 @@ import {createFurnishings,FT} from './output/furnishings.js';
 const text=fs.readFileSync('output/review-data.js','utf8');
 const model=JSON.parse(text.slice('window.HOME_MODEL='.length,-1));
 const {root,items}=createFurnishings(model);root.updateMatrixWorld(true);
-const failures=[],reports=[],solidTypes=new Set(['BoxGeometry','CylinderGeometry','SphereGeometry','TorusGeometry']);
+const failures=[],reports=[],solidTypes=new Set(['BoxGeometry','RoundedBoxGeometry','CylinderGeometry','SphereGeometry','TorusGeometry','LatheGeometry','ExtrudeGeometry','TubeGeometry']);
 let assetMeshes=0,minExtent=Infinity;
 root.traverse(mesh=>{
  if(!mesh.isMesh)return;
@@ -14,7 +14,8 @@ root.traverse(mesh=>{
  geometry.computeBoundingBox();
  const size=geometry.boundingBox.getSize(new THREE.Vector3()).multiply(mesh.scale).divideScalar(FT);
  minExtent=Math.min(minExtent,size.x,size.y,size.z);
- if(!solidTypes.has(geometry.type)||geometry.parameters.openEnded===true||Math.min(size.x,size.y,size.z)<.001)
+ if((!solidTypes.has(geometry.type)&&!geometry.userData.assetSolid)||geometry.parameters?.openEnded===true||
+  (geometry.type==='TubeGeometry'&&!geometry.parameters.closed)||Math.min(size.x,size.y,size.z)<.001)
   failures.push('Non-solid or zero-thickness furnishing in '+mesh.parent.name);
 });
 for(const item of items){

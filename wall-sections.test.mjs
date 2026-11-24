@@ -34,6 +34,14 @@ test('frame depth comes from actual native geometry and leaves the full wall rev
   if(outside)assert(Math.abs(normalOffset)+depth/2<=opening.wall_thickness/2+1e-6,'exterior frame protrudes beyond its host');
  }
 });
+test('all four architectural exterior corners retain a filled native wall section',()=>{
+ const mesh=createWallSections(model);mesh.visible=true;mesh.updateMatrixWorld(true);
+ const z=(model.dimensions.floor_elevation+model.plan.cut_height)*FT;
+ for(const x of [.1,model.dimensions.width-.1])for(const y of [.1,model.dimensions.depth-.1]){
+  const ray=new THREE.Raycaster(new THREE.Vector3(x*FT,z+FT,-y*FT),new THREE.Vector3(0,-1,0));
+  assert(ray.intersectObject(mesh).length>0,`Architectural corner ${x},${y} has a gap`);
+ }
+});
 test('animated solid leaves keep native thickness and their cut faces follow the hinge',()=>{
  for(const door of model.doorways){
   const {leaf}=door;

@@ -89,8 +89,9 @@ def build():
         return obj
 
     # Grid dimensions are clear main bays. Wall thickness is additional.
-    wall("Front_E", e/2, e/2, width-e/2, e/2, e)
-    wall("Rear_W", e/2, depth-e/2, width-e/2, depth-e/2, e)
+    # Full-width end walls meet the side-wall ends without half-thickness corner gaps.
+    wall("Front_E", 0, e/2, width, e/2, e)
+    wall("Rear_W", 0, depth-e/2, width, depth-e/2, e)
     wall("Left_S", e/2, e, e/2, depth-e, e)
     wall("Right_N", width-e/2, e, width-e/2, depth-e, e)
     wall("Kitchen_Hall", a+t/2, e, a+t/2, c+t/2)
@@ -406,7 +407,7 @@ def build():
             raise RuntimeError("Doorway does not cut its host wall: "+door["name"])
     # Native cut volume provides a geometry check independent of the schedule counter.
     frontvolume = wallmap["Front_E"].Shape.Volume/FT**3
-    expectedfront = (width-e)*e*P["wall_height"] - e*(4*7+2*3*4+2*6*4)
+    expectedfront = width*e*P["wall_height"] - e*(4*7+2*3*4+2*6*4)
     if abs(frontvolume-expectedfront)>0.05:
         raise RuntimeError("Front wall openings were not cut correctly: %.4f vs %.4f ft3"%(frontvolume,expectedfront))
     plan_z=(floor_z+P["plan_cut_height"])*FT

@@ -8,6 +8,7 @@
     "test:navigation": "node --test navigation.test.mjs",
     "test:geometry": "node --test wall-sections.test.mjs",
     "test:site": "node --test site.test.mjs",
+    "test:furnishings": "node --test furnishings.test.mjs",
     "vendor": "node vendor-three.mjs",
     "validate": "node validate-scene.mjs"
   },
