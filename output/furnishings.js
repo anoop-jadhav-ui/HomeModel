@@ -107,13 +107,18 @@ export function createFurnishings(model){
    box(g,5.6,.24,2.9,cx,head,F+1.55,M.cushion);
    const quilt=box(g,5.32,3.8,.18,cx,cy-sign*.95,F+1.98,M.cushion);
    quilt.geometry=cached('draped-duvet',()=>{
-    const shape=quilt.geometry.clone(),p=shape.attributes.position;
+    const shape=quilt.geometry.clone(),p=shape.attributes.position,n=shape.attributes.normal;
+    shape.name='Draped duvet';
     for(let i=0;i<p.count;i++){
      const x=p.getX(i)/FT,z=p.getZ(i)/FT;
      const drop=.22*Math.max(0,(Math.abs(x)-2.41)/.25);
      p.setY(i,p.getY(i)+(Math.sin(x*3+z*2)*.012-drop)*FT);
+     // Transform the original smooth normals with the height-field deformation.
+     const dx=.036*Math.cos(x*3+z*2)-(Math.abs(x)>2.41?.88*Math.sign(x):0);
+     const dz=.024*Math.cos(x*3+z*2),normal=new THREE.Vector3(n.getX(i)-dx*n.getY(i),n.getY(i),n.getZ(i)-dz*n.getY(i)).normalize();
+     n.setXYZ(i,normal.x,normal.y,normal.z);
     }
-    shape.computeVertexNormals();return shape;
+    return shape;
    });
    box(g,5.05,.34,.12,cx,cy+sign*.73,F+2.08,M.linen);
    for(const dx of [-1.8,0,1.8])for(const z of [1.25,2.25])

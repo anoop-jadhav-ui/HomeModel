@@ -68,3 +68,15 @@ test('refinement keeps the source immutable, shares geometry and stays within th
  assert(geometries.size<meshes/2,'Repeated legs, drawers and cushions should share buffers');
  assert.equal(textures.size,2);
 });
+test('draped bedding retains continuous smooth normals across duplicate bevel vertices',()=>{
+ const quilt=assets.items.find(i=>i.kind==='bed').group.children.find(m=>m.geometry?.name==='Draped duvet');
+ assert(quilt);
+ const p=quilt.geometry.attributes.position,n=quilt.geometry.attributes.normal,seen=new Map();
+ for(let i=0;i<p.count;i++){
+  const key=[p.getX(i),p.getY(i),p.getZ(i)].map(v=>Math.round(v*1e6)).join(':');
+  const normal=new THREE.Vector3(n.getX(i),n.getY(i),n.getZ(i));
+  assert(Math.abs(normal.length()-1)<1e-5);
+  if(seen.has(key))assert(normal.dot(seen.get(key))>.999,'Visible normal seam in draped fabric');
+  else seen.set(key,normal);
+ }
+});
