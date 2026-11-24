@@ -6,11 +6,18 @@ plan=doc.getObject("PlanReview")
 if plan is None:
     raise RuntimeError("Open the regenerated Home.FCStd model first.")
 show_plan=not plan.ViewObject.Visibility
-for name in ("Walls","Openings","Roof"):
+for name in ("Walls","Openings","Roof","Floors"):
     doc.getObject(name).ViewObject.Visibility=not show_plan
+    for obj in doc.getObject(name).Group:
+        obj.ViewObject.Visibility=not show_plan
 plan.ViewObject.Visibility=show_plan
+for obj in plan.Group:
+    obj.ViewObject.Visibility=show_plan
 if show_plan:
-    Gui.activeDocument().activeView().viewTop()
+    for obj in plan.Group:
+        obj.ViewObject.Visibility=True
+    Gui.activeDocument().activeView().setCameraType("Orthographic")
+    Gui.activeDocument().activeView().setCameraOrientation((0,0,0,1))
 else:
     for obj in doc.getObject("Openings").Group:
         if obj.Label.startswith("Hall to dining"):

@@ -6,9 +6,11 @@
     "Actual mesh bounds remain within named clear-room rectangles",
     "Hard furniture avoids all nine assumed door-sweep sectors"
   ],
+  "solid_asset_meshes": 215,
+  "minimum_local_solid_extent_ft": 0.024999999392318128,
   "limitations": [
     "Not a building-code, accessibility, egress or fixture-use-clearance assessment",
-    "No collision detection is enforced by the walkthrough"
+    "Grounded Walk uses approximate avatar/furniture/door collision clearance; advanced Fly explicitly bypasses it"
   ],
   "items": [
     {

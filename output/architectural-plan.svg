@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1320" viewBox="0 0 1600 1320">
 <rect width="1600" height="1320" fill="#fffef9"/>
 <style>text{font-family:Arial,sans-serif;fill:#283e31}.small{font-size:13px}.tiny{font-size:11px}</style>
-<text x="60" y="46" font-size="26" font-weight="bold">Single-storey home / preliminary architectural coordination</text>
+<text x="60" y="46" font-size="26" font-weight="bold">Jadhav Nivaas / preliminary architectural coordination</text>
 <text x="60" y="77" font-size="19" fill="#984e25">NOT FOR CONSTRUCTION — no certification or permit approval</text>
 <text x="60" y="103" font-size="14">Cut +4 ft above finished floor · Local orientation: W rear / E front / S left / N right · Dimensions in feet</text>
 <path d="M638.12 1021.25 L575.63 1021.25 L575.63 1040.00 L638.12 1040.00 L638.12 1021.25 Z" fill="#46544c" fill-rule="evenodd"/>
@@ -27,8 +27,6 @@
 <path d="M903.75 711.88 L892.81 711.88 L892.81 721.25 L903.75 721.25 L903.75 711.88 Z" fill="#46544c" fill-rule="evenodd"/>
 <path d="M1053.75 711.88 L978.75 711.88 L978.75 721.25 L1053.75 721.25 L1053.75 711.88 Z" fill="#46544c" fill-rule="evenodd"/>
 <path d="M1197.50 711.88 L1116.25 711.88 L1116.25 721.25 L1197.50 721.25 L1197.50 711.88 Z" fill="#46544c" fill-rule="evenodd"/>
-<path d="M588.12 711.88 L483.44 711.88 L483.44 721.25 L588.12 721.25 L588.12 711.88 Z" fill="#46544c" fill-rule="evenodd"/>
-<path d="M892.81 711.88 L788.13 711.88 L788.12 721.25 L892.81 721.25 L892.81 711.88 Z" fill="#46544c" fill-rule="evenodd"/>
 <path d="M397.50 502.50 L178.75 502.50 L178.75 511.88 L397.50 511.88 L397.50 502.50 Z" fill="#46544c" fill-rule="evenodd"/>
 <path d="M483.44 502.50 L472.50 502.50 L472.50 511.88 L483.44 511.88 L483.44 502.50 Z" fill="#46544c" fill-rule="evenodd"/>
 <path d="M903.75 502.50 L892.81 502.50 L892.81 511.88 L903.75 511.88 L903.75 502.50 Z" fill="#46544c" fill-rule="evenodd"/>
@@ -77,8 +75,8 @@
 <polygon points="178.75,661.88 178.75,561.88 160.00,561.88 160.00,661.88" fill="none" stroke="#087e9d" stroke-width="2"/>
 <polyline points="169.38,661.88 169.38,561.88" fill="none" stroke="#087e9d" stroke-width="1.3"/>
 <text x="144.38" y="611.88" font-size="12" text-anchor="middle" fill="#087e9d">W1</text>
-<polygon points="513.12,202.50 563.12,202.50 563.12,183.75 513.12,183.75" fill="none" stroke="#087e9d" stroke-width="2" stroke-dasharray="4 3"/>
-<polyline points="513.12,193.12 563.12,193.12" fill="none" stroke="#087e9d" stroke-width="1.3" stroke-dasharray="4 3"/>
+<polygon points="519.38,202.50 556.88,202.50 556.88,183.75 519.38,183.75" fill="none" stroke="#087e9d" stroke-width="2" stroke-dasharray="4 3"/>
+<polyline points="519.38,193.12 556.88,193.12" fill="none" stroke="#087e9d" stroke-width="1.3" stroke-dasharray="4 3"/>
 <text x="538.12" y="173.13" font-size="12" text-anchor="middle" fill="#087e9d">V</text>
 <polygon points="606.88,202.50 644.38,202.50 644.38,183.75 606.88,183.75" fill="none" stroke="#087e9d" stroke-width="2" stroke-dasharray="4 3"/>
 <polyline points="606.88,193.12 644.38,193.12" fill="none" stroke="#087e9d" stroke-width="1.3" stroke-dasharray="4 3"/>
@@ -89,11 +87,11 @@
 <polygon points="806.88,202.50 844.38,202.50 844.38,183.75 806.88,183.75" fill="none" stroke="#087e9d" stroke-width="2" stroke-dasharray="4 3"/>
 <polyline points="806.88,193.12 844.38,193.12" fill="none" stroke="#087e9d" stroke-width="1.3" stroke-dasharray="4 3"/>
 <text x="825.62" y="173.13" font-size="12" text-anchor="middle" fill="#087e9d">V1</text>
-<polygon points="1216.25,686.88 1216.25,636.88 1197.50,636.88 1197.50,686.88" fill="none" stroke="#087e9d" stroke-width="2" stroke-dasharray="4 3"/>
-<polyline points="1206.88,686.88 1206.88,636.88" fill="none" stroke="#087e9d" stroke-width="1.3" stroke-dasharray="4 3"/>
+<polygon points="1216.25,680.62 1216.25,643.12 1197.50,643.12 1197.50,680.62" fill="none" stroke="#087e9d" stroke-width="2" stroke-dasharray="4 3"/>
+<polyline points="1206.88,680.62 1206.88,643.12" fill="none" stroke="#087e9d" stroke-width="1.3" stroke-dasharray="4 3"/>
 <text x="1231.88" y="661.88" font-size="12" text-anchor="middle" fill="#087e9d">V</text>
-<polygon points="1216.25,586.88 1216.25,536.88 1197.50,536.88 1197.50,586.88" fill="none" stroke="#087e9d" stroke-width="2" stroke-dasharray="4 3"/>
-<polyline points="1206.88,586.88 1206.88,536.88" fill="none" stroke="#087e9d" stroke-width="1.3" stroke-dasharray="4 3"/>
+<polygon points="1216.25,580.62 1216.25,543.12 1197.50,543.12 1197.50,580.62" fill="none" stroke="#087e9d" stroke-width="2" stroke-dasharray="4 3"/>
+<polyline points="1206.88,580.62 1206.88,543.12" fill="none" stroke="#087e9d" stroke-width="1.3" stroke-dasharray="4 3"/>
 <text x="1231.88" y="561.88" font-size="12" text-anchor="middle" fill="#087e9d">V</text>
 <polyline points="738.12,1030.62 737.91,1024.08 737.27,1017.57 736.20,1011.12 734.72,1004.74 732.82,998.48 730.51,992.36 727.81,986.40 724.73,980.62 721.27,975.07 717.46,969.75 713.31,964.69 708.84,959.91 704.06,955.44 699.00,951.29 693.68,947.48 688.12,944.02 682.35,940.94 676.39,938.24 670.27,935.93 664.01,934.03 657.63,932.55 651.18,931.48 644.67,930.84 638.12,930.62" fill="none" stroke="#9d5322" stroke-width="1.6" stroke-dasharray="5 4"/>
 <polyline points="638.12,1030.62 638.12,930.62" fill="none" stroke="#813e16" stroke-width="2.3"/>
@@ -122,8 +120,8 @@
 <polyline points="892.81,333.75 888.72,333.88 884.65,334.28 880.62,334.95 876.64,335.88 872.72,337.07 868.89,338.51 865.17,340.20 861.56,342.12 858.09,344.28 854.76,346.67 851.60,349.26 848.62,352.06 845.82,355.04 843.23,358.20 840.85,361.53 838.69,365.00 836.76,368.61 835.07,372.33 833.63,376.16 832.44,380.07 831.51,384.06 830.85,388.09 830.45,392.16 830.31,396.25" fill="none" stroke="#9d5322" stroke-width="1.6" stroke-dasharray="5 4"/>
 <polyline points="892.81,396.25 830.31,396.25" fill="none" stroke="#813e16" stroke-width="2.3"/>
 <text x="915.31" y="365.00" font-size="12" text-anchor="middle" fill="#813e16">D2</text>
-<polyline points="588.12,716.56 788.12,716.56" fill="none" stroke="#267252" stroke-width="1.6" stroke-dasharray="5 4"/>
-<text x="688.12" y="696.56" font-size="12" text-anchor="middle" fill="#267252">OPEN 8 ft</text>
+<polyline points="488.12,716.56 888.12,716.56" fill="none" stroke="#267252" stroke-width="1.6" stroke-dasharray="5 4"/>
+<text x="688.12" y="696.56" font-size="12" text-anchor="middle" fill="#267252">OPEN 16 ft</text>
 <polyline points="378.75,711.88 378.75,511.88" fill="none" stroke="#267252" stroke-width="1.6" stroke-dasharray="5 4"/>
 <text x="403.75" y="611.88" font-size="12" text-anchor="middle" fill="#267252" transform="rotate(-90 403.75 611.88)">OPEN 8 ft</text>
 <text x="328.75" y="862.25" font-size="14" text-anchor="middle" fill="#283e31">Kitchen</text>
@@ -185,6 +183,6 @@
 <text x="60" y="1170" class="small">Brown: door leaves; dashed arcs: ASSUMED handing. Blue: windows; dashed cyan: vents above the cut. Green: OPEN passages.</text>
 <text x="60" y="1196" class="small">Main clear bays total 40 x 32 ft; assumed 9-inch perimeter / 4.5-inch partitions enlarge the exterior to 42.25 x 34.25 ft.</text>
 <text x="60" y="1222" class="small">Unresolved: prayer 8x8 vs written 8x10; rear 4+3+4+5 ft service grid excludes partition allowance; all levels/roof/opening offsets provisional.</text>
-<text x="60" y="1248" class="small">Raised floor +4 ft, wall height 10 ft assumed from sketch. Foundation, structural supports, stairs/ramp, drainage, code and MEP NOT DESIGNED.</text>
+<text x="60" y="1248" class="small">Local levels: FFL +4 ft; illustrative grade +2 ft; floor 2 ft above grade. Not surveyed; foundation, access and drainage NOT DESIGNED.</text>
 <text x="60" y="1274" class="small">Do not scale for setting out. Confirm dimensions and site conditions with qualified local professionals. Furniture visualization is illustrative only.</text>
 </svg>

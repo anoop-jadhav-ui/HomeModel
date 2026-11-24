@@ -5,7 +5,18 @@ import {createFurnishings,FT} from './output/furnishings.js';
 const text=fs.readFileSync('output/review-data.js','utf8');
 const model=JSON.parse(text.slice('window.HOME_MODEL='.length,-1));
 const {root,items}=createFurnishings(model);root.updateMatrixWorld(true);
-const failures=[],reports=[];
+const failures=[],reports=[],solidTypes=new Set(['BoxGeometry','CylinderGeometry','SphereGeometry','TorusGeometry']);
+let assetMeshes=0,minExtent=Infinity;
+root.traverse(mesh=>{
+ if(!mesh.isMesh)return;
+ assetMeshes++;
+ const geometry=mesh.geometry;
+ geometry.computeBoundingBox();
+ const size=geometry.boundingBox.getSize(new THREE.Vector3()).multiply(mesh.scale).divideScalar(FT);
+ minExtent=Math.min(minExtent,size.x,size.y,size.z);
+ if(!solidTypes.has(geometry.type)||geometry.parameters.openEnded===true||Math.min(size.x,size.y,size.z)<.001)
+  failures.push('Non-solid or zero-thickness furnishing in '+mesh.parent.name);
+});
 for(const item of items){
  const room=model.rooms.find(r=>r.name===item.room),bounds=new THREE.Box3().setFromObject(item.group);
  const b={xmin:bounds.min.x/FT,xmax:bounds.max.x/FT,ymin:-bounds.max.z/FT,ymax:-bounds.min.z/FT};
@@ -30,7 +41,8 @@ for(const item of items){
 }
 const result={status:failures.length?'FAILED':'passed',furnishing_groups:items.length,failures,
  checks:['Actual mesh bounds remain within named clear-room rectangles','Hard furniture avoids all nine assumed door-sweep sectors'],
- limitations:['Not a building-code, accessibility, egress or fixture-use-clearance assessment','No collision detection is enforced by the walkthrough'],items:reports};
+ solid_asset_meshes:assetMeshes,minimum_local_solid_extent_ft:minExtent,
+ limitations:['Not a building-code, accessibility, egress or fixture-use-clearance assessment','Grounded Walk uses approximate avatar/furniture/door collision clearance; advanced Fly explicitly bypasses it'],items:reports};
 let pairs=0;
 for(let i=0;i<reports.length;i++)for(let j=i+1;j<reports.length;j++){
  if(items[i].soft||items[j].soft||reports[i].room!==reports[j].room)continue;

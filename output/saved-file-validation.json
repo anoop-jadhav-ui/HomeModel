@@ -1,6 +1,19 @@
 {
   "saved_native_reopened": true,
-  "valid_bim_solids": 63,
+  "valid_bim_solids": 70,
+  "uniform_service_vents_ft": {
+    "width": 1.5,
+    "height": 2,
+    "count": 6
+  },
+  "hall_dining_full_height_clear_width_ft": 16,
+  "shared_local_levels_ft": {
+    "ground": 2,
+    "finished_floor": 4,
+    "floor_above_grade": 2
+  },
+  "native_solids_unchanged_by_grade": 70,
+  "monitor_enclosure_native_and_ifc_elements": 8,
   "exterior_ft": [
     42.25,
     34.25

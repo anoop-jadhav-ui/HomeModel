@@ -10,3 +10,34 @@ HDRIs or texture-image assets are included.
 
 FreeCAD portable is an official third-party application with its own bundled
 licenses, retained under tools. It is not included in the delivery ZIP.
+
+Self-hosted Google Fonts (Latin subsets, unmodified WOFF2 binaries)
+License: SIL Open Font License, Version 1.1 (both families).
+The UI loads only local files; no Google Fonts request is made at runtime.
+
+DM Serif Display, regular 400
+Copyright 2014-2018 Adobe (http://www.adobe.com/), with Reserved Font Name
+'Source'. All Rights Reserved. Source is a trademark of Adobe in the United
+States and/or other countries. Copyright 2019 Google LLC.
+Font: output\fonts\dm-serif-display-latin-400.woff2
+Exact upstream license: output\fonts\DM-Serif-Display-OFL.txt
+Official distribution CSS:
+https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap
+Downloaded Latin WOFF2:
+https://fonts.gstatic.com/s/dmserifdisplay/v17/-nFnOHM81r4j6k0gjAW3mujVU2B2G_Bx0g.woff2
+License source:
+https://raw.githubusercontent.com/google/fonts/main/ofl/dmserifdisplay/OFL.txt
+
+Manrope, variable normal weight (CSS range 400-700)
+Copyright 2018 The Manrope Project Authors (https://github.com/googlefonts/manrope)
+Font: output\fonts\manrope-latin-variable.woff2
+Exact upstream license: output\fonts\Manrope-OFL.txt
+Official distribution CSS:
+https://fonts.googleapis.com/css2?family=Manrope:wght@400..700&display=swap
+Downloaded Latin WOFF2:
+https://fonts.gstatic.com/s/manrope/v23/xn7gYHE41ni1AdIRggexSg.woff2
+License source:
+https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/OFL.txt
+
+The small SVG line icons embedded in output\ui.css are authored for this
+project, not copied from an icon package or third-party artwork.

@@ -10,6 +10,9 @@
   "partition_wall": 0.375,
   "wall_height": 10,
   "plinth_height": 4,
+  "ground_elevation": 2,
+  "base_finish": "#8b6749",
+  "navigation": {"eye_height": 5.3, "maximum_step_rise": 0.5, "step_depth": 1, "entry_offset": 9},
   "floor_thickness": 0.5,
   "roof_pitch_degrees": 25,
   "roof_overhang": 2,
@@ -21,6 +24,17 @@
   "monitor_cap_rise": 2,
   "monitor_curb_height": 0.35,
   "monitor_member_width": 0.25,
+  "monitor_enclosure": {
+    "enabled": true,
+    "louver_pitch": 0.28,
+    "louver_depth": 0.42,
+    "louver_thickness": 0.05,
+    "louver_angle_degrees": 35,
+    "frame_rail": 0.12,
+    "maximum_bay_width": 2,
+    "grille_pitch": 0.25,
+    "grille_member": 0.035
+  },
   "frame_width": 0.15,
   "frame_depth": 0.33,
   "frame_secondary_width": 0.15,
@@ -45,6 +59,7 @@
   "rear_small_service_depth": 6,
   "rear_attached_bath_depth": 8,
   "hall_opening_width": 8,
+  "hall_dining_full_bay": true,
   "opening_types": {
     "D": {"width": 4, "height": 7, "count": 1},
     "D1": {"width": 3, "height": 7, "count": 4},
@@ -52,7 +67,7 @@
     "W": {"width": 6, "height": 4, "count": 8},
     "W1": {"width": 4, "height": 4, "count": 1},
     "W2": {"width": 3, "height": 4, "count": 2},
-    "V": {"width": 2, "height": 2.5, "count": 3},
+    "V": {"width": 1.5, "height": 2, "count": 3},
     "V1": {"width": 1.5, "height": 2, "count": 3}
   }
 }

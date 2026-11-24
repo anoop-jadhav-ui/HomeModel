@@ -16,9 +16,17 @@ doc = App.openDocument(os.path.join(root, "output", "Home.FCStd"))
 ft = 304.8
 objects = [o for o in doc.Objects if "ReviewRole" in o.PropertiesList
            and o.ReviewRole != "Spaces" and not o.Label.startswith("Hall to dining")]
-assert len(objects) == 63, len(objects)
+enclosed=parameters["monitor_enclosure"]["enabled"]
+assert len(objects) == 63-int(parameters["hall_dining_full_bay"])+(8 if enclosed else 0), len(objects)
 assert all(not o.Shape.isNull() and o.Shape.isValid() and o.Shape.Volume > 0 for o in objects)
 by_label = {o.Label:o for o in doc.Objects}
+screen_names=[prefix+side for side in ("Front","Right","Rear","Left")
+              for prefix in ("Monitor Timber Louvers ","Monitor Recessed Grille ")]
+for label in screen_names:
+    assert (label in by_label)==enclosed, label
+    if enclosed:
+        screen=by_label[label]
+        assert screen.ReviewRole=="Roof" and len(screen.Shape.Solids)>1, label
 slab = by_label["Ground Floor Slab"].Shape.BoundBox
 assert abs(slab.XLength/ft-42.25) < 1e-6
 assert abs(slab.YLength/ft-34.25) < 1e-6
@@ -32,8 +40,16 @@ for label, expected in {
     assert abs(box.YLength/ft-expected[1])<1e-6, label
 front=by_label["Front E"]
 assert abs(front.Shape.Volume/ft**3-236.25)<1e-5
-portal=by_label["Hall to dining - 8ft open portal"]
-assert portal.Hosts[0].Label=="Hall Dining"
+if parameters["hall_dining_full_bay"]:
+    assert "Hall Dining" not in by_label
+    assert not any(label.startswith("Hall to dining") for label in by_label)
+    for x in (13.18,14,16,21.125,26,28,29.07):
+        for z in (4.1,8,13.9):
+            probe=Part.makeBox(.04*ft,.04*ft,.04*ft,App.Vector((x-.02)*ft,12.9175*ft,z*ft))
+            assert all(o.Shape.common(probe).Volume<1e-4 for o in objects if o.ReviewRole=="Walls"),(x,z)
+else:
+    portal=next(o for label,o in by_label.items() if label.startswith("Hall to dining"))
+    assert portal.Hosts[0].Label=="Hall Dining"
 attached=[o for o in objects if o.Label.startswith("D2") and o.Hosts[0].Label=="RearBedroom Right Inside"]
 assert len(attached)==1
 expected_doors = {
@@ -70,6 +86,26 @@ prayer_edge=Part.makeBox(.04*ft,7.9*ft,.04*ft,App.Vector(8.73*ft,13.175*ft,7*ft)
 assert all(o.Shape.common(prayer_edge).Volume<1e-4 for o in objects if o.ReviewRole=="Walls")
 raw=open(os.path.join(root,"output","review-data.js"),encoding="utf-8").read()
 review=json.loads(raw[len("window.HOME_MODEL="):-1])
+grade=parameters["ground_elevation"]
+assert review["dimensions"]["ground_elevation"]==grade
+assert abs(doc.getObject("Site").IllustrativeGroundElevation.Value/ft-grade)<1e-7
+assert review["dimensions"]["floor_above_grade"]==4-grade
+assert review["finishes"]["base"]==parameters["base_finish"]
+for label in ("Ground Floor Slab","Raised Plinth Concept"):
+    assert by_label[label].IllustrativeBaseFinish==parameters["base_finish"]
+baseline=App.openDocument(os.path.join(root,"archives","before-grade-change","Home.FCStd"))
+old={o.Label:o for o in baseline.Objects if hasattr(o,"Shape")}
+for current in objects:
+    previous=old[current.Label]
+    assert abs(current.Shape.Volume-previous.Shape.Volume)<1e-3,current.Label+" changed geometry with grade"
+    for field in ("XMin","XMax","YMin","YMax","ZMin","ZMax"):
+        assert abs(getattr(current.Shape.BoundBox,field)-getattr(previous.Shape.BoundBox,field))<1e-5,current.Label
+App.closeDocument(baseline.Name)
+assert review["passages"][0]["width"]==(16 if parameters["hall_dining_full_bay"] else parameters["hall_opening_width"])
+for record in review["doorways"]:
+    native=by_label[record["name"]]
+    assert abs(record["leaf"]["thickness"]-.15)<1e-7
+    assert any(abs(s.BoundBox.ZLength/ft-record["leaf"]["height"])<1e-7 for s in native.Shape.Solids)
 planwalls=doc.getObject("PlanCutWalls").Shape
 cutz=(4+parameters["plan_cut_height"]+.01)*ft
 plan_checks={"door":0,"window":0,"vent":0}
@@ -83,16 +119,43 @@ for opening in review["plan"]["openings"]:
     plan_checks[opening["kind"]]+=1
 assert plan_checks=={"door":9,"window":11,"vent":6}
 ifc=ifcopenshell.open(os.path.join(root,"output","Home.ifc"))
+for label in screen_names:
+    if enclosed:
+        product=next(p for p in ifc.by_type("IfcProduct") if p.Name==label)
+        shape=ifcopenshell.geom.create_shape(ifcopenshell.geom.settings(),product)
+        assert shape.geometry.verts, label
 assert len(ifc.by_type("IfcDoor"))==9
 assert len(ifc.by_type("IfcWindow"))==17
 assert len(ifc.by_type("IfcSpace"))==12
+vents=[o for o in objects if o.Label.startswith(("V_","V1_"))]
+assert len(vents)==6
+for vent in vents:
+    assert abs(vent.Width.Value/ft-1.5)<1e-7,vent.Label
+    assert abs(vent.Height.Value/ft-2)<1e-7,vent.Label
 units=ifcopenshell.util.unit.calculate_unit_scale(ifc)
+levels=next(p for p in ifc.by_type("IfcPropertySet") if p.Name=="ConceptLocalLevels")
+level_values={p.Name:p.NominalValue.wrappedValue for p in levels.HasProperties}
+for key,expected in (("IllustrativeGroundElevation",grade),("FinishedFloorElevation",4),
+                     ("FinishedFloorAboveIllustrativeGrade",4-grade)):
+    assert abs(level_values[key]*units/.3048-expected)<1e-7,key
+assert "not a survey" in level_values["ReferenceDatum"]
+finish=next(p for p in ifc.by_type("IfcPropertySet") if p.Name=="ConceptFinishes")
+assert finish.HasProperties[0].NominalValue.wrappedValue==parameters["base_finish"]
 for product in ifc.by_type("IfcDoor")+ifc.by_type("IfcWindow"):
     native=by_label[product.Name]
     assert abs(product.OverallWidth*units-native.Width.Value/1000)<1e-7, product.Name
     assert abs(product.OverallHeight*units-native.Height.Value/1000)<1e-7, product.Name
 settings=ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS,True)
+for vent in vents:
+    product=next(p for p in ifc.by_type("IfcWindow") if p.Name==vent.Label)
+    shape=ifcopenshell.geom.create_shape(settings,product)
+    vertices=shape.geometry.verts
+    axis=1 if vent.Label.endswith("Right_N") else 0
+    assert abs((max(vertices[axis::3])-min(vertices[axis::3]))/.3048-1.5)<1e-6,vent.Label
+    assert abs((max(vertices[2::3])-min(vertices[2::3]))/.3048-2)<1e-6,vent.Label
+if parameters["hall_dining_full_bay"]:
+    assert not any(p.Name=="Hall Dining" for p in ifc.by_type("IfcWall"))
 for name,(host,x,y,width,angle) in expected_doors.items():
     door=next(o for o in ifc.by_type("IfcDoor") if o.Name==name)
     void=next(o for o in ifc.by_type("IfcOpeningElement") if o.Name==name)
@@ -109,6 +172,11 @@ for name,(host,x,y,width,angle) in expected_doors.items():
         assert abs(min(verts[2::3])-4*ft/1000)<.001, name
         assert abs(max(verts[2::3])-11*ft/1000)<.001, name
 result={"saved_native_reopened":True,"valid_bim_solids":len(objects),
+        "uniform_service_vents_ft":{"width":1.5,"height":2,"count":len(vents)},
+        "hall_dining_full_height_clear_width_ft":review["passages"][0]["width"],
+        "shared_local_levels_ft":{"ground":grade,"finished_floor":4,"floor_above_grade":4-grade},
+        "native_solids_unchanged_by_grade":len(objects),
+        "monitor_enclosure_native_and_ifc_elements":len(screen_names) if enclosed else 0,
         "exterior_ft":[slab.XLength/ft,slab.YLength/ft],
         "main_clear_rooms_verified":7,"opening_host_and_portal_checks":"passed",
         "ifc_door_window_space_counts":[9,17,12],

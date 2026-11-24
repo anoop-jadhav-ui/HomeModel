@@ -23,6 +23,7 @@ def build():
     if App.ActiveDocument:
         App.closeDocument(App.ActiveDocument.Name)
     doc = App.newDocument("SketchHome")
+    doc.Label = "Jadhav Nivaas"
     sheet = doc.addObject("Spreadsheet::Sheet", "Parameters")
     sheet.Label = "Parameters (ft) - edit JSON then regenerate"
     sheet.set("A1", "Parameter")
@@ -33,6 +34,7 @@ def build():
     site = Arch.makeSite(name="Site")
     site.Label = "Concept site - E front / N right"
     building = Arch.makeBuilding(name="Home")
+    building.Label = "Jadhav Nivaas"
     site.addObject(building)
     storey = Arch.makeFloor(name="GroundFloor")
     storey.Label = "Ground floor - raised plinth"
@@ -49,10 +51,20 @@ def build():
     d = c + t + P["middle_bay"]
     depth = d + t + P["rear_bay"] + e
     floor_z = P["plinth_height"]
+    grade=P["ground_elevation"]
+    if not math.isfinite(grade) or not 0<=grade<floor_z:
+        raise ValueError("Illustrative ground_elevation must be finite, at/above the local datum and below FFL.")
+    site.addProperty("App::PropertyLength","IllustrativeGroundElevation","Concept")
+    site.IllustrativeGroundElevation=grade*FT
+    site.addProperty("App::PropertyLength","FinishedFloorAboveIllustrativeGrade","Concept")
+    site.FinishedFloorAboveIllustrativeGrade=(floor_z-grade)*FT
+    site.addProperty("App::PropertyString","LevelReference","Concept")
+    site.LevelReference="Local model datum only; user-directed visual grade, not a survey, sea-level elevation or foundation design."
     walltop = floor_z + P["wall_height"]
     wallmap, records = {}, []
     palette = {"Walls": (0.90, 0.84, 0.70), "Floors": (0.62, 0.65, 0.63),
                "Roof": (0.53, 0.20, 0.12), "Openings": (0.30, 0.60, 0.76)}
+    base_color=tuple(int(P["base_finish"][i:i+2],16)/255 for i in (1,3,5))
 
     def metadata(obj, role, detail):
         obj.addProperty("App::PropertyString", "DesignNote", "Concept")
@@ -85,7 +97,8 @@ def build():
     wall("Hall_FrontBedroom", b+t/2, e, b+t/2, c+t/2)
     wall("Kitchen_Middle", e, c+t/2, a+t/2, c+t/2)
     wall("FrontBedroom_Middle", b+t/2, c+t/2, width-e, c+t/2)
-    wall("Hall_Dining", a+t/2, c+t/2, b+t/2, c+t/2)
+    if not P["hall_dining_full_bay"]:
+        wall("Hall_Dining", a+t/2, c+t/2, b+t/2, c+t/2)
     wall("RearBedroom_Left_Front", e, d+t/2, a+t/2, d+t/2)
     wall("RearBedroom_Right_Front", b+t/2, d+t/2, width-e, d+t/2)
     wall("RearBedroom_Left_Inside", a+t/2, d+t/2, a+t/2, depth-e)
@@ -161,6 +174,7 @@ def build():
                                   "kind":"door" if code.startswith("D") else "vent" if code.startswith("V") else "window",
                                   "x":x, "y":y, "angle_degrees":angle, "width":ow,
                                   "height":oh, "sill":sill,
+                                  "frame_width":P["frame_width"],
                                   "wall_thickness":wallmap[host].Width.Value/FT})
         return obj
 
@@ -194,8 +208,9 @@ def build():
                 connects=(("WC" if i == 1 else "Common bath"), "Central circulation"))
     opening("D2", "RearBedroom_Right_Inside", b+t/2, bath_bottom+jamb+d2half, 90,
             connects=("Attached bath", "Bedroom rear right"))
-    opening("OPEN", "Hall_Dining", midx, c+t/2,
-            width_override=P["hall_opening_width"], label="Hall to dining - 8ft open portal")
+    if not P["hall_dining_full_bay"]:
+        opening("OPEN", "Hall_Dining", midx, c+t/2,
+                width_override=P["hall_opening_width"], label="Hall to dining - %gft open portal"%P["hall_opening_width"])
     for i, code in enumerate(("V", "V1", "V1", "V1")):
         opening(code, "Rear_W", (bounds[i]+bounds[i+1])/2, depth-e/2)
     for y in (c+t+2, d-2):
@@ -220,8 +235,9 @@ def build():
                         V(0,0,(floor_z-P["floor_thickness"])*FT))
     component("Ground_Floor_Slab", slab, "Slab", "Floors", "Thickness assumed; slab not engineered.")
     plinth = Part.makeBox(width*FT,depth*FT,(floor_z-P["floor_thickness"])*FT)
-    component("Raised_Plinth_Concept",plinth,"Building Element Proxy","Floors",
-              "Solid visual envelope only, NOT foundation/fill design. 4ft elevation interpreted from sketch.")
+    plinth_obj=component("Raised_Plinth_Concept",plinth,"Building Element Proxy","Floors",
+              "Solid visual envelope only, NOT foundation/fill design. FFL +%gft, illustrative grade +%gft; floor is %gft above grade."%(floor_z,grade,floor_z-grade))
+    plinth_obj.ViewObject.ShapeColor=base_color
 
     # Labels and zones are schematic review geometry, not habitable-area certification.
     room_specs = [
@@ -273,7 +289,6 @@ def build():
     for i, side in enumerate(("Front","Right","Rear","Left")):
         j=(i+1)%4
         panel("Hip_Roof_"+side,[outer[i],outer[j],inner[j],inner[i]])
-    # Four native wall strips make an open lantern ring: light/air gap is conceptual.
     mh = P["monitor_height"]
     curb = P["monitor_curb_height"]
     member = P["monitor_member_width"]
@@ -281,11 +296,71 @@ def build():
         j=(i+1)%4
         wall("Monitor_Curb_%d"%i, *inner[i][:2], *inner[j][:2],
              thick=member,height=curb,z=mz,group="Roof")
-    # Native window objects are intentionally not counted as scheduled room vents.
-    # Corner posts and open clerestory band represent unspecified ventilation, not an upper floor.
     for i,(x,y,_) in enumerate(inner):
         shape=Part.makeBox(member*FT,member*FT,mh*FT,V((x-member/2)*FT,(y-member/2)*FT,mz*FT))
         component("Monitor_Corner_%d"%i,shape,"Member","Roof","Unverified conceptual monitor framing.")
+    enclosure=P["monitor_enclosure"]
+    if enclosure["enabled"]:
+        rail=enclosure["frame_rail"]
+        band=mh-curb
+        clear=band-2*rail
+        angle=enclosure["louver_angle_degrees"]
+        blade_depth=enclosure["louver_depth"]
+        blade_thickness=enclosure["louver_thickness"]
+        dimensions=("louver_pitch","louver_depth","louver_thickness","frame_rail",
+                    "maximum_bay_width","grille_pitch","grille_member")
+        if clear<=0 or not 0<angle<90 or any(enclosure[key]<=0 for key in dimensions):
+            raise ValueError("Monitor enclosure needs positive dimensions, a clear band and a 0-90 degree blade angle.")
+        rows=max(1,math.ceil(clear/enclosure["louver_pitch"]))
+        pitch=clear/rows
+        projection=blade_depth*math.sin(math.radians(angle))+blade_thickness*math.cos(math.radians(angle))
+        if projection<pitch or enclosure["grille_member"]>=enclosure["grille_pitch"]:
+            raise ValueError("Monitor blades must overlap in elevation; grille members must leave gaps.")
+        for i,side in enumerate(("Front","Right","Rear","Left")):
+            x,y,_=inner[i]
+            nx,ny,_=inner[(i+1)%4]
+            length=math.hypot(nx-x,ny-y)
+            span=length-member
+            bays=max(1,math.ceil(span/enclosure["maximum_bay_width"]))
+            bay_width=span/bays
+            if bay_width<=rail:
+                raise ValueError("Monitor enclosure bays are too narrow for their frame rails.")
+            rotation=math.degrees(math.atan2(ny-y,nx-x))
+
+            def screen_box(dx,dy,dz,cx,cy,cz,tilt=0):
+                shape=Part.makeBox(dx*FT,dy*FT,dz*FT,V(-dx*FT/2,-dy*FT/2,-dz*FT/2))
+                if tilt:
+                    shape.rotate(V(0,0,0),V(1,0,0),tilt)
+                shape.translate(V(cx*FT,cy*FT,cz*FT))
+                shape.rotate(V(0,0,0),V(0,0,1),rotation)
+                shape.translate(V(x*FT,y*FT,(mz+curb)*FT))
+                return shape
+
+            timber=[screen_box(span,member,rail,length/2,0,z) for z in (rail/2,band-rail/2)]
+            for bay in range(1,bays):
+                timber.append(screen_box(rail,member,band,member/2+bay*bay_width,0,band/2))
+            for bay in range(bays):
+                cx=member/2+(bay+.5)*bay_width
+                for row in range(rows):
+                    timber.append(screen_box(bay_width-rail,blade_depth,blade_thickness,
+                                             cx,0,rail+(row+.5)*pitch,angle))
+            note=("Wada/Konkan-inspired conceptual screened monitor. Blade overlap is visual only, "
+                  "not a weather, ventilation, structural or security specification.")
+            louvers=component("Monitor_Timber_Louvers_"+side,Part.makeCompound(timber),
+                              "Building Element Proxy","Roof",note)
+            louvers.ViewObject.ShapeColor=(.30,.20,.12)
+            bar=enclosure["grille_member"]
+            grille_y=(blade_depth+member)/2
+            columns=max(1,math.ceil(span/enclosure["grille_pitch"]))
+            metal=[screen_box(bar,bar,band,member/2+j*span/columns,grille_y,band/2)
+                   for j in range(columns+1)]
+            metal.extend(screen_box(span,bar,bar,length/2,grille_y,z)
+                         for z in (bar/2,band/2,band-bar/2))
+            grille=component("Monitor_Recessed_Grille_"+side,Part.makeCompound(metal),
+                             "Building Element Proxy","Roof",
+                             "Illustrative backing grille only; NOT burglar-proof or engineered. "
+                             "Specify material, spacing, fixings, corrosion/fire/maintenance requirements professionally.")
+            grille.ViewObject.ShapeColor=(.17,.19,.18)
     co=P["monitor_cap_overhang"]
     capz=mz+mh
     cap=[(mx1-co,my1-co,capz),(mx2+co,my1-co,capz),
@@ -298,6 +373,13 @@ def build():
     panel("Monitor_Cap_Rear",[cap[2],cap[3],ridge1,ridge2])
     panel("Monitor_Cap_Left",[cap[3],cap[0],ridge1])
     doc.recompute()
+    slab_obj=next(obj for obj in groups["Floors"].Group if obj.Label=="Ground Floor Slab")
+    slab_obj.ViewObject.DiffuseColor=[palette["Floors"] if abs(face.normalAt(0,0).z)>.99 else base_color
+                                    for face in slab_obj.Shape.Faces]
+    slab_obj.DesignNote+=" Exposed vertical slab edges share the illustrative brown plinth finish."
+    for obj in (slab_obj,plinth_obj):
+        obj.addProperty("App::PropertyString","IllustrativeBaseFinish","Concept")
+        obj.IllustrativeBaseFinish=P["base_finish"]
     for obj in doc.Objects:
         if hasattr(obj,"Base") and obj.Base and hasattr(obj.Base,"ViewObject"):
             obj.Base.ViewObject.Visibility=False
@@ -341,7 +423,7 @@ def build():
                                                  for wire in face.Wires]})
     if not cut_faces:
         raise RuntimeError("Plan cut generated no wall faces")
-    passages=[{"name":"Hall OPEN","x":midx,"y":c+t/2,"width":P["hall_opening_width"],"angle_degrees":0},
+    passages=[{"name":"Hall OPEN","x":midx,"y":c+t/2,"width":P["center_bay"] if P["hall_dining_full_bay"] else P["hall_opening_width"],"angle_degrees":0},
               {"name":"Prayer OPEN","x":px,"y":(c+t+d)/2,"width":P["middle_bay"],"angle_degrees":90}]
     plan_group=doc.addObject("App::DocumentObjectGroup","PlanReview")
     plan_group.Label="Plan review - cut +%gft FFL; swings ASSUMED"%P["plan_cut_height"]
@@ -415,20 +497,40 @@ def build():
     native_path=os.path.join(OUT,"Home.FCStd")
     doc.recompute()
     doc.saveAs(native_path)
+    for door in doorways:
+        native=next(obj for obj in groups["Openings"].Group if obj.Label==door["name"])
+        angle=math.radians(door["angle_degrees"])
+        u,n=(math.cos(angle),math.sin(angle)),(-math.sin(angle),math.cos(angle))
+        def leaf_extent(solid):
+            points=[v.Point for v in solid.Vertexes]
+            along=[p.x/FT*u[0]+p.y/FT*u[1] for p in points]
+            normal=[(p.x/FT-door["x"])*n[0]+(p.y/FT-door["y"])*n[1] for p in points]
+            z=[p.z/FT for p in points]
+            return {"width":max(along)-min(along),"height":max(z)-min(z),
+                    "thickness":max(normal)-min(normal),"normal_offset":(max(normal)+min(normal))/2,
+                    "bottom":min(z)-floor_z}
+        candidates=[leaf_extent(solid) for solid in native.Shape.Solids]
+        leaf=min(candidates,key=lambda value:value["thickness"])
+        if abs(leaf["thickness"]-P["frame_secondary_width"])>1e-6:
+            raise RuntimeError("Unexpected native door leaf depth: "+door["name"])
+        door.update(leaf=leaf,frame_width=P["frame_width"])
     mesh_records=[]
     for obj in solid_objects:
         verts,tris=obj.Shape.tessellate(15)
         mesh_records.append({"name":obj.Label,"group":obj.ReviewRole,
-                             "color":list(obj.ViewObject.ShapeColor),
+                             "color":list(palette["Floors"] if obj.Label=="Ground Floor Slab" else obj.ViewObject.ShapeColor),
                              "vertices":[[v.x/FT,v.y/FT,v.z/FT] for v in verts],
                              "triangles":tris})
     review={"dimensions":{"width":width,"depth":depth,"grid_width":40,"grid_depth":32,
                            "floor_elevation":floor_z,"wall_height":P["wall_height"],
                            "monitor_base":mz,"overall_height":capz+P["monitor_cap_rise"]+P["roof_thickness"]},
             "rooms":records,"objects":mesh_records,"opening_counts":dict(opening_counts),
-            "doorways":doorways,"passages":passages,
+            "navigation":P["navigation"],
+            "finishes":{"base":P["base_finish"],"base_rgb":base_color},
+            "doorways":doorways,"passages":passages,"monitor_enclosure":enclosure,
             "plan":{"cut_height":P["plan_cut_height"],"wall_faces":plan_wall_faces,"openings":plan_openings,
                     "swing_note":"All hinge sides and swing directions are ASSUMED; not confirmed by the sketch."}}
+    review["dimensions"].update(ground_elevation=grade,floor_above_grade=floor_z-grade)
     with open(os.path.join(OUT,"review-data.js"),"w",encoding="utf-8") as f:
         f.write("window.HOME_MODEL="+json.dumps(review,separators=(",",":"))+";")
     runpy.run_path(os.path.join(ROOT,"export_plan.py"))["export_review"](review,P,OUT)
@@ -462,6 +564,30 @@ def build():
                                        RelatingOpeningElement=voids[product.Name],
                                        RelatedBuildingElement=product)
                 filling_count+=1
+        level_properties=[]
+        for key,value in (("IllustrativeGroundElevation",grade),("FinishedFloorElevation",floor_z),
+                          ("FinishedFloorAboveIllustrativeGrade",floor_z-grade)):
+            level_properties.append(exported.create_entity("IfcPropertySingleValue",Name=key,
+                                    NominalValue=exported.create_entity("IfcLengthMeasure",value*FT/1000/unit_scale)))
+        level_properties.append(exported.create_entity("IfcPropertySingleValue",Name="ReferenceDatum",
+                                NominalValue=exported.create_entity("IfcText",site.LevelReference)))
+        level_targets=exported.by_type("IfcBuilding")+exported.by_type("IfcBuildingStorey")
+        if not level_targets:
+            raise RuntimeError("IFC export has no building/storey for local level metadata.")
+        owner=level_targets[0].OwnerHistory
+        levels=exported.create_entity("IfcPropertySet",GlobalId=ifcopenshell.guid.new(),OwnerHistory=owner,
+                                     Name="ConceptLocalLevels",HasProperties=level_properties)
+        exported.create_entity("IfcRelDefinesByProperties",GlobalId=ifcopenshell.guid.new(),OwnerHistory=owner,
+                               RelatedObjects=level_targets,
+                               RelatingPropertyDefinition=levels)
+        finish=exported.create_entity("IfcPropertySet",GlobalId=ifcopenshell.guid.new(),OwnerHistory=owner,
+                    Name="ConceptFinishes",HasProperties=[exported.create_entity("IfcPropertySingleValue",
+                    Name="PlinthAndExposedSlabEdges",NominalValue=exported.create_entity("IfcLabel",P["base_finish"]))])
+        base_products=[p for p in exported.by_type("IfcProduct") if p.Name in ("Ground Floor Slab","Raised Plinth Concept")]
+        if len(base_products)!=2:
+            raise RuntimeError("Missing IFC slab/plinth finish targets.")
+        exported.create_entity("IfcRelDefinesByProperties",GlobalId=ifcopenshell.guid.new(),OwnerHistory=owner,
+                               RelatedObjects=base_products,RelatingPropertyDefinition=finish)
         exported.write(ifcpath)
         exported=ifcopenshell.open(ifcpath)
         products=exported.by_type("IfcProduct")
@@ -499,14 +625,24 @@ def build():
         Gui.activeDocument().activeView().saveImage(os.path.join(OUT,"exterior.png"),1600,1100,"White")
         for group in ("Walls","Roof","Openings"):
             groups[group].ViewObject.Visibility=False
+        groups["Floors"].ViewObject.Visibility=False
         plan_group.ViewObject.Visibility=True
-        Gui.activeDocument().activeView().viewTop()
+        for obj in plan_group.Group:
+            obj.ViewObject.Visibility=True
+        Gui.activeDocument().activeView().setCameraType("Orthographic")
+        Gui.activeDocument().activeView().setCameraOrientation((0,0,0,1))
         Gui.activeDocument().activeView().fitAll()
-        QtGui.QApplication.processEvents()
+        Gui.updateGui()
+        Gui.activeDocument().activeView().getCameraNode().orientation.setValue(0,0,0,1)
+        Gui.activeDocument().activeView().redraw()
         Gui.activeDocument().activeView().saveImage(os.path.join(OUT,"plan-cutaway.png"),1600,1100,"White")
         plan_group.ViewObject.Visibility=False
-        for group in ("Walls","Roof","Openings"):
+        for obj in plan_group.Group:
+            obj.ViewObject.Visibility=False
+        for group in ("Walls","Roof","Openings","Floors"):
             groups[group].ViewObject.Visibility=True
+            for obj in groups[group].Group:
+                obj.ViewObject.Visibility=True
         for obj in groups["Openings"].Group:
             if obj.Label.startswith("Hall to dining"):
                 obj.ViewObject.Visibility=False

@@ -1,6 +1,6 @@
 {
   "native_file": "C:\\Users\\anoopjadhav\\Documents\\PersonalProjects\\HomeModel\\output\\Home.FCStd",
-  "valid_solid_objects": 63,
+  "valid_solid_objects": 70,
   "invalid_objects": [],
   "opening_counts": {
     "D": 1,
@@ -20,7 +20,9 @@
     "floor_elevation": 4,
     "wall_height": 10,
     "monitor_base": 21.052903329594354,
-    "overall_height": 25.302903329594354
+    "overall_height": 25.302903329594354,
+    "ground_elevation": 2,
+    "floor_above_grade": 2
   },
   "front_wall_cut_volume_ft3": 236.25,
   "rooms": [
@@ -128,7 +130,15 @@
       "opens_to": [
         0,
         1
-      ]
+      ],
+      "leaf": {
+        "width": 3.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000152,
+        "normal_offset": 0.07499999999999926,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     },
     {
       "name": "D1_01_Kitchen_Middle",
@@ -148,7 +158,15 @@
       "opens_to": [
         0,
         -1
-      ]
+      ],
+      "leaf": {
+        "width": 2.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000036,
+        "normal_offset": 0.07500000000000018,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     },
     {
       "name": "D1_02_FrontBedroom_Middle",
@@ -168,7 +186,15 @@
       "opens_to": [
         0,
         -1
-      ]
+      ],
+      "leaf": {
+        "width": 2.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000036,
+        "normal_offset": 0.07500000000000018,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     },
     {
       "name": "D1_03_RearBedroom_Left_Front",
@@ -188,7 +214,15 @@
       "opens_to": [
         0,
         1
-      ]
+      ],
+      "leaf": {
+        "width": 2.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000568,
+        "normal_offset": 0.07499999999999929,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     },
     {
       "name": "D1_04_RearBedroom_Right_Front",
@@ -208,7 +242,15 @@
       "opens_to": [
         0,
         1
-      ]
+      ],
+      "leaf": {
+        "width": 2.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000568,
+        "normal_offset": 0.07499999999999929,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     },
     {
       "name": "D2_01_FrontBedroom_Middle",
@@ -228,7 +270,15 @@
       "opens_to": [
         0,
         1
-      ]
+      ],
+      "leaf": {
+        "width": 2.200000000000003,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000036,
+        "normal_offset": 0.07500000000000018,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     },
     {
       "name": "D2_02_Service_Front",
@@ -248,7 +298,15 @@
       "opens_to": [
         0,
         1
-      ]
+      ],
+      "leaf": {
+        "width": 2.1999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.14999999999999858,
+        "normal_offset": 0.07499999999999929,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     },
     {
       "name": "D2_03_Service_Front",
@@ -268,7 +326,15 @@
       "opens_to": [
         0,
         1
-      ]
+      ],
+      "leaf": {
+        "width": 2.1999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.14999999999999858,
+        "normal_offset": 0.07499999999999929,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     },
     {
       "name": "D2_04_RearBedroom_Right_Inside",
@@ -288,29 +354,37 @@
       "opens_to": [
         -1,
         0
-      ]
+      ],
+      "leaf": {
+        "width": 2.1999999999999993,
+        "height": 6.85,
+        "thickness": 0.14999999999999514,
+        "normal_offset": 0.07499999999999751,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15
     }
   ],
   "door_host_cut_probes": "passed",
-  "plan_cut_wall_faces": 40,
+  "plan_cut_wall_faces": 38,
   "plan_symbols": {
     "door": 9,
     "window": 11,
     "vent": 6
   },
   "ifc_status": "exported and reopened with geometry",
-  "ifc_represented_products": 102,
+  "ifc_represented_products": 108,
   "ifc_opening_dimensions_in_declared_units": true,
   "ifc_filling_relationships_added": 26,
   "ifc_classes": {
-    "IfcBuildingElementProxy": 1,
+    "IfcBuildingElementProxy": 9,
     "IfcDoor": 9,
     "IfcMember": 4,
     "IfcRoof": 8,
     "IfcSlab": 1,
-    "IfcWall": 23,
+    "IfcWall": 22,
     "IfcWindow": 17,
-    "IfcOpeningElement": 27,
+    "IfcOpeningElement": 26,
     "IfcSpace": 12
   }
 }

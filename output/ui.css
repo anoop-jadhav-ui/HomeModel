@@ -1,0 +1,131 @@
+/* Self-hosted Google Fonts; sources and exact OFL licenses are listed in
+   THIRD_PARTY_NOTICES.txt. Keep this stylesheet after the existing UI styles. */
+@font-face {
+  font-family: "DM Serif Display";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/dm-serif-display-latin-400.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./fonts/manrope-latin-variable.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+body {
+  font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body > header h1 {
+  font-family: "DM Serif Display", Georgia, "Times New Roman", serif;
+  font-weight: 400;
+}
+
+/* Authored 24-unit line icons. Empty masked pseudo-elements leave labels and
+   accessible names intact, even when the scene replaces button.textContent. */
+:is(button#exterior, button#cutaway, button#interior, button#plan-view,
+    button#roof, button#doors, button#furniture, button#stop-walk,
+    button#enter-home, button#snap-toggle, button#snap, #files > summary) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+:is(button#exterior, button#cutaway, button#interior, button#plan-view,
+    button#roof, button#doors, button#furniture, button#stop-walk,
+    button#enter-home, button#snap-toggle, button#snap, #files > summary)::before {
+  content: "";
+  display: inline-block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  -webkit-mask: var(--ui-icon) center / contain no-repeat;
+  mask: var(--ui-icon) center / contain no-repeat;
+}
+
+button#exterior {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 10 9-7 9 7M5 9v12h14V9M9 21v-8h6v8'/%3E%3C/svg%3E");
+}
+
+button#cutaway {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 7 9-4 9 4-9 4-9-4Zm0 0v10l9 4 9-4V7M12 11v10M7 9v5l5 2 5-2V9'/%3E%3C/svg%3E");
+}
+
+button#interior {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='14' cy='4' r='1.5'/%3E%3Cpath d='m9 21 3-7-2-4 3-3 3 4 4 1M10 10l-3 3H4M12 14l5 3 1 4'/%3E%3C/svg%3E");
+}
+
+button#plan-view {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h18v18H3V3Zm9 0v7m0 4v7M3 12h5m8 0h5M8 12v5h4'/%3E%3C/svg%3E");
+}
+
+button#roof {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 13 10-9 10 9H2Zm4 4h12M8 21h8M16 7V4h3v6'/%3E%3C/svg%3E");
+}
+
+button#doors {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 21h16M6 21V3h12v18M6 3l8 3v15M11 12v2'/%3E%3C/svg%3E");
+}
+
+button#furniture {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 10V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3M6 14h12v-3a2 2 0 0 1 4 0v7H2v-7a2 2 0 0 1 4 0v3ZM5 18v3m14-3v3'/%3E%3C/svg%3E");
+}
+
+button#stop-walk {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='5' width='14' height='14' rx='2'/%3E%3C/svg%3E");
+}
+
+button#enter-home {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v16h-6M3 12h12m-5-5 5 5-5 5'/%3E%3C/svg%3E");
+}
+
+button#snap-toggle,
+button#snap {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 3v10a7 7 0 0 0 14 0V3h-5v10a2 2 0 0 1-4 0V3H5Zm0 5h5m4 0h5'/%3E%3C/svg%3E");
+}
+
+#files > summary {
+  --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7V4h6l3 3h9v13H3V7Zm0 4h18'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 700px), (max-height: 500px) {
+  :is(button#exterior, button#cutaway, button#interior, button#plan-view,
+      button#roof, button#doors, button#furniture, button#stop-walk,
+      button#enter-home, button#snap-toggle, button#snap, #files > summary) {
+    gap: 4px;
+  }
+
+  :is(button#exterior, button#cutaway, button#interior, button#plan-view,
+      button#roof, button#doors, button#furniture, button#stop-walk,
+      button#enter-home, button#snap-toggle, button#snap, #files > summary)::before {
+    flex-basis: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Labelled views and visibility toggles still fit the existing 320px grids
+   without reducing their 44px touch targets or changing the walk arrow pad. */
+@media (max-width: 380px) {
+  :is(button#exterior, button#cutaway, button#interior, button#plan-view,
+      button#roof, button#doors, button#furniture) {
+    gap: 3px;
+    padding-inline: 4px;
+    font-size: 12px;
+  }
+
+  :is(button#exterior, button#cutaway, button#interior, button#plan-view,
+      button#roof, button#doors, button#furniture)::before {
+    flex-basis: 12px;
+    width: 12px;
+    height: 12px;
+  }
+}

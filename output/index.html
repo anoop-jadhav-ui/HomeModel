@@ -1,21 +1,115 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Courtyard light | Parametric home</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jadhav Nivaas | Home model</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#e6e9e4;color:#26352e;font:14px system-ui,sans-serif;overflow:hidden}header{height:75px;padding:14px 22px;background:#f9faf7;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ccd3cb}h1{font-size:20px;font-weight:600;letter-spacing:-.4px;margin:0 0 3px}.sub{color:#69766b;font-size:12px}.tag{font-size:10px;letter-spacing:1px;color:#8c4a26;border:1px solid #cfae96;border-radius:20px;padding:6px 10px}nav{position:absolute;top:93px;left:20px;right:20px;display:flex;gap:6px;flex-wrap:wrap;z-index:3;pointer-events:none}button,select{pointer-events:auto;font:inherit;background:#ffffffed;border:1px solid #b8c5ba;color:#254133;border-radius:6px;padding:9px 13px;cursor:pointer;box-shadow:0 2px 6px #26362c0a}button.active{background:#294f3b;color:white;border-color:#294f3b}#stage{position:absolute;inset:75px 0 0}#stage canvas{width:100%;height:100%;display:block}iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#f3f1ea}#info{position:absolute;left:22px;bottom:22px;max-width:440px;background:#fffffff0;border:1px solid #ced5ca;border-radius:10px;padding:17px 19px;z-index:3;box-shadow:0 8px 30px #172b1710}#info h2{margin:0 0 7px;font-size:16px}#info p{margin:6px 0;font-size:12px;line-height:1.55;color:#576559}#status{position:absolute;right:20px;bottom:22px;background:#203d30e8;color:#f6faf3;border-radius:7px;padding:10px 13px;font-size:11px;z-index:3;max-width:340px}a{color:#2c6548}#failure{display:none;position:absolute;inset:140px 20px auto;background:#fff0df;padding:20px;z-index:10}#crosshair{display:none;position:absolute;left:50%;top:50%;width:8px;height:8px;border:1px solid #fff9;border-radius:50%;pointer-events:none}@media(max-width:700px){header{height:90px;padding:12px}#stage{top:90px}nav{top:102px;left:10px;right:10px}button,select{padding:7px 9px;font-size:12px}#info{bottom:12px;left:10px;max-width:280px;padding:12px}#status{bottom:168px;right:10px;max-width:230px}.tag{max-width:130px;text-align:center}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{width:100%;height:100%;margin:0}
+body{height:100vh;height:100dvh;display:grid;grid-template-rows:auto auto minmax(0,1fr);background:#e6e9e4;color:#26352e;font:14px system-ui,sans-serif;overflow:hidden}
+header{padding:max(10px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));background:#f9faf7;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #ccd3cb;z-index:5}
+h1{font-size:20px;font-weight:600;letter-spacing:-.4px;margin:0 0 3px}.sub{color:#69766b;font-size:12px}
+.header-actions{display:flex;align-items:center;gap:12px}#status{font-size:11px;color:#69766b}
+button,select,summary{font:inherit;background:#fdfefa;border:1px solid #b8c5ba;color:#254133;border-radius:6px;min-width:44px;min-height:44px;padding:9px 13px;cursor:pointer}
+button,summary{-webkit-user-select:none;user-select:none}button.active,button[aria-pressed=true]{background:#294f3b;color:white;border-color:#294f3b}
+button:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #b17c42;outline-offset:2px}
+#files{position:relative}summary{display:flex;align-items:center;list-style:none}summary::-webkit-details-marker{display:none}
+.file-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:215px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 90px);overflow:auto;background:#fff;border:1px solid #bdc9bf;border-radius:8px;box-shadow:0 8px 24px #172b1722;padding:6px;z-index:6}
+.file-menu a{display:flex;align-items:center;min-height:44px;padding:9px 12px;border-radius:4px;color:#2c6548;text-decoration:none}.file-menu a:hover{background:#edf2eb}
+nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));border-bottom:1px solid #ccd3cb;background:#eef1eb;min-width:0}
+.view-controls,.model-controls{display:flex;gap:6px;min-width:0}.room-control{display:none;align-items:center;gap:7px}.room-control select{min-width:0;max-width:210px}
+.view-controls{gap:0;border:1px solid #b8c5ba;border-radius:8px;overflow:hidden}.view-controls button{border:0;border-radius:0}.view-controls button+button{border-left:1px solid #b8c5ba}.room-control{flex-wrap:wrap}
+body[data-view=interior] .room-control{display:flex}
+body[data-view=plan] .model-controls{display:none}
+body[data-view=interior] .model-controls,body[data-view=exterior] #doors{display:none}
+body[data-view=cutaway] #roof{display:none}
+body[data-view=exterior] .model-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+.short-label{display:none}
+#stage{position:relative;min-width:0;min-height:0;overflow:hidden}
+#stage canvas{width:100%;height:100%;display:block;touch-action:none}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#f3f1ea}
+#failure{display:none;position:absolute;inset:12px 12px auto;background:#fff0df;padding:16px;z-index:10;max-height:calc(100% - 24px);overflow:auto}
+#crosshair{display:none;position:absolute;left:50%;top:50%;width:8px;height:8px;border:1px solid #fff9;border-radius:50%;pointer-events:none}
+#walk-notice{position:absolute;top:10px;left:50%;transform:translateX(-50%);max-width:calc(100% - 24px);padding:7px 11px;background:#fdfefae8;border-radius:5px;font-size:12px;pointer-events:none;z-index:2}
+#walk-controls{display:none;position:absolute;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));grid-template-columns:repeat(3,48px);gap:5px;z-index:3}
+#walk-controls button{min-height:48px;font-size:22px;touch-action:none;background:#fdfefae8;box-shadow:0 2px 7px #172b1722}
+#walk-controls button[aria-pressed=true]{background:#294f3b}
+#move-forward{grid-column:2}#move-left{grid-column:1;grid-row:2}#move-backward{grid-column:2;grid-row:2}#move-right{grid-column:3;grid-row:2}
+@media(pointer:coarse),(max-width:900px){#walk-controls:not([hidden]){display:grid}}
+@media(max-width:700px){
+ header{padding-right:max(10px,env(safe-area-inset-right));padding-left:max(10px,env(safe-area-inset-left));gap:7px}h1{font-size:18px}.sub{font-size:11px}.sub-detail{display:none}#status{display:none}
+ nav{display:grid;grid-template-columns:1fr;gap:7px;padding:8px max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left))}
+ .view-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.model-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ button,select{font-size:13px;padding:8px 7px}.wide-label{display:none}.short-label{display:inline}
+ .room-control{grid-row:2}.room-control select{flex:1;max-width:none;width:100%}
+}
+@media(max-height:500px) and (min-width:600px){
+ header{padding-top:max(4px,env(safe-area-inset-top));padding-bottom:4px}h1{font-size:17px;margin:0}.sub{display:none}
+ nav{gap:7px;padding-top:5px;padding-bottom:5px;flex-wrap:wrap}.wide-label{display:none}.short-label{display:inline}
+ button,select{padding:6px 8px;font-size:12px}.view-controls,.model-controls{gap:4px}.room-control{gap:4px}.room-control select{max-width:145px}
+ #walk-controls{grid-template-columns:repeat(3,44px);gap:4px}#walk-controls button{min-height:44px}
+}
 </style>
-<style>#info.compact p:nth-of-type(2),#info.compact p:nth-of-type(3){display:none}</style>
+<link rel="stylesheet" href="ui.css">
+<style>
+#stage{display:grid;grid-template-rows:minmax(0,1fr) auto}
+#viewport{position:relative;min-width:0;min-height:0;overflow:hidden}
+#walk-dock{width:min(640px,calc(100% - 24px));justify-self:center;display:grid;grid-template-columns:140px minmax(0,1fr);gap:7px 14px;padding:10px 12px;margin:8px 0 max(8px,env(safe-area-inset-bottom));background:#f9fbf7;border:1px solid #becac0;border-radius:14px;box-shadow:0 3px 14px #253c2517}
+.dock-context{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.dock-place{min-width:0;flex:1}#walk-location{display:block;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#walk-notice{display:block;position:static;transform:none;max-width:none;padding:0;margin:2px 0 0;background:none;border:0;height:2.7em;font-size:11px;line-height:1.35;overflow:hidden;color:#627267}
+.travel-mode{display:flex;flex:none;border:1px solid #d0d8cf;border-radius:7px;overflow:hidden}.travel-mode button{display:inline-flex;align-items:center;justify-content:center;gap:4px;border:0;border-radius:0;padding:4px 7px;font-size:11px;min-width:44px;background:transparent;color:#667267}.travel-mode button+button{border-left:1px solid #d0d8cf}.travel-mode button[aria-checked=true]{background:#e2eade;color:#304735}#fly-mode[aria-checked=true]{background:#eee3d1;color:#604622}.travel-mode .dock-icon{width:14px;height:14px}
+#enter-home{background:#294f3b;color:#fff;border-color:#294f3b;font-weight:650;min-height:48px;min-width:140px;padding:10px 18px;box-shadow:0 2px 6px #294f3b22}
+.dock-icon{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#walk-controls{display:grid;position:static;grid-column:1;grid-row:1 / span 2;align-self:center;grid-template-columns:repeat(3,44px);gap:4px}
+#walk-controls button{width:44px;min-height:44px;padding:4px;font-size:20px;box-shadow:none;background:#edf2eb}
+#move-rise{grid-column:1;grid-row:1}#move-lower{grid-column:3;grid-row:1}.vertical-key{font-size:10px;font-weight:600;display:block;line-height:10px}
+.dock-actions{grid-column:2;grid-row:2;align-self:center;min-width:0}.dock-actions>button{max-width:100%;font-size:13px}
+#room-carousel{display:grid;grid-template-columns:repeat(3,44px);gap:4px}#room-carousel button{padding:5px;display:grid;place-items:center}
+button:disabled{opacity:.42;cursor:default}
+#play-walk .pause-glyph,#play-walk[aria-pressed=true] .play-glyph{display:none}#play-walk[aria-pressed=true] .pause-glyph{display:block}
+#return-walk{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+@media(max-width:500px){
+ #walk-dock{grid-template-columns:140px minmax(0,1fr);width:calc(100% - 16px);padding:8px;gap:6px 10px}
+ .dock-context{grid-column:1 / -1;grid-row:1}#walk-controls{grid-column:1;grid-row:2}.dock-actions{grid-column:2;grid-row:2}
+ .travel-mode button{padding:4px 6px}#walk-notice{font-size:10px}
+}
+@media(max-width:360px){#view-modes button{font-size:12px;padding:8px 4px;gap:4px}#walk-dock{padding:7px 6px;column-gap:8px}}
+</style>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/controls/OrbitControls.js":"./vendor/OrbitControls.js"}}</script>
-</head><body>
-<header><div><h1>Courtyard light <span style="font-weight:300">/ a home in progress</span></h1><div class="sub">Single storey · Editable FreeCAD BIM master · East-facing entrance</div></div><div class="tag">PRELIMINARY · NOT FOR CONSTRUCTION</div></header>
-<main id="stage"><iframe id="plan" title="Dimensioned architectural cut plan" src="plan.html?embed=1"></iframe></main>
+</head><body data-view="exterior">
+<header><div><h1>Jadhav Nivaas</h1><div class="sub">Single storey · FreeCAD BIM<span class="sub-detail"> · East-facing entrance</span></div></div>
+<div class="header-actions"><span id="status" role="status" aria-live="polite">Loading…</span><details id="files"><summary>Files &#9662;</summary><div class="file-menu">
+<a href="Home.FCStd" download>FreeCAD model (.FCStd)</a><a href="Home.ifc" download>IFC model</a><a href="Preliminary-coordination.html" target="_blank" rel="noopener">Coordination package</a><a href="Roof-reference-note.html" target="_blank" rel="noopener">Roof design references</a><a href="Guide.md" target="_blank" rel="noopener">Editing guide</a>
+</div></details></div></header>
 <nav aria-label="Model views">
-<button id="exterior" class="active">Exterior</button><button id="cutaway">Furnished cutaway</button><button id="interior">Interior / walk</button><button id="plan-view">Architectural plan</button>
-<select id="room" aria-label="Interior room"><option value="Hall">Living / hall</option><option value="Dining_central_zone">Dining</option><option value="Kitchen">Kitchen</option><option value="Bedroom_rear_left">Rear-left bedroom</option><option value="Bedroom_rear_right">Rear-right bedroom</option><option value="Bedroom_front_right">Front bedroom</option><option value="Bath_right">Bath</option><option value="WC">WC</option></select>
-<button id="roof">Hide roof</button><button id="doors">Open doors*</button><button id="furniture">Furniture on</button>
+<div id="view-modes" class="view-controls" role="radiogroup" aria-label="View">
+<button id="exterior" role="radio" class="active" aria-checked="true" tabindex="0" title="Exterior orbit view">Exterior</button><button id="cutaway" role="radio" aria-checked="false" tabindex="-1" title="Furnished cutaway"><span class="wide-label">Furnished </span>Cutaway</button><button id="interior" role="radio" aria-checked="false" tabindex="-1" title="Walk from the front entrance"><span class="wide-label">Interior / walk</span><span class="short-label">Walk</span></button><button id="plan-view" role="radio" aria-checked="false" tabindex="-1" title="Architectural cut plan"><span class="wide-label">Architectural </span>Plan</button>
+</div>
+<div class="model-controls" role="group" aria-label="Model visibility">
+<button id="roof" aria-pressed="true" title="Toggle roof visibility">Roof</button><button id="furniture" aria-pressed="true" title="Toggle illustrative furniture">Furniture</button>
+</div>
 </nav>
-<section id="info"><h2 id="view-title">A warmer view of the same home</h2><p id="view-help">Drag to orbit · Scroll to zoom · Right-drag to pan. Furnished cutaway reveals the room arrangement.</p><p><b>42 ft 3 in × 34 ft 3 in exterior</b> including assumed walls; main nominal room/grid extent is 40 × 32 ft.</p><p>All furniture is illustrative. Door swings are assumed. Rear service-room sizes, site, soil, access, structural and MEP coordination remain unresolved.</p><p><a href="Home.FCStd">FreeCAD</a> · <a href="Home.ifc">IFC</a> · <a href="Preliminary-coordination.html" target="_blank">Preliminary package</a> · <a href="Guide.md" target="_blank">Update guide</a></p></section>
-<div id="status">Loading local Three.js scene…</div><div id="crosshair"></div><div id="failure" role="alert"></div>
+<main id="stage"><div id="viewport"><iframe id="plan" title="Dimensioned architectural cut plan" src="plan.html?embed=1"></iframe>
+<div id="crosshair"></div><div id="failure" role="alert"></div></div>
+<section id="walk-dock" aria-label="Interior navigation player" hidden>
+<div class="dock-context"><div class="dock-place"><strong id="walk-location">Outside</strong><span id="walk-notice" role="status" aria-live="polite"></span></div>
+<div class="travel-mode" role="radiogroup" aria-label="Navigation mode">
+<button id="walk-mode" role="radio" aria-checked="true" tabindex="0" title="Grounded walking with collision clearance"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="13" cy="4" r="2"/><path d="m8 12 3-5 4 3 4 1M11 8l-1 7-4 5m5-7 4 3 2 5"/></svg>Walk</button>
+<button id="fly-mode" role="radio" aria-checked="false" tabindex="-1" title="Advanced free flight: collisions are bypassed"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 13 7 1 4 7 2-1-2-8 6-7-1-2-7 6-8-2-1 2 7 4"/></svg>Fly</button>
+</div></div>
+<div id="walk-controls" role="group" aria-label="Hold arrows to move; drag the scene to look">
+<button id="move-rise" data-key="KeyR" aria-label="Fly upward (R)" aria-pressed="false" title="Rise / R" hidden>&#8679;<span class="vertical-key">R</span></button>
+<button id="move-forward" data-key="KeyW" aria-label="Move forward" aria-pressed="false">&#8593;</button><button id="move-left" data-key="KeyA" aria-label="Move left" aria-pressed="false">&#8592;</button><button id="move-backward" data-key="KeyS" aria-label="Move backward" aria-pressed="false">&#8595;</button><button id="move-right" data-key="KeyD" aria-label="Move right" aria-pressed="false">&#8594;</button>
+<button id="move-lower" data-key="KeyF" aria-label="Fly downward (F)" aria-pressed="false" title="Lower / F" hidden>&#8681;<span class="vertical-key">F</span></button>
+</div>
+<div class="dock-actions"><button id="enter-home" title="Open the doors and walk through the front entrance">Enter home</button>
+<div id="room-carousel" role="group" aria-label="Room navigation" hidden>
+<button id="previous-room" aria-label="Previous visited room" title="Previous visited room"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5 7 12l10 7"/></svg></button>
+<button id="play-walk" aria-label="Resume walk" aria-pressed="false" title="Pause or resume the current route"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><path class="play-glyph" d="m8 5 11 7-11 7Z"/><path class="pause-glyph" d="M8 5v14M16 5v14" stroke-width="4"/></svg></button>
+<button id="next-room" aria-label="Walk to the closest unvisited reachable room" title="Next: closest unvisited room via actual doorways"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 5 10 7-10 7"/></svg></button>
+</div>
+<div id="fly-actions" hidden><button id="return-walk" title="Return to the last safe grounded position"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M8 5v10m-4-4 4 4 4-4M16 5h4v11h-7"/></svg>Return to Walk</button></div>
+</div></section></main>
 <script>
 window.showSceneError=function(message){
  const panel=document.getElementById('failure');panel.style.display='block';panel.replaceChildren();

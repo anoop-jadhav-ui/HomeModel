@@ -5,6 +5,9 @@
   "scripts": {
     "build": "node validate-deployment.mjs",
     "test:deployment": "node --test validate-deployment.test.mjs",
+    "test:navigation": "node --test navigation.test.mjs",
+    "test:geometry": "node --test wall-sections.test.mjs",
+    "test:site": "node --test site.test.mjs",
     "vendor": "node vendor-three.mjs",
     "validate": "node validate-scene.mjs"
   },
