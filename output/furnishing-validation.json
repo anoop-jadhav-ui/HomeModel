@@ -1,0 +1,376 @@
+{
+  "status": "passed",
+  "furnishing_groups": 30,
+  "failures": [],
+  "checks": [
+    "Actual mesh bounds remain within named clear-room rectangles",
+    "Hard furniture avoids all nine assumed door-sweep sectors"
+  ],
+  "limitations": [
+    "Not a building-code, accessibility, egress or fixture-use-clearance assessment",
+    "No collision detection is enforced by the walkthrough"
+  ],
+  "items": [
+    {
+      "name": "Bedroom_front_right bed suite",
+      "room": "Bedroom_front_right",
+      "kind": "bed",
+      "bounds_ft": {
+        "xmin": 32.30000000236228,
+        "xmax": 40.69999999763772,
+        "ymin": 1.1800000029168731,
+        "ymax": 8.299999994368065
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Bedroom_front_right wardrobe",
+      "room": "Bedroom_front_right",
+      "kind": "wardrobe",
+      "bounds_ft": {
+        "xmin": 29.799999987641034,
+        "xmax": 31.854999999392323,
+        "ymin": 1.199999998998767,
+        "ymax": 6.900000001001233
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Bedroom_rear_left bed suite",
+      "room": "Bedroom_rear_left",
+      "kind": "bed",
+      "bounds_ft": {
+        "xmin": 1.250000002362284,
+        "xmax": 9.649999997637716,
+        "ymin": 25.95000000563194,
+        "ymax": 33.06999999708313
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Bedroom_rear_left wardrobe",
+      "room": "Bedroom_rear_left",
+      "kind": "wardrobe",
+      "bounds_ft": {
+        "xmin": 1.2999999989987678,
+        "xmax": 7.000000001001233,
+        "ymin": 21.799999987641034,
+        "ymax": 23.85499999939232
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Bedroom_rear_right bed suite",
+      "room": "Bedroom_rear_right",
+      "kind": "bed",
+      "bounds_ft": {
+        "xmin": 30.000000002362285,
+        "xmax": 38.39999999763772,
+        "ymin": 25.95000000563194,
+        "ymax": 33.06999999708313
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Bedroom_rear_right wardrobe",
+      "room": "Bedroom_rear_right",
+      "kind": "wardrobe",
+      "bounds_ft": {
+        "xmin": 35.54999999899877,
+        "xmax": 41.25000000100123,
+        "ymin": 21.799999987641034,
+        "ymax": 23.85499999939232
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Bath_right toilet",
+      "room": "Bath_right",
+      "kind": "toilet",
+      "bounds_ft": {
+        "xmin": 35.839999993438795,
+        "xmax": 37.060000006561204,
+        "ymin": 18.882750015493453,
+        "ymax": 20.9000000009543
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Bath_right shower",
+      "room": "Bath_right",
+      "kind": "shower",
+      "bounds_ft": {
+        "xmin": 38.650000013266336,
+        "xmax": 41.24999998673367,
+        "ymin": 18.31000000036461,
+        "ymax": 20.924999986733663
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Bath_right vanity",
+      "room": "Bath_right",
+      "kind": "basin",
+      "bounds_ft": {
+        "xmin": 35.63999997017577,
+        "xmax": 37.46000002982422,
+        "ymin": 15.875000010904051,
+        "ymax": 17.274999989095946
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Rear common washbasin",
+      "room": "Wash_point",
+      "kind": "basin",
+      "bounds_ft": {
+        "xmin": 13.721250004342847,
+        "xmax": 16.34124999565715,
+        "ymin": 31.900000010904055,
+        "ymax": 33.29999998909595
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Common WC sanitary fixture",
+      "room": "WC",
+      "kind": "toilet",
+      "bounds_ft": {
+        "xmin": 18.014999993438796,
+        "xmax": 19.235000006561204,
+        "ymin": 31.257750015493457,
+        "ymax": 33.2750000009543
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Common bath shower",
+      "room": "Common_bath",
+      "kind": "shower",
+      "bounds_ft": {
+        "xmin": 20.825000013266337,
+        "xmax": 23.424999986733663,
+        "ymin": 30.685000000364607,
+        "ymax": 33.29999998673367
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Attached_bath toilet",
+      "room": "Attached_bath",
+      "kind": "toilet",
+      "bounds_ft": {
+        "xmin": 24.652499993438795,
+        "xmax": 25.872500006561204,
+        "ymin": 31.257750015493457,
+        "ymax": 33.2750000009543
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Attached_bath shower",
+      "room": "Attached_bath",
+      "kind": "shower",
+      "bounds_ft": {
+        "xmin": 26.275000013266332,
+        "xmax": 28.87499998673366,
+        "ymin": 30.685000000364607,
+        "ymax": 33.29999998673367
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Attached_bath vanity",
+      "room": "Attached_bath",
+      "kind": "basin",
+      "bounds_ft": {
+        "xmin": 24.452499970175776,
+        "xmax": 26.272500029824222,
+        "ymin": 28.25000001090405,
+        "ymax": 29.649999989095946
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "L-shaped kitchen cabinetry and appliances",
+      "room": "Kitchen",
+      "kind": "kitchen",
+      "bounds_ft": {
+        "xmin": 0.8100000318767518,
+        "xmax": 12.219999891866848,
+        "ymin": 0.8100000318767518,
+        "ymax": 12.64999999027709
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining table",
+      "room": "Dining_central_zone",
+      "kind": "table",
+      "bounds_ft": {
+        "xmin": 18.125000060699744,
+        "xmax": 24.124999939300256,
+        "ymin": 16.625000030349874,
+        "ymax": 19.62499996965013
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining chair 17",
+      "room": "Dining_central_zone",
+      "kind": "chair",
+      "bounds_ft": {
+        "xmin": 18.375000015174933,
+        "xmax": 19.874999984825063,
+        "ymin": 14.689999997482838,
+        "ymax": 16.250000007133785
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining chair 18",
+      "room": "Dining_central_zone",
+      "kind": "chair",
+      "bounds_ft": {
+        "xmin": 18.375000015174933,
+        "xmax": 19.874999984825063,
+        "ymin": 19.999999992866215,
+        "ymax": 21.56000000251716
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining chair 19",
+      "room": "Dining_central_zone",
+      "kind": "chair",
+      "bounds_ft": {
+        "xmin": 20.375000015174937,
+        "xmax": 21.874999984825063,
+        "ymin": 14.689999997482838,
+        "ymax": 16.250000007133785
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining chair 20",
+      "room": "Dining_central_zone",
+      "kind": "chair",
+      "bounds_ft": {
+        "xmin": 20.375000015174937,
+        "xmax": 21.874999984825063,
+        "ymin": 19.999999992866215,
+        "ymax": 21.56000000251716
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining chair 21",
+      "room": "Dining_central_zone",
+      "kind": "chair",
+      "bounds_ft": {
+        "xmin": 22.375000015174937,
+        "xmax": 23.874999984825067,
+        "ymin": 14.689999997482838,
+        "ymax": 16.250000007133785
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining chair 22",
+      "room": "Dining_central_zone",
+      "kind": "chair",
+      "bounds_ft": {
+        "xmin": 22.375000015174937,
+        "xmax": 23.874999984825067,
+        "ymin": 19.999999992866215,
+        "ymax": 21.56000000251716
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining chair 23",
+      "room": "Dining_central_zone",
+      "kind": "chair",
+      "bounds_ft": {
+        "xmin": 16.249999992866215,
+        "xmax": 17.81000000251716,
+        "ymin": 17.375000015174937,
+        "ymax": 18.874999984825067
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Dining chair 24",
+      "room": "Dining_central_zone",
+      "kind": "chair",
+      "bounds_ft": {
+        "xmin": 24.43999999748284,
+        "xmax": 26.000000007133785,
+        "ymin": 17.375000015174937,
+        "ymax": 18.874999984825067
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Living sofa",
+      "room": "Hall",
+      "kind": "sofa",
+      "bounds_ft": {
+        "xmin": 13.499999990957614,
+        "xmax": 16.150000009042383,
+        "ymin": 4.099999943930959,
+        "ymax": 10.800000056069042
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Living coffee table",
+      "room": "Hall",
+      "kind": "table",
+      "bounds_ft": {
+        "xmin": 16.82500004080024,
+        "xmax": 18.924999959199763,
+        "ymin": 5.899999985732432,
+        "ymax": 9.000000014267568
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Living rug",
+      "room": "Hall",
+      "kind": "rug",
+      "bounds_ft": {
+        "xmin": 15.925000005631935,
+        "xmax": 22.924999994368065,
+        "ymin": 3.950000005631935,
+        "ymax": 10.949999994368065
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Media console and screen",
+      "room": "Hall",
+      "kind": "media",
+      "bounds_ft": {
+        "xmin": 28.074999989549628,
+        "xmax": 28.975000010450366,
+        "ymin": 4.050000184101695,
+        "ymax": 10.649999815898303
+      },
+      "assumed_door_sweep_hits": 0
+    },
+    {
+      "name": "Prayer alcove cabinet",
+      "room": "Prayer",
+      "kind": "cabinet",
+      "bounds_ft": {
+        "xmin": 1.449999903130719,
+        "xmax": 6.05000009686928,
+        "ymin": 19.775000002362283,
+        "ymax": 21.004999998541564
+      },
+      "assumed_door_sweep_hits": 0
+    }
+  ],
+  "same_room_hard_asset_pairs_checked": 48
+}

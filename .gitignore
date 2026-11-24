@@ -1,0 +1,9 @@
+tools/
+node_modules/
+__pycache__/
+*.pyc
+*.FCBak
+*.log
+HomeModel-delivery.zip
+output/build-complete.txt
+output/build-error.txt

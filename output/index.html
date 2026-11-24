@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Courtyard light | Parametric home</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e6e9e4;color:#26352e;font:14px system-ui,sans-serif;overflow:hidden}header{height:75px;padding:14px 22px;background:#f9faf7;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ccd3cb}h1{font-size:20px;font-weight:600;letter-spacing:-.4px;margin:0 0 3px}.sub{color:#69766b;font-size:12px}.tag{font-size:10px;letter-spacing:1px;color:#8c4a26;border:1px solid #cfae96;border-radius:20px;padding:6px 10px}nav{position:absolute;top:93px;left:20px;right:20px;display:flex;gap:6px;flex-wrap:wrap;z-index:3;pointer-events:none}button,select{pointer-events:auto;font:inherit;background:#ffffffed;border:1px solid #b8c5ba;color:#254133;border-radius:6px;padding:9px 13px;cursor:pointer;box-shadow:0 2px 6px #26362c0a}button.active{background:#294f3b;color:white;border-color:#294f3b}#stage{position:absolute;inset:75px 0 0}#stage canvas{width:100%;height:100%;display:block}iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#f3f1ea}#info{position:absolute;left:22px;bottom:22px;max-width:440px;background:#fffffff0;border:1px solid #ced5ca;border-radius:10px;padding:17px 19px;z-index:3;box-shadow:0 8px 30px #172b1710}#info h2{margin:0 0 7px;font-size:16px}#info p{margin:6px 0;font-size:12px;line-height:1.55;color:#576559}#status{position:absolute;right:20px;bottom:22px;background:#203d30e8;color:#f6faf3;border-radius:7px;padding:10px 13px;font-size:11px;z-index:3;max-width:340px}a{color:#2c6548}#failure{display:none;position:absolute;inset:140px 20px auto;background:#fff0df;padding:20px;z-index:10}#crosshair{display:none;position:absolute;left:50%;top:50%;width:8px;height:8px;border:1px solid #fff9;border-radius:50%;pointer-events:none}@media(max-width:700px){header{height:90px;padding:12px}#stage{top:90px}nav{top:102px;left:10px;right:10px}button,select{padding:7px 9px;font-size:12px}#info{bottom:12px;left:10px;max-width:280px;padding:12px}#status{bottom:168px;right:10px;max-width:230px}.tag{max-width:130px;text-align:center}}
+</style>
+<style>#info.compact p:nth-of-type(2),#info.compact p:nth-of-type(3){display:none}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/controls/OrbitControls.js":"./vendor/OrbitControls.js"}}</script>
+</head><body>
+<header><div><h1>Courtyard light <span style="font-weight:300">/ a home in progress</span></h1><div class="sub">Single storey · Editable FreeCAD BIM master · East-facing entrance</div></div><div class="tag">PRELIMINARY · NOT FOR CONSTRUCTION</div></header>
+<main id="stage"><iframe id="plan" title="Dimensioned architectural cut plan" src="plan.html?embed=1"></iframe></main>
+<nav aria-label="Model views">
+<button id="exterior" class="active">Exterior</button><button id="cutaway">Furnished cutaway</button><button id="interior">Interior / walk</button><button id="plan-view">Architectural plan</button>
+<select id="room" aria-label="Interior room"><option value="Hall">Living / hall</option><option value="Dining_central_zone">Dining</option><option value="Kitchen">Kitchen</option><option value="Bedroom_rear_left">Rear-left bedroom</option><option value="Bedroom_rear_right">Rear-right bedroom</option><option value="Bedroom_front_right">Front bedroom</option><option value="Bath_right">Bath</option><option value="WC">WC</option></select>
+<button id="roof">Hide roof</button><button id="doors">Open doors*</button><button id="furniture">Furniture on</button>
+</nav>
+<section id="info"><h2 id="view-title">A warmer view of the same home</h2><p id="view-help">Drag to orbit · Scroll to zoom · Right-drag to pan. Furnished cutaway reveals the room arrangement.</p><p><b>42 ft 3 in × 34 ft 3 in exterior</b> including assumed walls; main nominal room/grid extent is 40 × 32 ft.</p><p>All furniture is illustrative. Door swings are assumed. Rear service-room sizes, site, soil, access, structural and MEP coordination remain unresolved.</p><p><a href="Home.FCStd">FreeCAD</a> · <a href="Home.ifc">IFC</a> · <a href="Preliminary-coordination.html" target="_blank">Preliminary package</a> · <a href="Guide.md" target="_blank">Update guide</a></p></section>
+<div id="status">Loading local Three.js scene…</div><div id="crosshair"></div><div id="failure" role="alert"></div>
+<script>
+window.showSceneError=function(message){
+ const panel=document.getElementById('failure');panel.style.display='block';panel.replaceChildren();
+ const text=document.createElement('p');text.textContent=message;panel.append(text);
+ const fallback=document.createElement('a');fallback.href='plan.html';fallback.textContent='Open the working architectural cut-plan review';panel.append(fallback);
+ document.getElementById('status').textContent='Visualization unavailable — error and working plan link shown above';
+};
+window.addEventListener('unhandledrejection',event=>window.showSceneError('Visualization error: '+String(event.reason?.message||event.reason)));
+window.addEventListener('error',event=>{if(event.message)window.showSceneError('Visualization error: '+event.message)});
+window.sceneLoadTimer=setTimeout(()=>{if(!window.homeScene)window.showSceneError('The 3D scene has not initialized. Check that the local server is running and all local JavaScript modules are available.')},15000);
+</script>
+<script src="review-data.js"></script><script type="module">import('./scene.js').catch(error=>window.showSceneError('Could not load the Three.js scene or one of its local modules: '+error.message));</script>
+</body></html>

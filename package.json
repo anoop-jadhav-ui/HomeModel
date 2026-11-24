@@ -1,0 +1,12 @@
+{
+  "name": "parametric-home-review",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vendor": "node vendor-three.mjs",
+    "validate": "node validate-scene.mjs"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  }
+}

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sketch home | Concept review</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:#f3f1ea;color:#27312d}header{padding:22px 28px;background:#233e35;color:white}h1{font-size:24px;margin:0 0 7px}header p{margin:0;color:#d6e0d9}.layout{display:grid;grid-template-columns:1fr 320px;min-height:calc(100vh - 106px)}main{position:relative;min-width:0}canvas{width:100%;height:calc(100vh - 170px);min-height:470px;display:block;touch-action:none}nav{display:flex;gap:8px;flex-wrap:wrap;padding:16px 22px}button{border:1px solid #b1bdb5;background:white;padding:9px 13px;border-radius:6px;cursor:pointer;color:#233e35}button.active{background:#233e35;color:white}aside{background:white;padding:22px;border-left:1px solid #d5dad3}aside h2{font-size:17px;margin:0 0 9px}aside p{line-height:1.55}.metric{font-size:27px;font-weight:650;margin:8px 0}.muted{color:#626d65;font-size:13px}.warning{background:#fff3d4;border-left:3px solid #b88628;padding:12px;font-size:13px;line-height:1.5}.key{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px}#detail{font-size:13px;min-height:40px;padding:0 24px}a{color:#286b53}.note{font-size:12px;color:#666} @media(max-width:850px){.layout{grid-template-columns:1fr}aside{border-left:0}canvas{height:60vh}}
+</style>
+<style>
+body.embedded header,body.embedded aside,body.embedded nav,body.embedded #detail{display:none}
+body.embedded .layout{display:block;min-height:100vh}
+body.embedded canvas{height:100vh;min-height:0}
+</style>
+</head>
+<body>
+<header><h1>Sketch home <span style="font-weight:300">/ conceptual BIM review</span></h1><p>Editable FreeCAD master · Hipped roof + ventilation/light monitor · Front faces east</p></header>
+<div class="layout"><main>
+<nav><button id="roof" class="active">Roof on</button><button id="iso">3D exterior</button><button id="cut">3D cutaway</button><button id="top">Cut plan + openings</button><button id="reset">Reset zoom</button></nav>
+<div style="position:relative"><canvas id="view" aria-label="Interactive 3D building model. Drag to rotate, scroll to zoom."></canvas><canvas id="labels" style="position:absolute;inset:0;pointer-events:none"></canvas></div>
+<p id="detail">Drag to orbit · Scroll to zoom · Cut plan shows door gaps, leaves and assumed swings, windows, high vents and OPEN passages</p>
+</main><aside>
+<h2>Room/grid ≠ exterior</h2><p class="metric" id="size"></p><p class="muted">Exterior wall footprint, excluding roof overhang. Main nominal room/grid dimensions total 40 × 32 ft; assumed wall thickness is additional.</p>
+<p><span class="key" style="background:#e5d6b3"></span>Native BIM walls<br><span class="key" style="background:#4c99c1"></span>Scheduled doors / windows / vents<br><span class="key" style="background:#87331f"></span>Removable roof + monitor</p>
+<div class="warning"><b>Not for construction.</b> Concept only; no foundation, structural, code, drainage or stair design. A 4 ft raised plinth is shown without an engineered access solution.</div>
+<h2 style="margin-top:22px">Door layout corrected</h2>
+<p class="muted">D1 doors open from the kitchen and three bedrooms into the middle circulation strip, not through the vertical hall partitions. D = 4 ft; D1 = 3 ft; D2 = 2.5 ft wide. All are 7 ft high.</p>
+<p class="muted">Hall-to-dining and the prayer-room side are OPEN passages, not doors. In cut plan, solid blue symbols are windows; dashed cyan symbols are high vents above the cut. Brown door leaves and dashed swing arcs use <b>ASSUMED handing</b>, not a verified swing schedule. 3D leaves remain closed.</p>
+<h2 style="margin-top:22px">Resolve before design development</h2>
+<p class="muted">Prayer room: plan says 8 × 8 ft; list says 8 × 10 ft. Model follows the plan.</p>
+<p class="muted">Rear service widths 4 + 3 + 4 + 5 ft use the whole central 16 ft. Here they are grid zones; clear rooms become smaller after partitions.</p>
+<p class="muted">Roof pitch, monitor size and wall thickness are assumptions. Door walls follow the sketch; exact corner clearances remain assumed. Assigned vent types reproduce the schedule totals; handwritten locations need confirmation.</p>
+<p><a href="Home.FCStd">FreeCAD model</a> · <a href="Home.ifc">IFC</a><br><a href="Guide.md">Editing + design notes</a></p>
+<p class="note">This viewer is tessellated from the saved model geometry, not an alternative editable master. No external scripts or network dependencies.</p>
+</aside></div>
+<script src="review-data.js"></script>
+<script>
+"use strict";
+const model=window.HOME_MODEL,cv=document.getElementById("view"),overlay=document.getElementById("labels"),ctx=overlay.getContext("2d"),gl=cv.getContext("webgl",{antialias:true,preserveDrawingBuffer:true});
+if(!gl)throw new Error("WebGL is required for depth-correct model review.");
+function shader(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s}
+const program=gl.createProgram();
+gl.attachShader(program,shader(gl.VERTEX_SHADER,"attribute vec3 position;attribute vec3 color;varying vec3 c;void main(){gl_Position=vec4(position,1.0);c=color;}"));
+gl.attachShader(program,shader(gl.FRAGMENT_SHADER,"precision mediump float;varying vec3 c;void main(){gl_FragColor=vec4(c,1.0);}"));
+gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
+gl.useProgram(program);const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+for(const [name,offset] of [["position",0],["color",12]]){const loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,24,offset)}
+gl.enable(gl.DEPTH_TEST);
+let yaw=-0.65,pitch=0.68,zoom=1,roof=true,plan=false,drag=null,faces=[],labels=[],drawnPlan=null;
+const dim=model.dimensions,center=[dim.width/2,dim.depth/2,10];
+if(new URLSearchParams(location.search).has("embed"))document.body.classList.add("embedded");
+document.getElementById("size").textContent=dim.width+" × "+dim.depth+" ft";
+function project(v,w,h){
+ const x=v[0]-center[0],y=v[1]-center[1],z=v[2]-center[2];
+ const xx=x*Math.cos(yaw)-y*Math.sin(yaw),yy=x*Math.sin(yaw)+y*Math.cos(yaw);
+ const sy=yy*Math.sin(pitch)+z*Math.cos(pitch),depth=-yy*Math.cos(pitch)+z*Math.sin(pitch);
+ const scale=Math.min(w/(dim.width+17),h/(dim.depth+18))*zoom;
+ return [w/2+xx*scale,h/2-sy*scale,depth];
+}
+function planLine(points,w,h,color,width=1.5,dash=[]){
+ ctx.beginPath();for(const [i,v] of points.entries()){const p=project([v[0],v[1],4],w,h);if(i)ctx.lineTo(p[0],p[1]);else ctx.moveTo(p[0],p[1])}
+ ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);
+}
+function planBadge(text,x,y,w,h,background,foreground,angle=0){
+ const p=project([x,y,4],w,h);ctx.save();ctx.translate(p[0],p[1]);ctx.rotate(angle);
+ ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="bold 10px system-ui";
+ const tw=ctx.measureText(text).width+7;ctx.fillStyle=background;ctx.fillRect(-tw/2,-8,tw,16);ctx.fillStyle=foreground;ctx.fillText(text,0,0);ctx.restore();
+}
+function planWalls(w,h){
+ ctx.fillStyle="#fffef8";const corners=[[0,0],[dim.width,0],[dim.width,dim.depth],[0,dim.depth],[0,0]];
+ ctx.beginPath();for(const [i,v] of corners.entries()){const p=project([...v,4],w,h);if(i)ctx.lineTo(p[0],p[1]);else ctx.moveTo(p[0],p[1])}ctx.fill();ctx.strokeStyle="#c1c6bb";ctx.lineWidth=1;ctx.stroke();
+ for(const face of model.plan.wall_faces){
+  ctx.beginPath();for(const loop of face.loops){for(const [i,v] of loop.entries()){const p=project([...v,4],w,h);if(i)ctx.lineTo(p[0],p[1]);else ctx.moveTo(p[0],p[1])}ctx.closePath()}
+  ctx.fillStyle="#46544c";ctx.fill("evenodd");ctx.strokeStyle="#263b30";ctx.lineWidth=.8;ctx.stroke();
+ }
+}
+function planSymbols(w,h){
+ drawnPlan={doors:0,windows:0,vents:0,open:0,wallFaces:model.plan.wall_faces.length};
+ for(const item of model.plan.openings){
+  if(item.kind==="door")continue;
+  const a=item.angle_degrees*Math.PI/180,u=[Math.cos(a),Math.sin(a)],n=[-u[1],u[0]],half=item.width/2,t=item.wall_thickness/2;
+  const pos=(along,normal)=>[item.x+u[0]*along+n[0]*normal,item.y+u[1]*along+n[1]*normal];
+  const vent=item.kind==="vent",color=vent?"#087e9d":"#006c94",dash=vent?[3,3]:[];
+  const corners=[pos(-half,-t),pos(half,-t),pos(half,t),pos(-half,t),pos(-half,-t)];
+  if(!vent){
+   ctx.beginPath();for(const [i,v] of corners.entries()){const p=project([...v,4],w,h);if(i)ctx.lineTo(p[0],p[1]);else ctx.moveTo(p[0],p[1])}ctx.fillStyle="#d7f0f8";ctx.fill();
+  }
+  planLine(corners,w,h,color,vent?1.8:1.6,dash);planLine([pos(-half,0),pos(half,0)],w,h,color,1.3,dash);
+  let tx=item.x,ty=item.y;
+  if(item.host==="Front E")ty-=1.1;else if(item.host==="Rear W")ty+=1.1;else if(item.host==="Left S")tx-=1.2;else tx+=1.2;
+  planBadge(item.mark,tx,ty,w,h,"#e8f5fb",color);
+  drawnPlan[vent?"vents":"windows"]++;
+ }
+ for(const door of model.doorways){
+  const a=door.angle_degrees*Math.PI/180,u=[Math.cos(a),Math.sin(a)],s=door.hinge==="start"?-1:1;
+  const hinge=[door.x+u[0]*s*door.width/2,door.y+u[1]*s*door.width/2];
+  const closed=[hinge[0]-u[0]*s*door.width,hinge[1]-u[1]*s*door.width];
+  const opened=[hinge[0]+door.opens_to[0]*door.width,hinge[1]+door.opens_to[1]*door.width];
+  const start=Math.atan2(closed[1]-hinge[1],closed[0]-hinge[0]),end=Math.atan2(door.opens_to[1],door.opens_to[0]);
+  const sweep=Math.atan2(Math.sin(end-start),Math.cos(end-start)),arc=[];
+  for(let i=0;i<=24;i++){const t=start+sweep*i/24;arc.push([hinge[0]+Math.cos(t)*door.width,hinge[1]+Math.sin(t)*door.width])}
+  planLine(arc,w,h,"#a85b2a",1.3,[4,3]);planLine([hinge,opened],w,h,"#813e16",2);
+  const hp=project([...hinge,4],w,h);ctx.beginPath();ctx.arc(hp[0],hp[1],2,0,Math.PI*2);ctx.fillStyle="#813e16";ctx.fill();
+  planBadge(door.mark,door.x-door.opens_to[0]*.85,door.y-door.opens_to[1]*.85,w,h,"#fff0dc","#71340f");
+  drawnPlan.doors++;
+ }
+ for(const item of model.passages){
+  const a=item.angle_degrees*Math.PI/180,dx=Math.cos(a)*item.width/2,dy=Math.sin(a)*item.width/2;
+  planLine([[item.x-dx,item.y-dy],[item.x+dx,item.y+dy]],w,h,"#1c7455",1.7,[5,4]);
+  planBadge("OPEN "+item.width+" ft",item.x+(a?.9:0),item.y+(a?0:1),w,h,"#e6f4ec","#165c43",a?-Math.PI/2:0);
+  drawnPlan.open++;
+ }
+ const dimension=(a,b,text,vertical=false)=>{
+  planLine([a,b],w,h,"#667269",1);
+  for(const p of [a,b])planLine([[p[0]-.18,p[1]-.18],[p[0]+.18,p[1]+.18]],w,h,"#667269",1);
+  planBadge(text,(a[0]+b[0])/2,(a[1]+b[1])/2,w,h,"#f3f1ea","#344c3d",vertical?-Math.PI/2:0);
+ };
+ dimension([0,-3],[dim.width,-3],dim.width+" ft exterior");
+ dimension([-3,0],[-3,dim.depth],dim.depth+" ft exterior",true);
+ for(const name of ["Kitchen","Hall","Bedroom_front_right"]){const r=model.rooms.find(x=>x.name===name);dimension([r.x,dim.depth+3],[r.x+r.width,dim.depth+3],r.width+" ft clear")}
+ for(const name of ["Kitchen","Prayer","Bedroom_rear_left"]){const r=model.rooms.find(x=>x.name===name);dimension([dim.width+3,r.y],[dim.width+3,r.y+r.depth],r.depth+" ft clear",true)}
+ ctx.font="bold 12px system-ui";ctx.textAlign="left";ctx.fillStyle="#314b3d";ctx.fillText("CUT PLAN  +"+model.plan.cut_height+" ft above finished floor",18,22);
+ ctx.font="11px system-ui";ctx.fillText("Brown leaves / dashed arcs: ASSUMED swings  ·  Blue: windows  ·  Dashed cyan: high vents",18,41);
+}
+function redraw(){
+ const box=cv.getBoundingClientRect(),ratio=window.devicePixelRatio||1;
+ cv.width=box.width*ratio;cv.height=box.height*ratio;overlay.width=cv.width;overlay.height=cv.height;ctx.scale(ratio,ratio);
+ const w=box.width,h=box.height;ctx.clearRect(0,0,w,h);
+ gl.viewport(0,0,cv.width,cv.height);gl.clearColor(243/255,241/255,234/255,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+ faces=[];drawnPlan=null;const gpu=[];
+ for(const ob of (plan?[]:model.objects)){
+  if(ob.group==="Roof"&&!roof)continue;
+  const pts=ob.vertices.map(v=>project(v,w,h));
+  for(const tri of ob.triangles){
+   const a=ob.vertices[tri[0]],b=ob.vertices[tri[1]],c=ob.vertices[tri[2]];
+   const u=b.map((v,i)=>v-a[i]),v=c.map((v,i)=>v-a[i]);
+   const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],l=Math.hypot(...n)||1;
+   const light=.67+.26*Math.abs((n[0]*.3-n[1]*.4+n[2]*.86)/l);
+   const color=ob.color.slice(0,3).map(x=>x*light);
+   const p=tri.map(i=>pts[i]);
+   faces.push({p,name:ob.name});
+   for(const v of p)gpu.push(v[0]/w*2-1,1-v[1]/h*2,-v[2]/120,...color);
+  }
+ }
+ gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(gpu),gl.DYNAMIC_DRAW);gl.drawArrays(gl.TRIANGLES,0,gpu.length/6);
+ if(plan&&!roof){
+  planWalls(w,h);
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  for(const r of model.rooms){
+   const p=project([r.x+r.width/2,r.y+r.depth*(r.width<6?.72:.5),4.1],w,h);
+   const compact=r.width<6,names={Wash_point:"Wash",WC:"WC",Common_bath:"Bath",Attached_bath:"Bath (att.)"};
+   const name=names[r.name]||r.name.replaceAll("_"," "),size=compact?(+r.width.toFixed(2))+" × "+r.depth:r.width.toFixed(2)+" × "+r.depth.toFixed(2)+" ft";
+   ctx.font="bold "+(compact?9:11)+"px system-ui";let tw=Math.max(ctx.measureText(name).width,ctx.measureText(size).width)+(compact?4:10);
+   ctx.fillStyle="rgba(255,255,255,.86)";ctx.fillRect(p[0]-tw/2,p[1]-16,tw,32);
+   ctx.fillStyle="#263b32";ctx.fillText(name,p[0],p[1]-6);ctx.font=(compact?9:10)+"px system-ui";ctx.fillText(size,p[0],p[1]+8);
+  }
+  planSymbols(w,h);
+ }
+ ctx.font="bold 12px system-ui";ctx.fillStyle="#37594b";ctx.textAlign="left";
+ ctx.fillText(plan?"W / REAR ↑     N / RIGHT →     E / FRONT ↓     S / LEFT ←":"Front = E · right = N · rear = W · left = S",18,h-20);
+ document.getElementById("roof").textContent=roof?"Roof on":"Roof removed";
+ document.getElementById("roof").classList.toggle("active",roof);
+}
+document.getElementById("roof").onclick=()=>{if(plan){plan=false;yaw=-.65;pitch=.68;roof=true}else roof=!roof;redraw()};
+document.getElementById("iso").onclick=()=>{plan=false;roof=true;yaw=-.65;pitch=.68;zoom=1;redraw()};
+document.getElementById("cut").onclick=()=>{plan=false;roof=false;yaw=-.45;pitch=.95;zoom=1;redraw()};
+document.getElementById("top").onclick=()=>{plan=true;roof=false;yaw=0;pitch=Math.PI/2;zoom=1;redraw()};
+document.getElementById("reset").onclick=()=>{zoom=1;redraw()};
+cv.onpointerdown=e=>{drag=[e.clientX,e.clientY];cv.setPointerCapture(e.pointerId)};
+cv.onpointermove=e=>{if(!drag)return;plan=false;yaw+=(e.clientX-drag[0])*.009;pitch=Math.max(.08,Math.min(1.56,pitch+(e.clientY-drag[1])*.007));drag=[e.clientX,e.clientY];redraw()};
+cv.onpointerup=()=>drag=null;cv.onpointercancel=()=>drag=null;
+cv.onwheel=e=>{e.preventDefault();zoom=Math.max(.45,Math.min(3,zoom*Math.exp(-e.deltaY*.001)));redraw()};
+if(new URLSearchParams(location.search).has("embed")){plan=true;roof=false;yaw=0;pitch=Math.PI/2}
+window.addEventListener("resize",redraw);redraw();
+window.viewerState=()=>({objects:model.objects.length,doors:model.doorways.length,passages:model.passages.length,roof,plan,dimensions:dim,faces:faces.length,drawnPlan});
+</script></body></html>

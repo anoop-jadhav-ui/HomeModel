@@ -1,0 +1,27 @@
+{
+  "saved_native_reopened": true,
+  "valid_bim_solids": 63,
+  "exterior_ft": [
+    42.25,
+    34.25
+  ],
+  "main_clear_rooms_verified": 7,
+  "opening_host_and_portal_checks": "passed",
+  "ifc_door_window_space_counts": [
+    9,
+    17,
+    12
+  ],
+  "door_position_width_height_and_host_checks": 9,
+  "native_host_clearance_probes": 27,
+  "old_d1_holes_closed": 4,
+  "prayer_full_open_edge_ft": 8,
+  "ifc_door_and_void_positions_and_hosts": "passed",
+  "ifc_opening_dimension_units_checked": 26,
+  "native_plan_cut_opening_checks": {
+    "door": 9,
+    "window": 11,
+    "vent": 6
+  },
+  "native_plan_review_features": 6
+}

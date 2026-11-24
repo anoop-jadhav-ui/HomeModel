@@ -1,0 +1,12 @@
+Three.js 0.180.0
+Project: https://threejs.org/
+License: MIT
+The complete upstream license is retained in output\vendor\THREE-LICENSE.txt.
+The vendored JavaScript files are copied unmodified from the pinned npm package.
+
+All furniture, fixture and material-texture geometry/content in this project is
+procedurally authored for this visualization. No third-party 3D models, photos,
+HDRIs or texture-image assets are included.
+
+FreeCAD portable is an official third-party application with its own bundled
+licenses, retained under tools. It is not included in the delivery ZIP.

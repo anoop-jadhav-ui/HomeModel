@@ -1,0 +1,4 @@
+import os
+root = os.path.dirname(__file__)
+exec(compile(open(os.path.join(root, "build_home.py"), encoding="utf-8").read(),
+             os.path.join(root, "build_home.py"), "exec"))
