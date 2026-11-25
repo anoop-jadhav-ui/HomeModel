@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {createWalkerAvatar} from './output/walker-avatar.js';
+import {createWalkerAvatar,setWalkerCameraLayers} from './output/walker-avatar.js';
 import {createFurnishings,FT} from './output/furnishings.js';
 import {createWalkMap,walkEyeHeight} from './output/walk-navigation.js';
 import {createSceneMirrors} from './output/scene-mirrors.js';
@@ -21,9 +21,37 @@ test('one clothed figure has actual1625.6mm crown height and floor-supported fee
  }
  assert.equal(avatar.root.getObjectsByProperty('name','Head').length,1);
  const firstPerson=new THREE.Camera();
+ setWalkerCameraLayers(firstPerson,'interior','walk');
  assert(!avatar.root.getObjectByName('Head').layers.test(firstPerson.layers));
- firstPerson.layers.enable(1);
+ assert(avatar.root.getObjectByName('Shoe on walked surface').layers.test(firstPerson.layers));
+ setWalkerCameraLayers(firstPerson,'reflection');
  assert(avatar.root.getObjectByName('Head').layers.test(firstPerson.layers),'The same head must be visible to the reflection camera');
+});
+test('Fly excludes every actual avatar mesh even when its camera overlaps the eyes, torso or feet',()=>{
+ const avatar=createWalkerAvatar(model.navigation,new THREE.MeshStandardMaterial()),camera=new THREE.PerspectiveCamera();
+ avatar.place([21.125,4.4],4,0);
+ const meshes=[];avatar.root.traverse(object=>{if(object.isMesh)meshes.push(object)});
+ const originalPose=avatar.root.matrixWorld.clone(),near=camera.near;
+ for(const name of ['Eye','Shirt torso','Trouser hips','Shoe on walked surface']){
+  camera.position.copy(avatar.root.getObjectByName(name).getWorldPosition(new THREE.Vector3()));
+  for(const bearing of [0,Math.PI/2,Math.PI])for(const tilt of [-1,0,1]){
+   camera.rotation.set(tilt,bearing,0,'YXZ');
+   setWalkerCameraLayers(camera,'exterior');
+   assert(meshes.every(mesh=>mesh.layers.test(camera.layers)),'Exterior keeps the complete scale figure');
+   setWalkerCameraLayers(camera,'interior','fly');
+   assert.equal(meshes.filter(mesh=>mesh.layers.test(camera.layers)).length,0,'Hidden head alone is insufficient: no body part may render in Fly');
+   assert(new THREE.Mesh().layers.test(camera.layers),'Normal architecture must remain on the main camera layer');
+   const reflectionCamera=new THREE.Camera();
+   setWalkerCameraLayers(reflectionCamera,'reflection');
+   assert(meshes.every(mesh=>mesh.layers.test(reflectionCamera.layers)),'Mirror camera sees the same complete avatar while Fly sees none');
+   assert.equal(camera.layers.mask,1,'A reflection camera must not leak avatar layers into the primary camera');
+  }
+ }
+ assert(avatar.root.visible&&avatar.root.matrixWorld.equals(originalPose),'Filtering must not hide/move the grounded avatar globally');
+ assert.equal(camera.near,near);
+ setWalkerCameraLayers(camera,'interior','walk');
+ assert(!avatar.root.getObjectByName('Head').layers.test(camera.layers));
+ assert(avatar.root.getObjectByName('Shoe on walked surface').layers.test(camera.layers));
 });
 test('editing stature scales the complete assembled body while retaining the derived eye offset',()=>{
  const settings={...model.navigation,person_height:6},avatar=createWalkerAvatar(settings,new THREE.MeshStandardMaterial());
@@ -42,7 +70,7 @@ test('bathroom mirrors face the room, use true reflectors and enable the complet
  assert.equal(manager.mirrors.length,3);
  assert.equal(manager.info.maximumPassesPerFrame,1);
  for(const {mirror,backing}of manager.mirrors){
-  assert(mirror.isReflector&&mirror.camera.layers.isEnabled(1));
+  assert(mirror.isReflector&&mirror.camera.layers.isEnabled(1)&&mirror.camera.layers.isEnabled(2));
   assert.equal(mirror.getRenderTarget().width,256);
   assert(mirror.position.z>backing.geometry.parameters.depth/2);
   const normal=new THREE.Vector3(0,0,1).transformDirection(mirror.matrixWorld);

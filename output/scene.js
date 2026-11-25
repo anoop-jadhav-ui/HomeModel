@@ -9,7 +9,7 @@ import {createLampControls} from './lamp-controls.js';
 import {doorLeaves,doorPresentation} from './door-presentation.js';
 import {createDoorHardware} from './door-hardware.js';
 import {metricSurfaceUV} from './furniture-surfaces.js';
-import {createWalkerAvatar} from './walker-avatar.js';
+import {createWalkerAvatar,setWalkerCameraLayers} from './walker-avatar.js';
 import {createSceneMirrors} from './scene-mirrors.js';
 import {createStructuralConcept} from './structural-concept.js';
 
@@ -297,6 +297,7 @@ try{
    navigation='walk';walker.place(safe,flight.bearing,THREE.MathUtils.clamp(flight.tilt,-.4,.4));walkCamera();
    announce('Returned to the last safe walking position.');
   }
+  setWalkerCameraLayers(camera,mode,navigation);
   updateDock();return true;
  }
  function walkCamera(){
@@ -328,7 +329,6 @@ try{
    setRoof(false);setFurniture(false);
    camera.position.copy(point(model.dimensions.width+32,-38,levels.wallTop+32));orbit.target.copy(point(model.dimensions.width/2,model.dimensions.depth/2,levels.wallTop-2));
   }
-  camera.layers.enable(1);
   if(walk){
    setRoof(true);setFurniture(true);
    if(startingWalk){
@@ -341,6 +341,7 @@ try{
    if(navigation==='walk')walkCamera();renderer.domElement.setAttribute('aria-label','Walk as a 5 foot 4 inch person; eyes 5 feet above the walked surface. Drag to look; arrows or W/A/S/D move. Advanced Fly bypasses collisions; R/F changes height.');
   }
   else renderer.domElement.setAttribute('aria-label','3D home. Drag to orbit; pinch to zoom; use two fingers to pan.');
+  setWalkerCameraLayers(camera,mode,navigation);
   fitScale=1;fitViewport();
   if(orbit.enabled)orbit.update();updateDock();lampControls.sync();
  }
@@ -417,8 +418,9 @@ try{
    updateDock();
   }else if(mode!=='plan')orbit.update();
   if(walk&&navigation==='walk'){
-   avatar.place(walker.position,walkMap.floorHeight(walker.position),walker.bearing);camera.layers.disable(1);
-  }else camera.layers.enable(1);
+   avatar.place(walker.position,walkMap.floorHeight(walker.position),walker.bearing);
+  }
+  setWalkerCameraLayers(camera,mode,navigation);
   avatar.root.visible=['interior','exterior','cutaway'].includes(mode);
   lampControls.sync();
   renderer.info.reset();

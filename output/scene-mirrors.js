@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {Reflector} from 'three/addons/objects/Reflector.js';
+import {setWalkerCameraLayers} from './walker-avatar.js';
 
 function visible(object){
  for(let node=object;node;node=node.parent)if(!node.visible)return false;
@@ -14,7 +15,7 @@ export function createSceneMirrors(furnishing,{mobile=false}={}){
   const mirror=new Reflector(new THREE.PlaneGeometry(size.x-.012,size.y-.012),
    {textureWidth:resolution,textureHeight:resolution,color:0xbfc4c1,clipBias:.001,multisample:0});
   mirror.name='True bathroom mirror';mirror.position.z=size.z/2+.001;
-  mirror.camera.layers.enable(1);mirror.visible=false;backing.add(mirror);
+  setWalkerCameraLayers(mirror.camera,'reflection');mirror.visible=false;backing.add(mirror);
   mirror.userData={realReflection:true,resolution,reflectsAvatar:true};
   mirrors.push({mirror,backing});
  });

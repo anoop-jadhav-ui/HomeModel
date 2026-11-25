@@ -3,6 +3,12 @@ import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js';
 import {walkEyeHeight} from './walk-navigation.js';
 
 const FT=.3048;
+export function setWalkerCameraLayers(camera,view,navigation){
+ camera.layers.disable(1);camera.layers.disable(2);
+ if(['exterior','cutaway','reflection'].includes(view)){
+  camera.layers.enable(1);camera.layers.enable(2);
+ }else if(view==='interior'&&navigation==='walk')camera.layers.enable(2);
+}
 export function createWalkerAvatar(settings,fabric){
  const height=settings.person_height*FT,eyeHeight=walkEyeHeight(settings)*FT,root=new THREE.Group();
  const bodyHeight=1.6256,scale=height/bodyHeight,localEyeHeight=eyeHeight/scale;
@@ -17,7 +23,7 @@ export function createWalkerAvatar(settings,fabric){
  const sphere=new THREE.SphereGeometry(1,16,12);
  function oval(name,scale,position,material,upper=false){
   const mesh=new THREE.Mesh(sphere,material);mesh.name=name;mesh.scale.set(...scale);mesh.position.set(...position);
-  if(upper)mesh.layers.set(1);
+  mesh.layers.set(upper?1:2);
   mesh.castShadow=true;mesh.receiveShadow=true;root.add(mesh);return mesh;
  }
  function limb(name,a,b,radius,material,upper=false){
@@ -25,7 +31,7 @@ export function createWalkerAvatar(settings,fabric){
   const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.85,radius,delta.length(),10),material);
   mesh.name=name;mesh.position.copy(from.add(to).multiplyScalar(.5));
   mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());
-  if(upper)mesh.layers.set(1);
+  mesh.layers.set(upper?1:2);
   mesh.castShadow=true;mesh.receiveShadow=true;root.add(mesh);
  }
  oval('Trouser hips',[.155,.125,.11],[0,.855,0],trousers);
@@ -48,7 +54,7 @@ export function createWalkerAvatar(settings,fabric){
   limb('Trouser upper leg',[side*.085,.87,0],[side*.09,.48,.012],.068,trousers);
   limb('Trouser lower leg',[side*.09,.48,.012],[side*.095,.10,0],.052,trousers);
   const shoe=new THREE.Mesh(new RoundedBoxGeometry(.115,.09,.235,2,.025),shoes);
-  shoe.name='Shoe on walked surface';shoe.position.set(side*.095,.045,-.045);shoe.castShadow=true;root.add(shoe);
+  shoe.name='Shoe on walked surface';shoe.position.set(side*.095,.045,-.045);shoe.layers.set(2);shoe.castShadow=true;root.add(shoe);
   limb('Short sleeve',[side*.145,1.275,0],[side*.205,1.12,0],.058,shirt,true);
   limb('Forearm',[side*.205,1.14,0],[side*.23,.91,-.025],.035,skin,true);
   oval('Hand',[.029,.064,.023],[side*.23,.87,-.025],skin,true);

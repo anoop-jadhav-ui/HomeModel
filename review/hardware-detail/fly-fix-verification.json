@@ -1,0 +1,59 @@
+{
+  "baseline": "a4212a40ecc11fdc3ab26dba5b37517c81eeb358",
+  "diagnosis": "Fly reused the grounded camera position and re-enabled layer1. The primary render list then included Head, Nose, Hair cap and both Eyes, reproducing the screenshot without any active mirror. Lower body remained on building layer0, so hiding only the head would not fix torso/feet overlap.",
+  "fix": "Separate upper-body layer1 and lower-body layer2 from building layer0. Apply primary-camera policy immediately at mode changes and every frame. Fly sees layer0 only; Walk sees0+2; Exterior/Cutaway and independent mirror cameras see0+1+2. No global avatar visibility mutation or reflection-pass layer swapping.",
+  "focused_tests_passed": 21,
+  "static_build": {"files": 47, "asset_module_checks": 99},
+  "before": {
+    "walk_camera_mask": 1,
+    "fly_camera_mask": 3,
+    "primary_avatar_objects": ["Head", "Nose", "Hair cap", "Eye", "Eye"],
+    "mirror_active": false
+  },
+  "desktop": {
+    "ready": true,
+    "immediate_fly_camera_mask": 1,
+    "overlap_camera_heights_ft": [4.1, 6.8, 9, 11],
+    "yaw_values_radians": [0, 1.5707963267948966, 3.141592653589793],
+    "pitch_values_radians": [-0.8, 0.6],
+    "actual_primary_avatar_render_items_in_each_of_12_cases": 0,
+    "actual_key_r_ascended_from_9ft_to_ft": 9.929561773391194,
+    "actual_key_f_descended_from_9ft_to_ft": 8.070438226608813,
+    "grounded_avatar_floor_before_and_after_ft": [4, 4],
+    "near_clip_before_and_after_m": [0.04, 0.04],
+    "restored_walk_eye_offset_ft": 5,
+    "restored_walk_mask": 5,
+    "walk_look_down_rendered_objects": ["Trouser hips", "Trouser upper leg", "Trouser upper leg", "Trouser lower leg", "Trouser lower leg", "Shoe on walked surface", "Shoe on walked surface"],
+    "exterior_camera_visible_avatar_meshes": 22,
+    "fly_mirror_active": true,
+    "fly_mirror_primary_avatar_render_items": 0,
+    "fly_mirror_reflected_avatar_render_items": 18,
+    "mirror_camera_masks": [7, 7, 7],
+    "primary_mask_after_real_reflection_pass": 1
+  },
+  "mobile": {
+    "ready": true,
+    "viewport_px": [390, 844],
+    "horizontal_overflow": false,
+    "same_12_overlap_yaw_pitch_cases_primary_avatar_render_items": 0,
+    "actual_key_r_ascended_from_9ft_to_ft": 9.74121312752532,
+    "actual_key_f_descended_from_9ft_to_ft": 8.212992495449216,
+    "restored_walk_eye_offset_ft": 5,
+    "restored_walk_mask": 5,
+    "grounded_avatar_floor_ft": 4,
+    "mirror_resolution_px": 256,
+    "fly_mirror_primary_avatar_render_items": 0,
+    "fly_mirror_reflected_avatar_render_items": 18,
+    "primary_mask_after_real_reflection_pass": 1,
+    "physical_phone_test": false
+  },
+  "evidence_images": [
+    "fly-overlap-before.png",
+    "fly-overlap-after.png",
+    "walk-body-after.png",
+    "fly-mirror-after.png",
+    "fly-mobile-after.png",
+    "fly-mobile-mirror-after.png"
+  ],
+  "unchanged_by_this_fix": ["CAD", "IFC", "architectural source", "parameters", "archives", "near clip", "navigation/floor calculations", "avatar pose while flying", "mirror resolution/pass budget"]
+}

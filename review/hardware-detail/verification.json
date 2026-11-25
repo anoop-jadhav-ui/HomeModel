@@ -1,5 +1,6 @@
 {
   "scope": {
+    "recorded_stage": "Historical initial feature acceptance before first push; not current deployment status",
     "branch": "feat/hardware-textures-chimney",
     "base": "134455426fb0b279ab51bb88c54b9974db969c50",
     "merged_or_pushed": false,
