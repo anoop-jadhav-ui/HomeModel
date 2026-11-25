@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import {createFurnishings,FT,point} from './furnishings.js';
 import {createWalkMap,WalkController,FlyController} from './walk-navigation.js';
 import {createWallSections,nativeFrameProfile,createBoxSection} from './wall-sections.js';
@@ -64,6 +65,15 @@ try{
   (ob.group==='Roof'?roofGroup:structure).add(mesh);
  }
  const furnishing=createFurnishings(model);scene.add(furnishing.root);
+ const environment=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);
+ const furnitureEnvironment=pmrem.fromScene(environment,.04);
+ furnishing.environmentTarget=furnitureEnvironment;
+ environment.dispose();pmrem.dispose();
+ for(const mat of Object.values(furnishing.materials)){
+  mat.envMap=furnitureEnvironment.texture;mat.envMapIntensity=mat.metalness>.5?.85:.25;
+  for(const map of [mat.map,mat.bumpMap,mat.roughnessMap])
+   if(map)map.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
+ }
  const frameMat=makeMat('#394b42',.45),wood=new THREE.MeshStandardMaterial({color:'#946747',roughness:.5});
  const handle=new THREE.MeshStandardMaterial({color:'#b8a078',roughness:.25,metalness:.8});
  const glass=new THREE.MeshPhysicalMaterial({color:'#d6e8ed',transparent:true,opacity:.18,roughness:.06,metalness:.05,depthWrite:false,side:THREE.DoubleSide});

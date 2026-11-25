@@ -6,8 +6,8 @@
     "Actual mesh bounds remain within named clear-room rectangles",
     "Hard furniture avoids all nine assumed door-sweep sectors"
   ],
-  "solid_asset_meshes": 323,
-  "minimum_local_solid_extent_ft": 0.011999999708312701,
+  "solid_asset_meshes": 359,
+  "minimum_local_solid_extent_ft": 0.010499999744773614,
   "limitations": [
     "Not a building-code, accessibility, egress or fixture-use-clearance assessment",
     "Grounded Walk uses approximate avatar/furniture/door collision clearance; advanced Fly explicitly bypasses it"
@@ -21,7 +21,7 @@
         "xmin": 32.30000000236228,
         "xmax": 40.69999999763772,
         "ymin": 1.1800000029168731,
-        "ymax": 8.299999994368065
+        "ymax": 8.279999998055416
       },
       "assumed_door_sweep_hits": 0
     },
@@ -31,7 +31,7 @@
       "kind": "wardrobe",
       "bounds_ft": {
         "xmin": 29.80000004118196,
-        "xmax": 31.83999999939232,
+        "xmax": 31.89899999795819,
         "ymin": 1.199999998998767,
         "ymax": 6.900000001001233
       },
@@ -44,7 +44,7 @@
       "bounds_ft": {
         "xmin": 1.250000002362284,
         "xmax": 9.649999997637716,
-        "ymin": 25.95000000563194,
+        "ymin": 25.970000001944587,
         "ymax": 33.06999999708313
       },
       "assumed_door_sweep_hits": 0
@@ -57,7 +57,7 @@
         "xmin": 1.2999999989987678,
         "xmax": 7.000000001001233,
         "ymin": 21.80000004118196,
-        "ymax": 23.83999999939232
+        "ymax": 23.89899999795819
       },
       "assumed_door_sweep_hits": 0
     },
@@ -68,7 +68,7 @@
       "bounds_ft": {
         "xmin": 30.000000002362285,
         "xmax": 38.39999999763772,
-        "ymin": 25.95000000563194,
+        "ymin": 25.970000001944587,
         "ymax": 33.06999999708313
       },
       "assumed_door_sweep_hits": 0
@@ -81,7 +81,7 @@
         "xmin": 35.54999999899877,
         "xmax": 41.25000000100123,
         "ymin": 21.80000004118196,
-        "ymax": 23.83999999939232
+        "ymax": 23.89899999795819
       },
       "assumed_door_sweep_hits": 0
     },
@@ -92,7 +92,7 @@
       "bounds_ft": {
         "xmin": 35.82499998005356,
         "xmax": 37.07500001994644,
-        "ymin": 18.87058267593384,
+        "ymin": 18.885,
         "ymax": 20.91499998989537
       },
       "assumed_door_sweep_hits": 0
@@ -116,7 +116,7 @@
       "bounds_ft": {
         "xmin": 35.63999997017577,
         "xmax": 37.46000002982422,
-        "ymin": 15.875000000486146,
+        "ymin": 15.811000002041812,
         "ymax": 17.274999989095946
       },
       "assumed_door_sweep_hits": 0
@@ -128,7 +128,7 @@
       "bounds_ft": {
         "xmin": 13.721250004342847,
         "xmax": 16.34124999565715,
-        "ymin": 31.90000000048615,
+        "ymin": 31.836000002041814,
         "ymax": 33.29999998909595
       },
       "assumed_door_sweep_hits": 0
@@ -140,7 +140,7 @@
       "bounds_ft": {
         "xmin": 17.999999980053566,
         "xmax": 19.250000019946437,
-        "ymin": 31.245582675933843,
+        "ymin": 31.260000000000005,
         "ymax": 33.28999998989537
       },
       "assumed_door_sweep_hits": 0
@@ -164,7 +164,7 @@
       "bounds_ft": {
         "xmin": 24.637499980053562,
         "xmax": 25.887500019946433,
-        "ymin": 31.245582675933843,
+        "ymin": 31.260000000000005,
         "ymax": 33.28999998989537
       },
       "assumed_door_sweep_hits": 0
@@ -188,7 +188,7 @@
       "bounds_ft": {
         "xmin": 24.452499970175776,
         "xmax": 26.272500029824222,
-        "ymin": 28.250000000486146,
+        "ymin": 28.186000002041812,
         "ymax": 29.649999989095946
       },
       "assumed_door_sweep_hits": 0

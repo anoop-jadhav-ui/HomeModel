@@ -15,6 +15,7 @@ test('authored furniture is closed after welding seams, including curved spouts 
   if(!mesh.isMesh||checked.has(mesh.geometry))return;
   const g=mesh.geometry;checked.add(g);
   const positions=g.attributes.position,vertices=[],ids=new Map(),edges=new Map();
+  assert(positions.array.every(Number.isFinite),'Nonfinite asset vertices in '+mesh.parent.name);
   for(let i=0;i<positions.count;i++){
    const key=[positions.getX(i),positions.getY(i),positions.getZ(i)].map(v=>Math.round(v*1e6)).join(':');
    if(!ids.has(key))ids.set(key,ids.size);
@@ -79,4 +80,62 @@ test('draped bedding retains continuous smooth normals across duplicate bevel ve
   if(seen.has(key))assert(normal.dot(seen.get(key))>.999,'Visible normal seam in draped fabric');
   else seen.set(key,normal);
  }
+});
+test('duvet really hangs below the mattress top and inset joinery has measurable depth',()=>{
+ const bed=assets.items.find(i=>i.kind==='bed'),quilt=bed.group.children.find(m=>m.geometry?.name==='Draped duvet');
+ const p=quilt.geometry.attributes.position;
+ let middle=-Infinity,edge=Infinity;
+ for(let i=0;i<p.count;i++){
+  if(Math.abs(p.getX(i))<.1*FT)middle=Math.max(middle,p.getY(i));
+  if(Math.abs(p.getX(i))>2.6*FT)edge=Math.min(edge,p.getY(i));
+ }
+ assert(middle-edge>.35*FT,'Cover must drape, not just be a rounded slab');
+ const front=assets.items.find(i=>i.kind==='wardrobe').group.children.find(m=>m.geometry?.name==='Inset joinery panel');
+ const ray=new THREE.Raycaster(new THREE.Vector3(0,0,FT),new THREE.Vector3(0,0,-1));
+ const plain=new THREE.Mesh(front.geometry,new THREE.MeshBasicMaterial());plain.updateMatrixWorld();
+ const center=ray.intersectObject(plain)[0];
+ assert(center);
+ ray.ray.origin.x=front.geometry.attributes.position.getX(0)*.96;
+ const rim=ray.intersectObject(plain)[0];
+ assert(rim.point.z-center.point.z>.025*FT,'Cabinet frame must stand proud of its inset panel');
+});
+test('tailored cushions have no split normals at the UV seam or sphere poles',()=>{
+ const checked=new Set();
+ assets.root.traverse(m=>{
+  if(m.geometry?.name!=='Tailored cushion'||checked.has(m.geometry))return;
+  checked.add(m.geometry);
+  const p=m.geometry.attributes.position,n=m.geometry.attributes.normal,seen=new Map();
+  for(let i=0;i<p.count;i++){
+   const key=[p.getX(i),p.getY(i),p.getZ(i)].map(v=>Math.round(v*1e6)).join(':');
+   const normal=new THREE.Vector3(n.getX(i),n.getY(i),n.getZ(i));
+   assert(Math.abs(normal.length()-1)<1e-5);
+   if(seen.has(key))assert(normal.dot(seen.get(key))>.999);
+   else seen.set(key,normal);
+  }
+ });
+ assert(checked.size>=4);
+});
+test('the cover does not expose mattress patches at the rounded foot and side corners',()=>{
+ for(const bed of assets.items.filter(i=>i.kind==='bed')){
+   const mattress=bed.group.children.find(m=>m.material===assets.materials.linen&&m.geometry.parameters.height>.5*FT);
+   const quilt=bed.group.children.find(m=>m.geometry?.name==='Draped duvet'),bounds=new THREE.Box3().setFromObject(mattress);
+   const ray=new THREE.Raycaster(new THREE.Vector3(),new THREE.Vector3(0,-1,0));
+   let sampled=0;
+   for(const tx of [.01,.04,.08,.5,.92,.96,.99])for(const tz of [.01,.04,.08,.5,.92,.96,.99]){
+    ray.ray.origin.set(THREE.MathUtils.lerp(bounds.min.x,bounds.max.x,tx),bounds.max.y+FT,
+     THREE.MathUtils.lerp(bounds.min.z,bounds.max.z,tz));
+    const cover=ray.intersectObject(quilt)[0],surface=ray.intersectObject(mattress)[0];
+    if(cover&&surface){sampled++;assert(cover.point.y>surface.point.y+.002*FT,bed.name+' has a visible mattress intersection')}
+   }
+   assert(sampled>=20,'Actual mattress/cover overlap must be sampled in '+bed.name);
+ }
+});
+test('sofa feet support its raised base and chair backs have a genuine lower opening',()=>{
+ const sofa=assets.items.find(i=>i.kind==='sofa'),base=sofa.group.children.find(m=>m.material===assets.materials.upholstery);
+ const bottom=new THREE.Box3().setFromObject(base).min.y;
+ for(const foot of sofa.group.children.filter(m=>m.material===assets.materials.darkWood))
+  assert(new THREE.Box3().setFromObject(foot).max.y>=bottom-.01*FT);
+ const local=assets.items.find(i=>i.kind==='chair').group.children[0];
+ const back=local.children.find(m=>m.geometry?.type==='ExtrudeGeometry');
+ assert(new THREE.Box3().setFromObject(back).min.y>(model.dimensions.floor_elevation+2)*FT);
 });

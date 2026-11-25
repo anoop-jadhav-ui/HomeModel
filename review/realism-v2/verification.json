@@ -1,0 +1,36 @@
+{
+  "base_revision": "d3dfb13785bb919c04309b4c0a90e579c1ee18b4",
+  "furniture": {
+    "groups": 30,
+    "meshes": 359,
+    "triangles": 58964,
+    "unique_geometry_buffers": 91,
+    "authored_surface_textures": 2,
+    "surface_texture_size": [128, 128],
+    "shared_pmrem_atlas_size": [768, 1024],
+    "limits": {"meshes": 360, "triangles": 60000}
+  },
+  "checks": {
+    "integrated_tests_passed": 38,
+    "skipped_tests": 0,
+    "furnishing_fit_swing_overlap": "passed",
+    "viewport_sizes": [[390, 844], [320, 568], [844, 390], [667, 375]],
+    "modes_each_viewport": ["exterior", "cutaway", "interior", "plan"],
+    "viewport_cases": 16,
+    "horizontal_overflow_cases": 0,
+    "undersized_visible_control_cases": 0,
+    "observed_runtime_errors": 0,
+    "live_entry_eye_feet": [7.3, 9.3],
+    "enter_hidden_inside": true,
+    "live_fly_ascended_and_returned_to_clear_walk_pose": true,
+    "scene_environment_unchanged": true,
+    "architecture_site_source_and_native_ifc_byte_identical_to_base": true,
+    "static_build_files_checked": 34,
+    "static_asset_module_checks": 68
+  },
+  "limitations": [
+    "Viewport tests run in the desktop browser, not on physical mobile hardware.",
+    "Procedural assets and a generic reflection environment are not scanned or ray-traced photorealism.",
+    "Building-code, structural, accessibility and fixture-use clearances remain unverified."
+  ]
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jadhav Nivaas | Furniture references and asset licenses</title>
+<style>
+body{max-width:900px;margin:40px auto;padding:0 24px;color:#26382e;background:#f5f2e9;font:16px/1.65 system-ui,sans-serif}
+h1,h2{font-family:Georgia,serif;line-height:1.25}a{color:#315f45}li{margin-bottom:14px}code{overflow-wrap:anywhere}
+</style>
+<h1>Jadhav Nivaas: furniture realism study</h1>
+<p>This second pass uses public product descriptions and dimensions as references for generic construction, proportions and surface behavior. It is not a reproduction, endorsement, purchasing schedule or measured manufacturer model. The architectural FreeCAD/IFC files, room layout and site remain unchanged.</p>
+<h2>References and what they informed</h2>
+<ul>
+<li><a href="https://www.ikea.com/fi/en/cat/dytag-series-700505/">IKEA DYTÅG textiles</a>: irregular linen texture and a relaxed, rather than rigid, fabric silhouette. In the model: authored fine weave, shaped cover folds, side/foot drape and pillow welting.</li>
+<li><a href="https://www.muuto.com/product/Outline-Soft-Sofa-2-Seater/?configure=true">Muuto Outline Soft</a>: layered foam/wadding, loose fabric folds and distinct cushion/frame construction. Its listed 45-cm seat height informed the modeled sofa's approximately 45-cm seat surface; the sofa's existing footprint is retained. No proprietary outline or upholstery pattern was copied.</li>
+<li><a href="https://www.ikea.com.cy/en/products/vimle-3-seat-sofa/19401333/">IKEA VIMLE</a>: separate back/seat/arm assemblies and the relation of seat depth, arm height and under-sofa clearance. The official indexed dimensions were available; direct page access returned 403. The model is not a VIMLE replica.</li>
+<li><a href="https://www.ton.eu/en/14-chair-a-timeless-icon">TON No. 14</a>: a lightweight timber chair construction and 46-cm seat-height reference. The original modeled chairs now have a generic open lower back, curved upper back rail, splayed supports and stretchers, not the No. 14's protected design. The page required JavaScript; dimensions were available in its indexed manufacturer description.</li>
+<li><a href="https://www.ikea.com/us/en/p/axstad-door-matte-white-60426057/">IKEA AXSTAD fronts</a>: inset panel depth, restrained matte finish and visible frame/reveal relationships. The model uses independently authored stepped panel geometry, mounted pulls and recessed toe kicks, not downloaded cabinet fronts.</li>
+<li><a href="https://pro.duravit.com/pro/html/default/product-details.com-en.html?product=6434560&amp;nser=0998&amp;ncat=washbasins">Duravit D-Neo washbowl</a>: rounded ceramic lips, shallow inner profiles and a central waste position. Its indexed 600 x 400 x 125-mm example informed the profile relationship, not fixture sizing; existing fixture envelopes/locations are retained. Direct access returned 403.</li>
+</ul>
+<p>References checked 25 November 2026. Pinterest was not needed. Product descriptions and indexed dimensions are inspiration, not verified installation specifications.</p>
+<h2>Runtime assets and licenses</h2>
+<p>All furniture meshes, cloth/wood surface data and decorative details are authored procedurally in <code>furnishings.js</code>. No reference photograph, commercial model, downloaded texture or copied product design is included in runtime assets.</p>
+<p><a href="vendor/THREE-LICENSE.txt">Three.js MIT license</a> covers the locally vendored Three.js 0.180.0 library, unmodified RoundedBoxGeometry and unmodified RoomEnvironment. The latter supplies an authored studio-style reflection environment, generated once on the GPU. It applies only to furniture materials, not architectural walls, base, doors or landscape. No online HDR/environment asset is loaded. Existing font licenses remain in their original notices.</p>
+<h2>Review and limits</h2>
+<p>The pass includes suspended timber bed rails, channelled upholstery, a closed two-skin draped duvet, smooth tailored cushions, seat piping, actual inset cabinet fronts and mounted hardware, open chair backs/supports, rolled ceramic rims and smoother seat rings. Cloth, painted fronts, timber, stone, glazed ceramic and metal have distinct surface responses.</p>
+<p>Matched 1600 x 1000 comparisons and exact camera poses are saved under <code>review\realism-v2</code> for bedroom, living, dining, kitchen and bathroom. The development review is isolated from the approved preview; it is not a production deployment.</p>
+<p>The existing limits remain 360 furniture meshes and 60,000 triangles, with shared buffers and two 128 x 128 authored surface textures. Browser viewport checks are not certification of performance on a physical phone. These are improved lightweight authored assets, not scanned or ray-traced photorealism. Reflections are a generic image-based environment, not a live reflection of the home. Door paths and room fit are checked, but fixture-use, structural, accessibility and building-code clearances remain unverified.</p>
+</html>
