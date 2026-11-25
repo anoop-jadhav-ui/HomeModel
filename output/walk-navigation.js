@@ -1,4 +1,4 @@
-import {doorPresentation} from './door-presentation.js';
+import {doorLeaves,doorPresentation} from './door-presentation.js';
 
 const TAU=Math.PI*2;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -47,6 +47,15 @@ export function doorGeometry(door,progress){
  const angle=start+rotation,length=fit.width;
  return {hinge,pivot,start,end,length,tip:[hinge[0]+Math.cos(angle)*length,hinge[1]+Math.sin(angle)*length]};
 }
+export function doorGeometries(door,progress){
+ return doorLeaves(door).map(leaf=>doorGeometry(leaf,progress));
+}
+export function walkEyeHeight(settings){
+ const height=settings.person_height-settings.eye_below_crown;
+ if(!(Number.isFinite(height)&&height>0&&height<settings.person_height))
+  throw new Error('Walk needs a finite person stature and positive crown-to-eye offset.');
+ return height;
+}
 function doorSweep(door){
  const d=doorGeometry(door,0),arc=[d.pivot];
  for(let i=0;i<=20;i++){const a=d.start+angleDifference(d.end,d.start)*i/20;arc.push([d.pivot[0]+Math.cos(a)*d.length,d.pivot[1]+Math.sin(a)*d.length])}
@@ -73,7 +82,7 @@ export function createWalkMap(model,furniture=[],doorProgress=()=>1,furnitureVis
    item.x+Math.cos(angle)*sign*(item.width/2-item.frame_width/2),item.y+Math.sin(angle)*sign*(item.width/2-item.frame_width/2),item.frame_width,item.wall_thickness,angle));
  }
  const furnitureShapes=furniture.map(box=>rectangle((box.minX+box.maxX)/2,(box.minY+box.maxY)/2,box.maxX-box.minX,box.maxY-box.minY));
- const doors=model.doorways,portals=[...doors,...model.passages],sweeps=new Map(doors.map(door=>[door.name,doorSweep(door)]));
+ const doors=model.doorways,portals=[...doors,...model.passages],sweeps=new Map(doors.map(door=>[door.name,doorLeaves(door).map(doorSweep)]));
  function staticFree(point){
   const onFloor=point[0]>=radius&&point[0]<=width-radius&&point[1]>=radius&&point[1]<=depth-radius;
   const onApproach=Math.abs(point[0]-entry.x)<=entry.width/2-radius&&point[1]>=entry.minY+radius&&point[1]<=radius;
@@ -83,9 +92,8 @@ export function createWalkMap(model,furniture=[],doorProgress=()=>1,furnitureVis
  function doorFree(point){
   return !doors.some(door=>{
    const progress=doorProgress(door.name);
-   if(progress>.02&&progress<.98)return intersects(point,sweeps.get(door.name),radius+.08);
-   const shape=doorGeometry(door,progress);
-   return segmentDistance(point,shape.hinge,shape.tip)<radius+door.leaf.thickness/2;
+   if(progress>.02&&progress<.98)return sweeps.get(door.name).some(shape=>intersects(point,shape,radius+.08));
+   return doorGeometries(door,progress).some(shape=>segmentDistance(point,shape.hinge,shape.tip)<radius+door.leaf.thickness/2);
   });
  }
  const furnitureClear=point=>!furnitureShapes.some(shape=>intersects(point,shape,radius));
@@ -177,7 +185,7 @@ export function createWalkMap(model,furniture=[],doorProgress=()=>1,furnitureVis
  }
  function canClose(point){
   return !doors.some(door=>{
-   return intersects(point,sweeps.get(door.name),radius+.08);
+   return sweeps.get(door.name).some(shape=>intersects(point,shape,radius+.08));
   });
  }
  function snapHeading(position,bearing){

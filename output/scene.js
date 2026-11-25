@@ -1,18 +1,23 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
-import {createFurnishings,FT,point} from './furnishings.js';
-import {createWalkMap,WalkController,FlyController} from './walk-navigation.js';
+import {createFurnishings,furnishingBounds,FT,point} from './furnishings.js';
+import {createWalkMap,WalkController,FlyController,walkEyeHeight} from './walk-navigation.js';
 import {createWallSections,nativeFrameProfile,createBoxSection} from './wall-sections.js';
 import {createSite} from './site.js';
 import {createLampControls} from './lamp-controls.js';
-import {doorPresentation} from './door-presentation.js';
+import {doorLeaves,doorPresentation} from './door-presentation.js';
+import {createDoorHardware} from './door-hardware.js';
+import {metricSurfaceUV} from './furniture-surfaces.js';
+import {createWalkerAvatar} from './walker-avatar.js';
+import {createSceneMirrors} from './scene-mirrors.js';
 import {createStructuralConcept} from './structural-concept.js';
 
 const model=window.HOME_MODEL,stage=document.getElementById('viewport'),status=document.getElementById('status');
-const grade=model.dimensions.ground_elevation,eyeHeight=model.navigation.eye_height;
+const grade=model.dimensions.ground_elevation,eyeHeight=walkEyeHeight(model.navigation);
 try{
  const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+ renderer.info.autoReset=false;
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.shadowMap.enabled=true;
  renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;
  renderer.toneMappingExposure=1.15;stage.prepend(renderer.domElement);
@@ -78,15 +83,18 @@ try{
   for(const map of [mat.map,mat.bumpMap,mat.roughnessMap])
    if(map)map.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
  }
- const frameMat=makeMat('#394b42',.45),wood=new THREE.MeshStandardMaterial({color:'#946747',roughness:.5});
+ const frameMat=makeMat('#394b42',.45),wood=furnishing.materials.wood.clone();wood.color.set('#946747');
  const handle=new THREE.MeshStandardMaterial({color:'#b8a078',roughness:.25,metalness:.8});
+ handle.envMap=furnitureEnvironment.texture;handle.envMapIntensity=.85;
  const glass=new THREE.MeshPhysicalMaterial({color:'#d6e8ed',transparent:true,opacity:.18,roughness:.06,metalness:.05,depthWrite:false,side:THREE.DoubleSide});
  for(const mat of [frameMat,wood,handle,glass])clipMaterials.add(mat);
  const woodEdge=makeMat('#745038',.7),woodCap=makeMat('#745038',.9),frameCap=makeMat('#394b42',.9),glassCap=glass.clone();
  clipMaterials.add(woodEdge);
  const leafMaterials=[woodEdge,woodEdge,woodEdge,woodEdge,wood,wood],doors=[],openingCaps=[];
  function localBox(g,w,h,d,x,y,z,mat){
-  const mesh=new THREE.Mesh(new THREE.BoxGeometry(w*FT,h*FT,d*FT),mat);mesh.position.set(x*FT,y*FT,z*FT);mesh.castShadow=mat!==glass;mesh.receiveShadow=true;g.add(mesh);
+  const geometry=new THREE.BoxGeometry(w*FT,h*FT,d*FT);
+  if(mat===wood||Array.isArray(mat))metricSurfaceUV(geometry);
+  const mesh=new THREE.Mesh(geometry,mat);mesh.position.set(x*FT,y*FT,z*FT);mesh.castShadow=mat!==glass;mesh.receiveShadow=true;g.add(mesh);
   const height=clip.constant-g.getWorldPosition(new THREE.Vector3()).y;
   const cap=createBoxSection(mesh,height,mat===glass?glassCap:mat===frameMat?frameCap:woodCap);
   if(cap){g.add(cap);openingCaps.push(cap)}
@@ -99,16 +107,16 @@ try{
   for(const side of [-1,1])localBox(group,t,h,d,side*(w-t)/2,h/2,-normalOffset,fm);
   localBox(group,w,t,d,0,h-t/2,-normalOffset,fm);
   if(item.kind==='door'){
-   const assumption=model.doorways.find(x=>x.name===item.name),fit=doorPresentation(assumption),{sign}=fit;
-   const pivot=new THREE.Group();pivot.name=item.name+' hinge';pivot.position.set(fit.pivotX*FT,0,fit.pivotZ*FT);group.add(pivot);
+   const assumption=model.doorways.find(x=>x.name===item.name);
+   for(const member of doorLeaves(assumption)){
+   const fit=doorPresentation(member),{sign}=fit;
+   const pivot=new THREE.Group();pivot.name=item.name+' hinge'+(assumption.leaves?' '+member.hinge:'');pivot.position.set(fit.pivotX*FT,0,fit.pivotZ*FT);group.add(pivot);
    const lw=fit.width,lh=fit.height;
    const panel=localBox(pivot,lw,lh,fit.thickness,-sign*lw/2,fit.bottom+lh/2,fit.centerZ,leafMaterials);panel.name=item.name+' solid leaf';
-   for(const z of [-1,1].map(side=>fit.centerZ+side*(fit.thickness/2+.035))){
-    localBox(pivot,.38,.055,.06,-sign*(lw-.25),3.35,z,handle);
-    localBox(pivot,.055,.26,.055,-sign*(lw-.25),3.25,z,handle);
-   }
-   if(item.mark==='D')for(let i=0;i<6;i++)localBox(pivot,.025,lh-.4,.025,-sign*(.35+i*.5),fit.bottom+lh/2,fit.centerZ+fit.thickness/2+.0125,frameMat);
+   pivot.add(createDoorHardware(fit,handle,frameMat));
+   if(item.mark==='D')for(let i=0;i<3;i++)localBox(pivot,.018,lh-.4,.014,-sign*(.3+i*(lw-.6)/2),fit.bottom+lh/2,fit.centerZ+fit.thickness/2+.007,frameMat);
    doors.push({pivot,angle:fit.angle,name:item.name});
+   }
   }else{
    localBox(group,w,t,d,0,t/2,-normalOffset,fm);
    localBox(group,w-2*t,h-2*t,.025,0,h/2,-normalOffset,glass);
@@ -130,12 +138,19 @@ try{
  const walkObstacles=[];furnishing.root.updateMatrixWorld(true);
  for(const item of furnishing.items)if(!item.soft)item.group.traverse(mesh=>{
   if(!mesh.isMesh)return;
-  const box=new THREE.Box3().setFromObject(mesh),floor=model.dimensions.floor_elevation;
-  if(box.max.y/FT<=floor+.18||box.min.y/FT>=floor+eyeHeight+.25)return;
+  for(const box of furnishingBounds(mesh)){
+  const floor=model.dimensions.floor_elevation;
+  if(box.max.y/FT<=floor+.18||box.min.y/FT>=floor+eyeHeight+.25)continue;
   walkObstacles.push({minX:box.min.x/FT,maxX:box.max.x/FT,minY:-box.max.z/FT,maxY:-box.min.z/FT});
+  }
  });
- const progress=name=>{const door=doors.find(d=>d.name===name);return door?Math.abs(door.pivot.rotation.y/door.angle):0};
+ const progress=name=>{const leaves=doors.filter(d=>d.name===name);return leaves.length?Math.min(...leaves.map(d=>Math.abs(d.pivot.rotation.y/d.angle))):0};
  const walkMap=createWalkMap(model,walkObstacles,progress,()=>furnishing.root.visible),walker=new WalkController(walkMap);
+ const avatar=createWalkerAvatar(model.navigation,furnishing.materials.upholstery);scene.add(avatar.root);
+ const initialAvatar=walkMap.nearest([walkMap.entry.x,walkMap.entry.thresholdY+3]);
+ if(!initialAvatar)throw new Error('No floor-supported initial walker position exists.');
+ avatar.place(initialAvatar,walkMap.floorHeight(initialAvatar),0);
+ const mirrors=createSceneMirrors(furnishing,{mobile:matchMedia('(max-width:640px)').matches});
  // View-only approach explains the raised entry; it is not an architectural access design.
  const approach=new THREE.Group(),entry=walkMap.entry;approach.name='Illustrative approach - not a designed stair';
  const rise=(model.dimensions.floor_elevation-grade)/entry.steps;
@@ -148,7 +163,7 @@ try{
  const site=createSite(model);scene.add(site.root);
  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
  const flight=new FlyController(),preferences={exterior:{roof:true}};
- let mode='exterior',doorsOpen=false,walk=false,lastTime=0,lookPointer=null,lastLook=[0,0],fitScale=1,cameraHeight=grade+eyeHeight;
+ let mode='exterior',doorsOpen=false,walk=false,lastTime=0,lookPointer=null,lastLook=[0,0],fitScale=1;
  let navigation='walk',lastSafe=[entry.x,entry.y],furniturePreference=true,pendingRequest=null,destination=null,requestedHistoryIndex=null;
  let history=[],historyIndex=-1,nextExhausted=false,noticeMessage='',noticeUntil=0,pausedRequest=null;
  const visited=new Set(),roomNames=new Set(model.rooms.map(room=>room.name));
@@ -284,10 +299,9 @@ try{
   }
   updateDock();return true;
  }
- function walkCamera(dt=0){
+ function walkCamera(){
   const height=walkMap.floorHeight(walker.position)+eyeHeight;
-  cameraHeight=dt?THREE.MathUtils.damp(cameraHeight,height,14,dt):height;
-  camera.position.copy(point(...walker.position,cameraHeight));
+  camera.position.copy(point(...walker.position,height));
   camera.quaternion.setFromEuler(new THREE.Euler(walker.tilt,walker.bearing,0,'YXZ'));
  }
  function view(next){
@@ -314,6 +328,7 @@ try{
    setRoof(false);setFurniture(false);
    camera.position.copy(point(model.dimensions.width+32,-38,levels.wallTop+32));orbit.target.copy(point(model.dimensions.width/2,model.dimensions.depth/2,levels.wallTop-2));
   }
+  camera.layers.enable(1);
   if(walk){
    setRoof(true);setFurniture(true);
    if(startingWalk){
@@ -323,7 +338,7 @@ try{
     walker.place(start,0,Math.atan2(entry.aimHeight-(walkMap.floorHeight(start)+eyeHeight),entry.doorY-start[1]));
     lastSafe=[...start];setDoors(false);announce('Illustrative approach. Enter home to begin.');
    }
-   if(navigation==='walk')walkCamera();renderer.domElement.setAttribute('aria-label','Drag to look; arrows or W/A/S/D move. The player dock navigates rooms. Advanced Fly bypasses collisions; R/F changes height.');
+   if(navigation==='walk')walkCamera();renderer.domElement.setAttribute('aria-label','Walk as a 5 foot 4 inch person; eyes 5 feet above the walked surface. Drag to look; arrows or W/A/S/D move. Advanced Fly bypasses collisions; R/F changes height.');
   }
   else renderer.domElement.setAttribute('aria-label','3D home. Drag to orbit; pinch to zoom; use two fingers to pan.');
   fitScale=1;fitViewport();
@@ -395,19 +410,26 @@ try{
     camera.position.copy(point(...state.position));camera.quaternion.setFromEuler(new THREE.Euler(state.tilt,state.bearing,0,'YXZ'));
    }else{
     const state=walker.update(dt,input);if(walkMap.isFree(walker.position))lastSafe=[...walker.position];
-    walkCamera(dt);
+    walkCamera();
     if(state.arrived){recordRoom(destination,requestedHistoryIndex);destination=null;announce('Arrived. Next visits the closest unvisited room.')}
     if(state.blocked){destination=null;announce('Route blocked. Move clear, then try Next again.')}
    }
    updateDock();
   }else if(mode!=='plan')orbit.update();
-  lampControls.sync();if(mode!=='plan')renderer.render(scene,camera);
+  if(walk&&navigation==='walk'){
+   avatar.place(walker.position,walkMap.floorHeight(walker.position),walker.bearing);camera.layers.disable(1);
+  }else camera.layers.enable(1);
+  avatar.root.visible=['interior','exterior','cutaway'].includes(mode);
+  lampControls.sync();
+  renderer.info.reset();
+  mirrors.update(scene,camera,mode==='interior'&&furnishing.root.visible);
+  if(mode!=='plan')renderer.render(scene,camera);
   requestAnimationFrame(animate);
  }
  requestAnimationFrame(animate);
  status.textContent='Ready';status.title='Three.js · '+furnishing.items.length+' authored furnishing groups · Door swings assumed';
- window.homeScene={view,focusRoom,nextRoom,previousRoom,setNavigationMode,setDoors,scene,camera,orbit,renderer,furnishing,walker,flight,walkMap,approach,wallSections,site,structuralConcept,architecture:structure,
-  state:()=>({mode,roof:roofGroup.visible,doors:doors.length,doorsOpen,furnitureVisible:furnishing.root.visible,furnishingGroups:furnishing.items.length,conceptualStructureVisible:structuralConcept.root.visible,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,threeRevision:THREE.REVISION,
+ window.homeScene={view,focusRoom,nextRoom,previousRoom,setNavigationMode,setDoors,scene,camera,orbit,renderer,furnishing,walker,flight,walkMap,approach,wallSections,site,structuralConcept,avatar,mirrors,architecture:structure,
+  state:()=>({mode,roof:roofGroup.visible,doors:model.doorways.length,doorLeaves:doors.length,doorsOpen,furnitureVisible:furnishing.root.visible,furnishingGroups:furnishing.items.length,conceptualStructureVisible:structuralConcept.root.visible,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,threeRevision:THREE.REVISION,
    walking:walk?{navigation,position:[...activePosition()],room:walkMap.roomAt(activePosition()),inside:insideHome(),destination,waypoints:walker.path.length,history:[...history],historyIndex}:undefined})};
  clearTimeout(window.sceneLoadTimer);document.getElementById('failure').style.display='none';
 }catch(error){

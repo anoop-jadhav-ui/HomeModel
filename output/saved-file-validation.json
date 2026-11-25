@@ -12,7 +12,13 @@
     "finished_floor": 4,
     "floor_above_grade": 2
   },
-  "native_solids_unchanged_except_corner_closures": 68,
+  "native_solids_unchanged_except_paired_entry": 69,
+  "paired_entrance_native_leaf_widths_ft": [
+    1.8300000000000018,
+    1.8300000000000047
+  ],
+  "paired_entrance_ifc_operation": "DOUBLE_DOOR_SINGLE_SWING",
+  "paired_entrance_ifc_actual_leaf_components": 2,
   "native_and_ifc_exterior_corner_closures": 4,
   "monitor_enclosure_native_and_ifc_elements": 8,
   "exterior_ft": [

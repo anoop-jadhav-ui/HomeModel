@@ -8,7 +8,8 @@ for (const name of ['three.module.js', 'three.core.js']) {
 for (const [source, target] of [
   ['controls/OrbitControls.js', 'OrbitControls.js'],
   ['geometries/RoundedBoxGeometry.js', 'RoundedBoxGeometry.js'],
-  ['environments/RoomEnvironment.js', 'RoomEnvironment.js']
+  ['environments/RoomEnvironment.js', 'RoomEnvironment.js'],
+  ['objects/Reflector.js', 'Reflector.js']
 ]) {
   await copyFile(new URL(`examples/jsm/${source}`, packageRoot), `output/vendor/${target}`);
 }

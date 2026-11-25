@@ -1,10 +1,15 @@
 import * as THREE from 'three';
 import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js';
 import {KITCHEN_SINK,kitchenCounterGeometry,kitchenSinkGeometry} from './kitchen-fixtures.js';
+import {furnitureSurfaces,metricSurfaceUV} from './furniture-surfaces.js';
 
 export const FT=.3048;
 export const point=(x,y,z)=>new THREE.Vector3(x*FT,z*FT,-y*FT);
 const material=(color,roughness=.65,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+export function furnishingBounds(mesh){
+ return mesh.userData.partBounds?.map(box=>box.clone().applyMatrix4(mesh.matrixWorld))??
+  [new THREE.Box3().setFromObject(mesh)];
+}
 
 export function createFurnishings(model){
  const root=new THREE.Group(),items=[],lamps=[];
@@ -12,27 +17,15 @@ export function createFurnishings(model){
  const M={wood:material('#795036',.48),darkWood:material('#443125',.54),cream:material('#e8ddc8'),
   linen:textile('#dcd5c5'),green:material('#687561'),pillow:textile('#eee6d6'),black:material('#232b29'),
   brass:material('#ad8b54',.32,.82),ceramic:new THREE.MeshPhysicalMaterial({color:'#eeeae1',roughness:.16,clearcoat:.35,clearcoatRoughness:.12}),
-  metal:material('#c6cccc',.18,1),mirror:material('#e3e9e7',.025,1),
+  metal:material('#c6cccc',.18,1),mirror:material('#a8b2ad',.62,0),
   stone:material('#c9c2b1',.36),glass:new THREE.MeshPhysicalMaterial({color:'#d9edf0',transparent:true,opacity:.22,roughness:.08,depthWrite:false,side:THREE.DoubleSide}),
   water:material('#44767d',.13),leaf:material('#466747'),soil:material('#43382b')};
  const geometries=new Map();
  function cached(key,create){if(!geometries.has(key))geometries.set(key,create());return geometries.get(key)}
- function surface(kind){
-  const size=128,data=new Uint8Array(size*size*4);
-  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
-   const noise=((x*73+y*137+x*y*19)%53)/53;
-   const value=kind==='cloth'?165+((x%4<2)===(y%4<2)?35:0)+noise*18:
-    225+Math.sin(x*.22+Math.sin(y*.035)*2)*7+Math.sin(x*1.4+y*.035)*4+noise*5;
-   const i=(y*size+x)*4;data[i]=data[i+1]=data[i+2]=value;data[i+3]=255;
-  }
-  const t=new THREE.DataTexture(data,size,size);t.wrapS=t.wrapT=THREE.RepeatWrapping;
-  t.magFilter=THREE.LinearFilter;t.minFilter=THREE.LinearMipmapLinearFilter;t.generateMipmaps=true;t.needsUpdate=true;
-  return t;
- }
- const weave=surface('cloth'),grain=surface('wood');
- weave.repeat.set(16,16);grain.colorSpace=THREE.SRGBColorSpace;
+ const surfaces=furnitureSurfaces(),weave=surfaces.cloth.relief,grain=surfaces.wood.map;
  M.upholstery=textile('#aaa08b');M.cushion=textile('#72836b');M.accent=textile('#9c6852');
  M.paint=material('#667360',.56);M.rug=material('#a18a62',.98);M.steel=material('#b5bdba',.32,1);
+ M.granite=material('#51534e',.32);
  const rugData=new Uint8Array(128*128*4);
  for(let y=0;y<128;y++)for(let x=0;x<128;x++){
   const edge=Math.min(x,y,127-x,127-y),band=edge<5||edge>9&&edge<12;
@@ -43,9 +36,14 @@ export function createFurnishings(model){
  rugMap.magFilter=THREE.LinearFilter;rugMap.minFilter=THREE.LinearMipmapLinearFilter;rugMap.generateMipmaps=true;rugMap.needsUpdate=true;
  M.rug.map=rugMap;M.rug.bumpMap=weave;M.rug.bumpScale=.0006;
  for(const mat of [M.linen,M.pillow,M.upholstery,M.cushion,M.accent]){
-  mat.bumpMap=weave;mat.bumpScale=.00035;mat.roughnessMap=weave;
+  mat.map=surfaces.cloth.map;mat.bumpMap=weave;mat.bumpScale=.00025;mat.roughnessMap=weave;
  }
- for(const mat of [M.wood,M.darkWood]){mat.map=grain;mat.bumpMap=grain;mat.bumpScale=.00015}
+ for(const mat of [M.wood,M.darkWood]){
+  mat.map=grain;mat.bumpMap=surfaces.wood.relief;mat.bumpScale=.00012;mat.roughnessMap=surfaces.wood.relief;
+ }
+ for(const mat of [M.stone,M.granite]){
+  mat.map=surfaces.stone.map;mat.bumpMap=surfaces.stone.relief;mat.bumpScale=.00008;mat.roughnessMap=surfaces.stone.relief;
+ }
  const F=model.dimensions.floor_elevation;
  function box(g,w,d,h,x,y,z,mat,round=0){
   const soft=[M.linen,M.pillow,M.upholstery,M.cushion].includes(mat);
@@ -88,16 +86,21 @@ export function createFurnishings(model){
  }
  function pull(g,x,y,z,rotation=0,vertical=false){
   const geometry=cached('mounted-pull',()=>{
-   const bar=new THREE.CylinderGeometry(.024*FT,.024*FT,.46*FT,12);
-   bar.rotateZ(Math.PI/2);bar.translate(0,0,.06*FT);
+   const bar=new THREE.CylinderGeometry(.024*FT,.024*FT,.46*FT,8);
+   bar.rotateZ(Math.PI/2);bar.translate(0,0,.085*FT);
    const posts=[-.19,.19].map(x=>{
-    const post=new THREE.CylinderGeometry(.022*FT,.022*FT,.07*FT,12);
-    post.rotateX(Math.PI/2);post.translate(x*FT,0,.025*FT);return post;
+    const post=new THREE.CylinderGeometry(.022*FT,.022*FT,.07*FT,8);
+    post.rotateX(Math.PI/2);post.translate(x*FT,0,.035*FT);return post;
    });
-   return joined([bar,...posts]);
+   const roses=[-.19,.19].map(x=>{
+    const plate=new THREE.BoxGeometry(.072*FT,.072*FT,.012*FT);
+    plate.translate(x*FT,0,.006*FT);return plate;
+   });
+   return joined([bar,...posts,...roses]);
   });
   const mesh=new THREE.Mesh(geometry,M.brass);mesh.position.copy(point(x,y,z));mesh.rotation.y=rotation;
-  if(vertical)mesh.rotateZ(Math.PI/2);mesh.castShadow=true;g.add(mesh);
+  if(vertical)mesh.rotateZ(Math.PI/2);
+  mesh.name='Mounted cabinet pull';mesh.userData.hardware=true;mesh.castShadow=true;g.add(mesh);return mesh;
  }
  function cushion(g,w,d,h,x,y,z,mat,variation=0){
   const geometry=cached(['tailored-cushion',w,d,h,variation].join(':'),()=>{
@@ -228,7 +231,7 @@ export function createFurnishings(model){
   box(g,1.15,1.32,1.6,x,y-face*.04,F+.95,M.wood);box(g,1.2,1.45,.12,x,y,F+1.81,M.stone);
   for(const z of [.6,1.25]){
    panel(g,1.03,.55,x,y+face*.66,F+z,M.wood,face>0?Math.PI:0);
-   pull(g,x,y+face*.7,F+z,face>0?Math.PI:0);
+   pull(g,x,y+face*.655,F+z,face>0?Math.PI:0);
   }
   const group=new THREE.Group();group.name=room+' bedside lamp '+(x<model.rooms.find(r=>r.name===room).x+6?'left':'right');g.add(group);
   const baseGeometry=cached('lamp-base-and-neck',()=>{
@@ -273,10 +276,10 @@ export function createFurnishings(model){
    for(const offset of [-1.9,0,1.9]){
     if(front){
      panel(g,1.86,6.65,cx+w/2-.07,cy+offset,F+3.5,M.cream,Math.PI/2);
-     pull(g,cx+w/2+.015,cy+offset+.6,F+3.5,Math.PI/2,true);
+     pull(g,cx+w/2-.075,cy+offset+.6,F+3.5,Math.PI/2,true);
     }else{
      panel(g,1.86,6.65,cx+offset,cy+d/2-.07,F+3.5,M.cream,Math.PI);
-     pull(g,cx+offset+.6,cy+d/2+.015,F+3.5,Math.PI,true);
+     pull(g,cx+offset+.6,cy+d/2-.075,F+3.5,Math.PI,true);
     }
    }
   });
@@ -301,9 +304,9 @@ export function createFurnishings(model){
   tap(g,x,y+.45,F+2.65);
   for(const dz of [1,1.95]){
    panel(g,w-.13,.78,x,y-.6,F+dz,M.wood);
-   pull(g,x,y-.68,F+dz+.2);
+   pull(g,x,y-.595,F+dz+.2);
   }
-  box(g,w, .035,1.7,x,y+.64,F+4.1,M.mirror);
+  box(g,w, .035,1.7,x,y+.64,F+4.65,M.mirror);
  }
  function shower(g,x,y,size=2.6){
   box(g,size,size,.12,x,y,F+.1,M.ceramic);
@@ -338,14 +341,14 @@ export function createFurnishings(model){
   });
   box(g,1.7,11.1,.4,x+.99,y+5.9,F+.2,M.darkWood);
   box(g,9.1,1.7,.4,x+6.77,y+.99,F+.2,M.darkWood);
-  box(g,2.12,11.5,.18,x+1.12,y+5.9,F+2.83,M.stone);
-  const counter=new THREE.Mesh(cached('recessed-kitchen-counter',kitchenCounterGeometry),M.stone);
+  box(g,2.12,11.5,.18,x+1.12,y+5.9,F+2.83,M.granite);
+  const counter=new THREE.Mesh(cached('recessed-kitchen-counter',kitchenCounterGeometry),M.granite);
   counter.name='Kitchen cutout countertop';counter.position.copy(point(x,y,F+2.74));counter.castShadow=true;counter.receiveShadow=true;g.add(counter);
   for(let i=0;i<5;i++){
    panel(g,1.75,2.1,x+2.145,y+3.1+i*1.85,F+1.5,M.paint,Math.PI/2);
    panel(g,1.6,2.1,x+3.1+i*1.7,y+2.145,F+1.5,M.paint,Math.PI);
-   pull(g,x+2.18,y+3.1+i*1.85,F+2.25,Math.PI/2);
-   pull(g,x+3.1+i*1.7,y+2.18,F+2.25,Math.PI);
+   pull(g,x+2.14,y+3.1+i*1.85,F+2.25,Math.PI/2);
+   pull(g,x+3.1+i*1.7,y+2.14,F+2.25,Math.PI);
   }
   box(g,2.45,2.5,6.3,x+4.1,y+10.55,F+3.15,M.metal).name='Kitchen refrigerator';
   const fridgeHandle=box(g,.08,.1,1.7,x+5.05,y+9.25,F+3.9,M.black);
@@ -355,14 +358,41 @@ export function createFurnishings(model){
    return joined([fridgeHandle.geometry.clone(),reveal,freezerGrip]);
   });
   box(g,2.8,.8,2.25,x+7,y+11.5,F+6.1,M.cream).name='Kitchen upper cabinet';
-  for(const dx of [-.7,.7])panel(g,1.34,2.15,x+7+dx,y+11.08,F+6.1,M.cream);
+  for(const dx of [-.7,.7]){
+   panel(g,1.34,2.15,x+7+dx,y+11.08,F+6.1,M.cream);
+   pull(g,x+7+dx-Math.sign(dx)*.42,y+11.085,F+5.65,0,true);
+  }
   const s=KITCHEN_SINK,sink=new THREE.Mesh(cached('inset-stainless-sink',kitchenSinkGeometry),M.steel);
   sink.name='Kitchen inset steel sink';sink.position.copy(point(x+s.x,y+s.y,F+2.92));sink.castShadow=true;sink.receiveShadow=true;g.add(sink);
   cylinder(g,.075,.075,.012,x+s.x,y+s.y,F+2.305,M.black,16).name='Kitchen sink waste';
   tap(g,x+s.tapX,y+s.tapY,F+2.95,s.tapRotation).name='Kitchen tap spout';
-  box(g,1.7,2.35,.04,x+1.15,y+6.3,F+2.96,M.black);
+  box(g,1.7,2.35,.04,x+1.15,y+6.3,F+2.96,M.black).name='Kitchen hob';
   const burnerGeometry=cached('burner',()=>new THREE.TorusGeometry(.2*FT,.025*FT,6,20));
   for(const dx of [-.4,.4])for(const dy of [-.65,.65]){const burner=new THREE.Mesh(burnerGeometry,M.metal);burner.rotation.x=Math.PI/2;burner.position.copy(point(x+1.15+dx,y+6.3+dy,F+3));g.add(burner)}
+  const hood=new THREE.Group();hood.name='Kitchen suspended extractor - exhaust and support UNRESOLVED';g.add(hood);
+  const clearance=.75/FT,bottom=F+3.025+clearance,hx=x+1.15,hy=y+6.3;
+  hood.userData={conceptOnly:true,mount:'ceiling-suspended',hobClearanceMM:750,
+   unresolved:'Support/fixings, exhaust route, appliance selection and installation clearances require coordination. Window view partly masked by user choice.'};
+  box(hood,.6/FT,.8/FT,.055/FT,hx,hy,bottom+.03+.0275/FT,M.steel).name='Extractor capture canopy';
+  box(hood,1.3,1.8,.025,hx,hy,bottom+.0125,M.black).name='Extractor underside filter';
+  const baffleGeometry=cached('extractor-baffles',()=>{
+   const parts=[];
+   for(let i=0;i<9;i++){
+    const p=new THREE.BoxGeometry(.012*FT,.012*FT,1.6*FT);p.translate((i-4)*.13*FT,0,0);parts.push(p);
+   }
+   return joined(parts);
+  });
+  const baffles=new THREE.Mesh(baffleGeometry,M.steel);baffles.position.copy(point(hx,hy,bottom+.008));hood.add(baffles);
+  const roof=model.objects.find(record=>record.name==='Hip Roof Left');
+  if(!roof)throw new Error('Suspended extractor needs the approved left roof envelope.');
+  const minRoofX=Math.min(...roof.vertices.map(p=>p[0])),maxRoofX=Math.max(...roof.vertices.map(p=>p[0]));
+  const wallTop=F+model.dimensions.wall_height,slope=(model.dimensions.monitor_base-wallTop)/(maxRoofX-minRoofX);
+  const top=wallTop+(hx-.525-minRoofX)*slope-.04;
+  hood.userData.enclosureTopFt=top;hood.userData.roofInterface='Stops below existing slope; no penetration or confirmed attachment/route.';
+  box(hood,1.05,1.05,top-(bottom+.18),hx,hy,(top+bottom+.18)/2,M.steel).name='Illustrative suspended duct enclosure - no roof penetration';
+  box(hood,1.08,1.08,.035,hx,hy,bottom+.8,M.metal).name='Extractor telescopic enclosure seam';
+  for(const dy of [-.92,.92])box(hood,.12,.19,.015,hx+.65,hy+dy,bottom+.0075,M.cream);
+  box(hood,.018,.5,.08,hx+.6/FT/2+.003,hy,bottom+.075,M.black).name='Extractor front controls';
  });
  const dining=model.rooms.find(r=>r.name==='Dining_central_zone'),cx=dining.x+dining.width/2,cy=dining.y+5;
  asset(dining,'Dining table','table',g=>{
@@ -418,14 +448,40 @@ export function createFurnishings(model){
  asset(hall,'Living coffee table','table',g=>{box(g,2.1,3.1,.12,hall.x+4.75,hall.y+6.7,F+1.35,M.wood);for(const dy of [-1.1,1.1])box(g,1.5,.12,1.3,hall.x+4.75,hall.y+6.7+dy,F+.67,M.black)});
  asset(hall,'Living rug','rug',g=>box(g,7,7,.025,hall.x+6.3,hall.y+6.7,F+.035,M.rug),{soft:true});
  asset(hall,'Media console and screen','media',g=>{
-  box(g,.9,6.6,1.4,hall.x+hall.width-.6,hall.y+6.6,F+.8,M.wood);
+  box(g,.85,6.6,1.4,hall.x+hall.width-.575,hall.y+6.6,F+.8,M.wood);
+  for(const dy of [-2.15,0,2.15]){
+   panel(g,2.08,1.16,hall.x+hall.width-1.03,hall.y+6.6+dy,F+.8,M.wood,-Math.PI/2);
+   pull(g,hall.x+hall.width-1.025,hall.y+6.6+dy,F+.95,-Math.PI/2);
+  }
   box(g,.1,4.6,2.5,hall.x+hall.width-.25,hall.y+6.6,F+3.2,M.black);
  });
  const prayer=model.rooms.find(r=>r.name==='Prayer');
  asset(prayer,'Prayer alcove cabinet','cabinet',g=>{
-  box(g,4.5,1.2,2.3,prayer.x+3,prayer.y+prayer.depth-.75,F+1.15,M.wood);
+  box(g,4.5,1.15,2.3,prayer.x+3,prayer.y+prayer.depth-.725,F+1.15,M.wood);
+  for(const dx of [-1.12,1.12]){
+   panel(g,2.17,2.1,prayer.x+3+dx,prayer.y+prayer.depth-1.33,F+1.15,M.wood);
+   pull(g,prayer.x+3+dx-Math.sign(dx)*.78,prayer.y+prayer.depth-1.325,F+1.45,0,true);
+  }
   box(g,4.6,.12,3,prayer.x+3,prayer.y+prayer.depth-.18,F+3.8,M.cream);
   for(const dx of [-1.4,1.4])cylinder(g,.15,.13,.45,prayer.x+3+dx,prayer.y+prayer.depth-.75,F+2.55,M.brass);
+ });
+ for(const item of items){
+  const pulls=item.group.children.filter(child=>child.userData.hardware);
+  if(pulls.length<2)continue;
+  const mounts=pulls.map(mesh=>({position:mesh.position.toArray(),quaternion:mesh.quaternion.toArray()}));
+  const partBounds=pulls.map(mesh=>{
+   mesh.geometry.computeBoundingBox();mesh.updateMatrix();return mesh.geometry.boundingBox.clone().applyMatrix4(mesh.matrix);
+  });
+  const parts=pulls.map(mesh=>{mesh.updateMatrix();return mesh.geometry.clone().applyMatrix4(mesh.matrix)});
+  const combined=new THREE.Mesh(joined(parts),M.brass);
+  combined.name='Mounted cabinet pulls';combined.userData={hardware:true,mounts,partBounds};combined.castShadow=true;
+  item.group.remove(...pulls);item.group.add(combined);
+ }
+ const mapped=new Set();
+ root.traverse(mesh=>{
+  if(mesh.isMesh&&mesh.material.map&&mesh.material!==M.rug&&!mapped.has(mesh.geometry)){
+   metricSurfaceUV(mesh.geometry,mesh.scale);mapped.add(mesh.geometry);
+  }
  });
  return {root,items,materials:M,lamps};
 }

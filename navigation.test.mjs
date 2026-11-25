@@ -2,8 +2,8 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {createFurnishings,FT} from './output/furnishings.js';
-import {createWalkMap,WalkController,FlyController} from './output/walk-navigation.js';
+import {createFurnishings,furnishingBounds,FT} from './output/furnishings.js';
+import {createWalkMap,WalkController,FlyController,walkEyeHeight} from './output/walk-navigation.js';
 
 const source=readFileSync('output/review-data.js','utf8');
 const model=JSON.parse(source.slice('window.HOME_MODEL='.length,-1));
@@ -11,11 +11,23 @@ const furnishing=createFurnishings(model);furnishing.root.updateMatrixWorld(true
 const obstacles=[];
 for(const item of furnishing.items)if(!item.soft)item.group.traverse(mesh=>{
  if(!mesh.isMesh)return;
- const box=new THREE.Box3().setFromObject(mesh),floor=model.dimensions.floor_elevation;
- if(box.max.y/FT<=floor+.18||box.min.y/FT>=floor+model.navigation.eye_height+.25)return;
+ for(const box of furnishingBounds(mesh)){
+ const floor=model.dimensions.floor_elevation;
+ if(box.max.y/FT<=floor+.18||box.min.y/FT>=floor+model.navigation.eye_height+.25)continue;
  obstacles.push({minX:box.min.x/FT,maxX:box.max.x/FT,minY:-box.max.z/FT,maxY:-box.min.z/FT});
+ }
 });
 const map=createWalkMap(model,obstacles),hall=[21.125,4.55];
+test('Walk eyes are60in above each local surface for a64in person, not at crown height',()=>{
+ assert.equal(walkEyeHeight(model.navigation),5);
+ assert(Math.abs(model.navigation.person_height*12-64)<1e-8);
+ assert.equal(model.navigation.eye_height,walkEyeHeight(model.navigation));
+ for(const y of [map.entry.y,-3.9,-2.9,-1.9,-.9,.2,5,16]){
+  const height=map.floorHeight([map.entry.x,y])+walkEyeHeight(model.navigation);
+  assert.equal(height-map.floorHeight([map.entry.x,y]),5);
+ }
+ assert.throws(()=>walkEyeHeight({person_height:5,eye_below_crown:0}));
+});
 function crossedDoors(path){
  return model.doorways.filter(door=>path.some((p,i)=>{
   if(!i)return false;

@@ -10,6 +10,7 @@ import FreeCAD as App
 import Part
 import Arch
 import Draft
+import Sketcher
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, "output")
@@ -61,6 +62,10 @@ def build():
     site.addProperty("App::PropertyString","LevelReference","Concept")
     site.LevelReference="Local model datum only; user-directed visual grade, not a survey, sea-level elevation or foundation design."
     walltop = floor_z + P["wall_height"]
+    navigation=dict(P["navigation"])
+    navigation["eye_height"]=navigation["person_height"]-navigation["eye_below_crown"]
+    if not 0<navigation["eye_height"]<navigation["person_height"]:
+        raise ValueError("Walk eyes must be above the surface and below person stature.")
     wallmap, records = {}, []
     palette = {"Walls": (0.90, 0.84, 0.70), "Floors": (0.62, 0.65, 0.63),
                "Roof": (0.53, 0.20, 0.12), "Openings": (0.30, 0.60, 0.76)}
@@ -145,6 +150,30 @@ def build():
                                    w2=P["frame_secondary_width"]*FT, o1=0, o2=0)
         if obj is None:
             raise RuntimeError("FreeCAD could not create window preset " + name)
+        paired=code=="D" and P["main_entry"]["leaf_count"]==2
+        if paired:
+            config=P["main_entry"]
+            clear=ow-2*P["frame_width"]
+            leaf_width=(clear-2*config["side_gap"]-config["meeting_gap"])/2
+            bottom=config["bottom_gap"]
+            top=oh-P["frame_width"]-config["top_gap"]
+            if min(leaf_width,top-bottom,*[config[k] for k in ("side_gap","meeting_gap","top_gap","bottom_gap")])<=0:
+                raise ValueError("Paired entrance needs positive leaves and fitting clearances.")
+            for left,right in ((P["frame_width"]+config["side_gap"],ow/2-config["meeting_gap"]/2),
+                               (ow/2+config["meeting_gap"]/2,ow-P["frame_width"]-config["side_gap"])):
+                points=[V(left*FT,bottom*FT,0),V(right*FT,bottom*FT,0),
+                        V(right*FT,top*FT,0),V(left*FT,top*FT,0)]
+                for i in range(4):
+                    idx=obj.Base.addGeometry(Part.LineSegment(points[i],points[(i+1)%4]),False)
+                    obj.Base.addConstraint(Sketcher.Constraint("Block",idx))
+            original=list(obj.WindowParts)
+            obj.WindowParts=original[:5]+[
+                "LeftLeaf","Solid panel","Wire2,Edge12,Mode1",original[8],original[9],
+                "RightLeaf","Solid panel","Wire3,Edge14,Mode2",original[8],original[9]]
+            obj.addProperty("App::PropertyInteger","ConceptLeafCount","Concept")
+            obj.ConceptLeafCount=2
+            obj.addProperty("App::PropertyLength","ConceptMeetingGap","Concept")
+            obj.ConceptMeetingGap=config["meeting_gap"]*FT
         # A preset's placement is its base sketch placement, not the derived object.
         rot = App.Rotation(V(0,0,1), angle).multiply(App.Rotation(V(1,0,0), 90))
         along = App.Rotation(V(0,0,1), angle).multVec(V(ow*FT/2,0,0))
@@ -156,6 +185,9 @@ def build():
         if code.startswith("D"):
             obj.DesignNote = ("Wall and qualitative location follow the drawn door gap. "
                               "Exact jamb offset and hinge/swing are unconfirmed; leaf shown closed.")
+            if paired:
+                obj.DesignNote=("User-directed paired inward entrance in retained 4x7ft rough opening; "
+                                "two equal closed native leaves, no centre post. Concept only, not a certified door/egress detail.")
             obj.addProperty("App::PropertyString", "DoorMark", "Concept")
             obj.DoorMark = code
             obj.addProperty("App::PropertyString", "ConnectedSpaces", "Concept")
@@ -163,7 +195,8 @@ def build():
             doorways.append({"name":name, "mark":code, "host":host.replace("_"," "),
                              "x":x, "y":y, "angle_degrees":angle,
                              "width":ow, "height":oh, "connects":list(connects),
-                             "swing_assumed":True, **P["plan_swing_assumptions"][name]})
+                             "swing_assumed":True, **P["plan_swing_assumptions"][name],
+                             **({"leaf_count":2,"fitting_gaps":dict(P["main_entry"])} if paired else {})})
         groups["Openings"].addObject(obj)
         obj.ViewObject.ShapeColor = palette["Openings"]
         obj.Base.ViewObject.Visibility = False
@@ -410,6 +443,29 @@ def build():
     expectedfront = width*e*P["wall_height"] - e*(4*7+2*3*4+2*6*4)
     if abs(frontvolume-expectedfront)>0.05:
         raise RuntimeError("Front wall openings were not cut correctly: %.4f vs %.4f ft3"%(frontvolume,expectedfront))
+    for door in doorways:
+        native=next(obj for obj in groups["Openings"].Group if obj.Label==door["name"])
+        angle=math.radians(door["angle_degrees"])
+        u,n=(math.cos(angle),math.sin(angle)),(-math.sin(angle),math.cos(angle))
+        def leaf_extent(solid):
+            points=[v.Point for v in solid.Vertexes]
+            along=[(p.x/FT-door["x"])*u[0]+(p.y/FT-door["y"])*u[1] for p in points]
+            normal=[(p.x/FT-door["x"])*n[0]+(p.y/FT-door["y"])*n[1] for p in points]
+            z=[p.z/FT for p in points]
+            return {"width":max(along)-min(along),"height":max(z)-min(z),
+                    "thickness":max(normal)-min(normal),"normal_offset":(max(normal)+min(normal))/2,
+                    "along_offset":(max(along)+min(along))/2,"bottom":min(z)-floor_z}
+        candidates=[leaf_extent(solid) for solid in native.Shape.Solids]
+        leaves=sorted([v for v in candidates if abs(v["thickness"]-P["frame_secondary_width"])<1e-6],
+                      key=lambda value:value["along_offset"])
+        if len(leaves)!=door.get("leaf_count",1):
+            raise RuntimeError("Unexpected native door leaf count: "+door["name"]+" "+str(candidates))
+        door.update(leaf=leaves[0],frame_width=P["frame_width"])
+        if door.get("leaf_count")==2:
+            door["leaves"]=[{"hinge":hinge,"leaf":leaf} for hinge,leaf in zip(("start","end"),leaves)]
+    plan_export=runpy.run_path(os.path.join(ROOT,"export_plan.py"))
+    for door in doorways:
+        door["plan_leaves"]=plan_export["door_plan_geometry"](door)
     plan_z=(floor_z+P["plan_cut_height"])*FT
     cutter=Part.makeBox((width+2)*FT,(depth+2)*FT,.01*FT,V(-FT,-FT,plan_z))
     cut_faces=[]
@@ -427,7 +483,7 @@ def build():
     passages=[{"name":"Hall OPEN","x":midx,"y":c+t/2,"width":P["center_bay"] if P["hall_dining_full_bay"] else P["hall_opening_width"],"angle_degrees":0},
               {"name":"Prayer OPEN","x":px,"y":(c+t+d)/2,"width":P["middle_bay"],"angle_degrees":90}]
     plan_group=doc.addObject("App::DocumentObjectGroup","PlanReview")
-    plan_group.Label="Plan review - cut +%gft FFL; swings ASSUMED"%P["plan_cut_height"]
+    plan_group.Label="Plan review - cut +%gft FFL; conceptual swings"%P["plan_cut_height"]
 
     def plan_feature(name, shapes, color, dashed=False):
         obj=doc.addObject("Part::Feature",name)
@@ -438,7 +494,7 @@ def build():
         if dashed:
             obj.ViewObject.DrawStyle="Dashed"
         obj.addProperty("App::PropertyString","DesignNote","Concept")
-        obj.DesignNote="2D review only; door swing handing ASSUMED, not verified or construction-approved."
+        obj.DesignNote="2D review only; main entry is user-directed paired inward, other handing assumed. Not construction-approved."
         plan_group.addObject(obj)
         return obj
 
@@ -446,21 +502,15 @@ def build():
     door_lines=[]
     swing_arcs=[]
     for door in doorways:
-        angle=math.radians(door["angle_degrees"])
-        along=V(math.cos(angle),math.sin(angle),0)
-        normal=V(*door["opens_to"],0)
-        if abs(along.dot(normal))>1e-6 or abs(normal.Length-1)>1e-6:
-            raise ValueError("Plan swing must be a unit direction perpendicular to its door: "+door["name"])
-        sign=-1 if door["hinge"]=="start" else 1
-        hinge=V(door["x"]*FT,door["y"]*FT,plan_z+.04*FT)+along*(sign*door["width"]*FT/2)
-        closed=hinge-along*(sign*door["width"]*FT)
-        opened=hinge+normal*(door["width"]*FT)
-        door_lines.append(Part.makeLine(hinge,opened))
-        start=math.atan2(closed.y-hinge.y,closed.x-hinge.x)
-        end=math.atan2(normal.y,normal.x)
-        sweep=math.atan2(math.sin(end-start),math.cos(end-start))
-        middle=hinge+V(math.cos(start+sweep/2),math.sin(start+sweep/2),0)*(door["width"]*FT)
-        swing_arcs.append(Part.Arc(closed,middle,opened).toShape())
+        for leaf in door["plan_leaves"]:
+            hinge=V(*leaf["pivot"],0)*FT+V(0,0,plan_z+.04*FT)
+            length=leaf["length"]*FT
+            start,end=leaf["start"],leaf["end"]
+            sweep=math.atan2(math.sin(end-start),math.cos(end-start))
+            def at(angle):
+                return hinge+V(math.cos(angle),math.sin(angle),0)*length
+            door_lines.append(Part.makeLine(hinge,at(end)))
+            swing_arcs.append(Part.Arc(at(start),at(start+sweep/2),at(end)).toShape())
     plan_feature("PlanDoorLeaves_ASSUMED",door_lines,(.60,.26,.08))
     plan_feature("PlanDoorSwings_ASSUMED",swing_arcs,(.60,.26,.08),True)
     window_lines=[]
@@ -498,23 +548,6 @@ def build():
     native_path=os.path.join(OUT,"Home.FCStd")
     doc.recompute()
     doc.saveAs(native_path)
-    for door in doorways:
-        native=next(obj for obj in groups["Openings"].Group if obj.Label==door["name"])
-        angle=math.radians(door["angle_degrees"])
-        u,n=(math.cos(angle),math.sin(angle)),(-math.sin(angle),math.cos(angle))
-        def leaf_extent(solid):
-            points=[v.Point for v in solid.Vertexes]
-            along=[p.x/FT*u[0]+p.y/FT*u[1] for p in points]
-            normal=[(p.x/FT-door["x"])*n[0]+(p.y/FT-door["y"])*n[1] for p in points]
-            z=[p.z/FT for p in points]
-            return {"width":max(along)-min(along),"height":max(z)-min(z),
-                    "thickness":max(normal)-min(normal),"normal_offset":(max(normal)+min(normal))/2,
-                    "bottom":min(z)-floor_z}
-        candidates=[leaf_extent(solid) for solid in native.Shape.Solids]
-        leaf=min(candidates,key=lambda value:value["thickness"])
-        if abs(leaf["thickness"]-P["frame_secondary_width"])>1e-6:
-            raise RuntimeError("Unexpected native door leaf depth: "+door["name"])
-        door.update(leaf=leaf,frame_width=P["frame_width"])
     mesh_records=[]
     for obj in solid_objects:
         verts,tris=obj.Shape.tessellate(15)
@@ -526,15 +559,15 @@ def build():
                            "floor_elevation":floor_z,"wall_height":P["wall_height"],
                            "monitor_base":mz,"overall_height":capz+P["monitor_cap_rise"]+P["roof_thickness"]},
             "rooms":records,"objects":mesh_records,"opening_counts":dict(opening_counts),
-            "navigation":P["navigation"],
+            "navigation":navigation,
             "finishes":{"base":P["base_finish"],"base_rgb":base_color},
             "doorways":doorways,"passages":passages,"monitor_enclosure":enclosure,
             "plan":{"cut_height":P["plan_cut_height"],"wall_faces":plan_wall_faces,"openings":plan_openings,
-                    "swing_note":"All hinge sides and swing directions are ASSUMED; not confirmed by the sketch."}}
+                    "swing_note":"Main entry: user-directed paired inward leaves. Other handing/swings assumed; none is a certified door specification."}}
     review["dimensions"].update(ground_elevation=grade,floor_above_grade=floor_z-grade)
     with open(os.path.join(OUT,"review-data.js"),"w",encoding="utf-8") as f:
         f.write("window.HOME_MODEL="+json.dumps(review,separators=(",",":"))+";")
-    runpy.run_path(os.path.join(ROOT,"export_plan.py"))["export_review"](review,P,OUT)
+    plan_export["export_review"](review,P,OUT)
     report={"native_file":native_path,"valid_solid_objects":len(solid_objects),
             "invalid_objects":invalid,"opening_counts":dict(opening_counts),
             "dimensions_ft":review["dimensions"],"front_wall_cut_volume_ft3":frontvolume,
@@ -565,6 +598,22 @@ def build():
                                        RelatingOpeningElement=voids[product.Name],
                                        RelatedBuildingElement=product)
                 filling_count+=1
+            if product.is_a("IfcDoor") and getattr(native,"ConceptLeafCount",1)==2:
+                entry_record=next(d for d in doorways if d["name"]==product.Name)
+                if hasattr(product,"OperationType"):
+                    product.OperationType="DOUBLE_DOOR_SINGLE_SWING"
+                properties=exported.create_entity("IfcPropertySet",GlobalId=ifcopenshell.guid.new(),
+                    OwnerHistory=product.OwnerHistory,Name="ConceptPairedEntrance",HasProperties=[
+                    exported.create_entity("IfcPropertySingleValue",Name="Operation",
+                        NominalValue=exported.create_entity("IfcLabel","DOUBLE_DOOR_SINGLE_SWING; both leaves inward; no centre post")),
+                    exported.create_entity("IfcPropertySingleValue",Name="LeafCount",
+                        NominalValue=exported.create_entity("IfcInteger",2)),
+                    exported.create_entity("IfcPropertySingleValue",Name="NominalLeafWidth",
+                        NominalValue=exported.create_entity("IfcLengthMeasure",entry_record["leaf"]["width"]*FT/1000/unit_scale)),
+                    exported.create_entity("IfcPropertySingleValue",Name="Status",
+                        NominalValue=exported.create_entity("IfcLabel","CONCEPT_ONLY_NOT_CONSTRUCTION"))])
+                exported.create_entity("IfcRelDefinesByProperties",GlobalId=ifcopenshell.guid.new(),
+                    OwnerHistory=product.OwnerHistory,RelatedObjects=[product],RelatingPropertyDefinition=properties)
         level_properties=[]
         for key,value in (("IllustrativeGroundElevation",grade),("FinishedFloorElevation",floor_z),
                           ("FinishedFloorAboveIllustrativeGrade",floor_z-grade)):

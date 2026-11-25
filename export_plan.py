@@ -6,6 +6,27 @@ import math
 import os
 
 
+def door_plan_geometry(door):
+    a=math.radians(door["angle_degrees"])
+    u=(math.cos(a),math.sin(a))
+    n=(-u[1],u[0])
+    result=[]
+    for part in door.get("leaves",[door]):
+        leaf=part["leaf"]
+        sign=-1 if part["hinge"]=="start" else 1
+        normal=door["opens_to"][0]*math.sin(a)-door["opens_to"][1]*math.cos(a)
+        rotation=math.asin(max(-1,min(1,normal*sign)))
+        center_z=-sign*(1 if rotation>0 else -1)*leaf["thickness"]/2
+        pivot_x=sign*(door["width"]/2-door["frame_width"]-door.get("fitting_gaps",{}).get("side_gap",.01))
+        pivot_z=-leaf["normal_offset"]-center_z
+        center=(door["x"],door["y"])
+        pivot=[center[i]+pivot_x*u[i]-pivot_z*n[i] for i in range(2)]
+        width=leaf["width"] if "leaves" in door else min(leaf["width"],door["width"]-2*door["frame_width"])-.02
+        result.append({"pivot":pivot,"length":width,"start":math.atan2(-sign*u[1],-sign*u[0]),
+                       "end":math.atan2(door["opens_to"][1],door["opens_to"][0])})
+    return result
+
+
 def export_review(model, parameters, output):
     dim=model["dimensions"]
     scale=25
@@ -51,19 +72,14 @@ def export_review(model, parameters, output):
         else: x+=1
         text(x,y,item["mark"],12,"#087e9d")
     for door in model["doorways"]:
-        a=math.radians(door["angle_degrees"])
-        u=(math.cos(a),math.sin(a))
-        s=-1 if door["hinge"]=="start" else 1
-        hinge=(door["x"]+u[0]*s*door["width"]/2,door["y"]+u[1]*s*door["width"]/2)
-        closed=(hinge[0]-u[0]*s*door["width"],hinge[1]-u[1]*s*door["width"])
-        opened=(hinge[0]+door["opens_to"][0]*door["width"],hinge[1]+door["opens_to"][1]*door["width"])
-        start=math.atan2(closed[1]-hinge[1],closed[0]-hinge[0])
-        end=math.atan2(door["opens_to"][1],door["opens_to"][0])
-        sweep=math.atan2(math.sin(end-start),math.cos(end-start))
-        arc=[(hinge[0]+math.cos(start+sweep*i/24)*door["width"],
-              hinge[1]+math.sin(start+sweep*i/24)*door["width"]) for i in range(25)]
-        line(arc,"#9d5322",1.6,"5 4")
-        line([hinge,opened],"#813e16",2.3)
+        for leaf in door["plan_leaves"]:
+            hinge=leaf["pivot"]
+            start,end=leaf["start"],leaf["end"]
+            sweep=math.atan2(math.sin(end-start),math.cos(end-start))
+            arc=[(hinge[0]+math.cos(start+sweep*i/24)*leaf["length"],
+                  hinge[1]+math.sin(start+sweep*i/24)*leaf["length"]) for i in range(25)]
+            line(arc,"#9d5322",1.6,"5 4")
+            line([hinge,arc[-1]],"#813e16",2.3)
         text(door["x"]-door["opens_to"][0]*.9,door["y"]-door["opens_to"][1]*.9,door["mark"],12,"#813e16")
     for item in model["passages"]:
         a=math.radians(item["angle_degrees"])
@@ -116,6 +132,7 @@ def export_review(model, parameters, output):
 <h2>Architectural layout</h2><p>Room/grid extents are not external dimensions. Main clear bays total 40 x 32 ft; assumed walls give 42.25 x 34.25 ft exterior. Units: feet. Exact setting-out dimensions are provisional.</p>
 <p>%s</p>
 <p>By user direction, the hall/dining connection is open across the full 16-ft central bay, with both short returns and the upper wall/lintel removed. Flanking vertical partitions and neighboring D1 hosts remain. This conceptual revision is not demolition advice; structural support/load paths remain unverified.</p>
+<p>By user direction, the main entry now has two equal inward-opening leaves inside the retained 4 x 7-ft rough opening. Both native leaves, no fixed centre post, and both plan swings are modeled. This is a conceptual arrangement, not a certified door, fire or egress specification.</p>
 <img src="architectural-plan.svg" alt="Dimensioned cut plan with door swings, windows, vents and clear room sizes">
 <p><a href="architectural-plan.svg">Open vector drawing</a> · <a href="Home.FCStd">Editable master</a> · <a href="Home.ifc">IFC</a> · <a href="index.html">Furnished visualization</a></p>
 <h2 class="break">Preliminary opening schedule</h2><table><thead><tr><th>Mark</th><th>Width (ft)</th><th>Height (ft)</th><th>Count</th><th>Sill above FFL (ft)</th></tr></thead><tbody>%s</tbody></table>

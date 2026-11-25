@@ -97,6 +97,15 @@ baseline=App.openDocument(os.path.join(root,"archives","before-grade-change","Ho
 old={o.Label:o for o in baseline.Objects if hasattr(o,"Shape")}
 for current in objects:
     previous=old[current.Label]
+    if current.Label=="D_01_Front_E" and parameters["main_entry"]["leaf_count"]==2:
+        leaves=[s for s in current.Shape.Solids if abs(s.BoundBox.YLength/ft-.15)<1e-7]
+        assert len(leaves)==2
+        expected=(4-2*parameters["frame_width"]-2*parameters["main_entry"]["side_gap"]-parameters["main_entry"]["meeting_gap"])/2
+        assert all(abs(s.BoundBox.XLength/ft-expected)<1e-7 for s in leaves)
+        assert all(abs(s.BoundBox.ZLength/ft-6.82)<1e-7 for s in leaves)
+        probe=Part.makeBox(.01*ft,.1*ft,.1*ft,App.Vector(21.12*ft,.4*ft,7*ft))
+        assert current.Shape.common(probe).Volume<1e-5,"Paired entry must have a real meeting gap, not a centre post"
+        continue
     if current.Label in ("Front E","Rear W"):
         e=parameters["external_wall"]*ft
         y=0 if current.Label=="Front E" else slab.YMax-e
@@ -112,6 +121,24 @@ for current in objects:
     for field in ("XMin","XMax","YMin","YMax","ZMin","ZMax"):
         assert abs(getattr(current.Shape.BoundBox,field)-getattr(previous.Shape.BoundBox,field))<1e-5,current.Label
 App.closeDocument(baseline.Name)
+baseline=App.openDocument(os.path.join(root,"archives","before-paired-entry","Home.FCStd"))
+old={o.Label:o for o in baseline.Objects if hasattr(o,"Shape")}
+for current in objects:
+    if current.Label=="D_01_Front_E":
+        continue
+    previous=old[current.Label]
+    assert abs(current.Shape.Volume-previous.Shape.Volume)<1e-3,current.Label+" changed outside paired entry"
+    for field in ("XMin","XMax","YMin","YMax","ZMin","ZMax"):
+        assert abs(getattr(current.Shape.BoundBox,field)-getattr(previous.Shape.BoundBox,field))<1e-5,current.Label
+App.closeDocument(baseline.Name)
+old_raw=open(os.path.join(root,"archives","before-paired-entry","review-data.js"),encoding="utf-8").read()
+old_review=json.loads(old_raw[len("window.HOME_MODEL="):-1])
+old_meshes={record["name"]:record for record in old_review["objects"]}
+assert review["rooms"]==old_review["rooms"]
+assert review["dimensions"]==old_review["dimensions"]
+for record in review["objects"]:
+    if record["name"]!="D_01_Front_E":
+        assert record==old_meshes[record["name"]],record["name"]+" changed native exported geometry"
 assert review["passages"][0]["width"]==(16 if parameters["hall_dining_full_bay"] else parameters["hall_opening_width"])
 for record in review["doorways"]:
     native=by_label[record["name"]]
@@ -138,6 +165,9 @@ for label in screen_names:
 assert len(ifc.by_type("IfcDoor"))==9
 assert len(ifc.by_type("IfcWindow"))==17
 assert len(ifc.by_type("IfcSpace"))==12
+entry=next(d for d in ifc.by_type("IfcDoor") if d.Name=="D_01_Front_E")
+assert entry.OperationType=="DOUBLE_DOOR_SINGLE_SWING"
+assert any(p.Name=="ConceptPairedEntrance" for p in ifc.by_type("IfcPropertySet"))
 vents=[o for o in objects if o.Label.startswith(("V_","V1_"))]
 assert len(vents)==6
 for vent in vents:
@@ -158,6 +188,34 @@ for product in ifc.by_type("IfcDoor")+ifc.by_type("IfcWindow"):
     assert abs(product.OverallHeight*units-native.Height.Value/1000)<1e-7, product.Name
 settings=ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS,True)
+entry_mesh=ifcopenshell.geom.create_shape(settings,entry)
+entry_shape=entry_mesh.geometry
+points=list(zip(entry_shape.verts[0::3],entry_shape.verts[1::3],entry_shape.verts[2::3]))
+welded={}
+ids=[]
+for point in points:
+    key=tuple(round(value,6) for value in point)
+    if key not in welded:
+        welded[key]=len(welded)
+    ids.append(welded[key])
+parent=list(range(len(welded)))
+def find(index):
+    while parent[index]!=index:
+        parent[index]=parent[parent[index]]
+        index=parent[index]
+    return index
+for offset in range(0,len(entry_shape.faces),3):
+    a,b,c=(ids[i] for i in entry_shape.faces[offset:offset+3])
+    parent[find(b)]=find(a)
+    parent[find(c)]=find(a)
+components={}
+for index,point in enumerate(points):
+    components.setdefault(find(ids[index]),[]).append(point)
+leaf_components=[points for points in components.values()
+                 if abs(max(p[1] for p in points)-min(p[1] for p in points)-.15*.3048)<1e-6]
+assert len(leaf_components)==2,"IFC must represent two actual disconnected fitted leaf solids, not just paired metadata"
+assert all(abs((max(p[0] for p in points)-min(p[0] for p in points))/.3048-1.83)<1e-6
+           for points in leaf_components)
 for label in ("Front E","Rear W"):
     product=next(p for p in ifc.by_type("IfcWall") if p.Name==label)
     shape=ifcopenshell.geom.create_shape(settings,product)
@@ -192,7 +250,10 @@ result={"saved_native_reopened":True,"valid_bim_solids":len(objects),
         "uniform_service_vents_ft":{"width":1.5,"height":2,"count":len(vents)},
         "hall_dining_full_height_clear_width_ft":review["passages"][0]["width"],
         "shared_local_levels_ft":{"ground":grade,"finished_floor":4,"floor_above_grade":4-grade},
-        "native_solids_unchanged_except_corner_closures":len(objects)-2,
+        "native_solids_unchanged_except_paired_entry":len(objects)-1,
+        "paired_entrance_native_leaf_widths_ft":[s.BoundBox.XLength/ft for s in by_label["D_01_Front_E"].Shape.Solids if abs(s.BoundBox.YLength/ft-.15)<1e-7],
+        "paired_entrance_ifc_operation":entry.OperationType,
+        "paired_entrance_ifc_actual_leaf_components":len(leaf_components),
         "native_and_ifc_exterior_corner_closures":4,
         "monitor_enclosure_native_and_ifc_elements":len(screen_names) if enclosed else 0,
         "exterior_ft":[slab.XLength/ft,slab.YLength/ft],

@@ -1,0 +1,115 @@
+{
+  "scope": {
+    "branch": "feat/hardware-textures-chimney",
+    "base": "134455426fb0b279ab51bb88c54b9974db969c50",
+    "merged_or_pushed": false,
+    "approved_master_unchanged": true,
+    "preview": "http://127.0.0.1:8769/",
+    "browser_instance": "home-hardware-review",
+    "mobile_browser_instance": "home-hardware-mobile"
+  },
+  "automated_checks": {
+    "node_tests_passed": 66,
+    "scene_fit": "passed",
+    "static_files": 47,
+    "static_asset_module_checks": 98,
+    "native_reopened_valid_objects": 70,
+    "non_entry_native_objects_preserved": 69,
+    "non_entry_exported_mesh_records": "exactly equal to pre-entry archive",
+    "ifc_door_window_space_counts": [9, 17, 12],
+    "actual_ifc_entry_leaf_components": 2,
+    "ifc_entry_operation": "DOUBLE_DOOR_SINGLE_SWING",
+    "patch_whitespace": "passed"
+  },
+  "entry": {
+    "rough_opening_ft": [4, 7],
+    "leaf_count": 2,
+    "leaf_dimensions_ft": [1.83, 6.82, 0.15],
+    "fixed_centre_post": false,
+    "old_single_leaf_ideal_sector_sqft": 10.64,
+    "paired_total_ideal_sectors_sqft": 5.26,
+    "old_fully_open_reach_ft": 4.205,
+    "paired_fully_open_reach_ft": 2.355,
+    "selected_entry_to_sofa_sightlines": "clear",
+    "all_possible_sightlines_or_egress_compliance": "not claimed",
+    "synchronized": ["native FCStd", "IFC solids and operation", "native/vector plan", "viewer hardware/animation", "Walk collision and routes"]
+  },
+  "furnishing_details": {
+    "groups": 30,
+    "meshes": 347,
+    "triangles": 59852,
+    "mounted_joinery_pulls": 44,
+    "shared_authored_128px_textures": 7,
+    "texture_raw_bytes_before_mipmaps": 458752,
+    "door_hardware": "Two-sided levers, roses, key escutcheons and three illustrated hinges per animated leaf",
+    "surfaces": "Metric-UV timber, textile and stone albedo/relief; restrained dark kitchen granite",
+    "lamp_keyboard_browser_check": "Exactly one visible lamp toggled; second key restored original independent states",
+    "upfront_lamp_buttons": 0
+  },
+  "extractor": {
+    "mount": "ceiling-suspended over retained hob",
+    "canopy_width_depth_mm": [800, 600],
+    "measured_illustrative_burner_gap_mm": 750,
+    "window_frame_plane_gap_checked_mm": ">45",
+    "hob_window_cabinet_layout": "unchanged",
+    "window_obstruction": "accepted by user",
+    "roof_penetration": "not modeled",
+    "unresolved": ["support and fixings", "selected appliance clearances", "power", "duct and exhaust route/outlet", "roof/weather/fire coordination"]
+  },
+  "walker": {
+    "count": 1,
+    "measured_world_stature_mm": 1625.6000017881395,
+    "eye_height_above_walked_surface_mm": 1524,
+    "sampled_surface_levels_ft": [2, 2.5, 3, 3.5, 4],
+    "eye_offset_at_each_sample_ft": 5,
+    "fly_camera_test_height_ft": 24,
+    "fly_figure_floor_ft": 4,
+    "restored_walk_eye_offset_ft": 5,
+    "meshes": 22,
+    "triangles": 4780,
+    "first_person": "Head/upper body omitted only from primary camera; legs/shoes remain visible",
+    "other_views_and_mirrors": "Same complete figure at last grounded pose",
+    "editable_stature_check": "Complete body scales and remains assembled when stature is changed; eye offset stays derived"
+  },
+  "reflections": {
+    "actual_planar_mirrors": 3,
+    "maximum_active_mirror_passes_per_frame": 1,
+    "desktop_target_px": 512,
+    "initial_mobile_target_px": 256,
+    "occlusion": "Facing/frustum plus centre/corner visibility samples; fully occluded mirrors stay inactive",
+    "inactive_other_mode_surface": "matte gray-green backing, not frozen or stock imagery",
+    "mirror_aperture": "Retained small vanity size naturally crops the lower body",
+    "desktop_front_frame": {"calls": 943, "triangles": 115132},
+    "desktop_oblique_frame": {"calls": 1013, "triangles": 124542, "gpu_textures_observed": 14},
+    "mobile_front_frame": {"calls": 873, "triangles": 106122, "gpu_textures_observed": 13},
+    "counters_include_reflection_and_shadow_passes": true
+  },
+  "mobile": {
+    "browser_viewport_px": [390, 844],
+    "horizontal_overflow": false,
+    "controls": "Walk/Fly and room controls visible outside model viewport",
+    "actual_phone_or_fps_benchmark": false
+  },
+  "images": [
+    "kitchen-eye.png",
+    "kitchen-counter-hardware.png",
+    "dining-wood-fabric.png",
+    "bedroom-textile-hardware.png",
+    "paired-entry-closed.png",
+    "paired-entry-open.png",
+    "walker-full-scale.png",
+    "mirror-walker-front.png",
+    "mirror-walker-oblique.png",
+    "mobile-mirror-walker.png"
+  ],
+  "limitations": [
+    "Conceptual architectural door revision, not a certified door/fire/egress specification.",
+    "Extractor is visual coordination only; MEP and support design remain unresolved.",
+    "Authored figure and furnishings are simplified, not scanned or photorealistic; no walking gait simulation.",
+    "Existing approximate navigation radius is not a full articulated-body clearance simulation.",
+    "One-bounce rasterized mirrors; no recursive reflection or ray-traced light transport.",
+    "High observed draw-call counts are disclosed; physical-phone performance and FPS remain unmeasured.",
+    "Conceptual Structure warnings, six vent clashes and unresolved roof/hall supports are retained.",
+    "This local feature does not update the public/default deployment."
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "native_file": "C:\\Users\\anoopjadhav\\Documents\\PersonalProjects\\HomeModel\\tools\\realistic-assets\\output\\Home.FCStd",
+  "native_file": "C:\\Users\\anoopjadhav\\Documents\\PersonalProjects\\HomeModel\\tools\\hardware-detail\\output\\Home.FCStd",
   "valid_solid_objects": 70,
   "invalid_objects": [],
   "opening_counts": {
@@ -131,14 +131,67 @@
         0,
         1
       ],
+      "leaf_count": 2,
+      "fitting_gaps": {
+        "leaf_count": 2,
+        "side_gap": 0.01,
+        "meeting_gap": 0.02,
+        "top_gap": 0.01,
+        "bottom_gap": 0.02
+      },
       "leaf": {
-        "width": 3.6999999999999993,
-        "height": 6.850000000000003,
+        "width": 1.8300000000000018,
+        "height": 6.82,
         "thickness": 0.15000000000000152,
         "normal_offset": 0.07499999999999926,
-        "bottom": 0.0
+        "along_offset": -0.9249999999999989,
+        "bottom": 0.019999999999999574
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "leaves": [
+        {
+          "hinge": "start",
+          "leaf": {
+            "width": 1.8300000000000018,
+            "height": 6.82,
+            "thickness": 0.15000000000000152,
+            "normal_offset": 0.07499999999999926,
+            "along_offset": -0.9249999999999989,
+            "bottom": 0.019999999999999574
+          }
+        },
+        {
+          "hinge": "end",
+          "leaf": {
+            "width": 1.8300000000000018,
+            "height": 6.82,
+            "thickness": 0.15000000000000152,
+            "normal_offset": 0.07499999999999926,
+            "along_offset": 0.9250000000000025,
+            "bottom": 0.019999999999999574
+          }
+        }
+      ],
+      "plan_leaves": [
+        {
+          "pivot": [
+            19.285,
+            0.525
+          ],
+          "length": 1.8300000000000018,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        },
+        {
+          "pivot": [
+            22.965,
+            0.525
+          ],
+          "length": 1.8300000000000018,
+          "start": -3.141592653589793,
+          "end": 1.5707963267948966
+        }
+      ]
     },
     {
       "name": "D1_01_Kitchen_Middle",
@@ -164,9 +217,21 @@
         "height": 6.850000000000003,
         "thickness": 0.15000000000000036,
         "normal_offset": 0.07500000000000018,
+        "along_offset": 1.7763568394002505e-15,
         "bottom": 0.0
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            12.34,
+            12.9375
+          ],
+          "length": 2.6799999999999993,
+          "start": -3.141592653589793,
+          "end": -1.5707963267948966
+        }
+      ]
     },
     {
       "name": "D1_02_FrontBedroom_Middle",
@@ -192,9 +257,21 @@
         "height": 6.850000000000003,
         "thickness": 0.15000000000000036,
         "normal_offset": 0.07500000000000018,
+        "along_offset": -5.329070518200751e-15,
         "bottom": 0.0
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            29.91,
+            12.9375
+          ],
+          "length": 2.6799999999999993,
+          "start": 0.0,
+          "end": -1.5707963267948966
+        }
+      ]
     },
     {
       "name": "D1_03_RearBedroom_Left_Front",
@@ -220,9 +297,21 @@
         "height": 6.850000000000003,
         "thickness": 0.15000000000000568,
         "normal_offset": 0.07499999999999929,
+        "along_offset": 1.7763568394002505e-15,
         "bottom": 0.0
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            12.34,
+            21.462500000000002
+          ],
+          "length": 2.6799999999999993,
+          "start": -3.141592653589793,
+          "end": 1.5707963267948966
+        }
+      ]
     },
     {
       "name": "D1_04_RearBedroom_Right_Front",
@@ -248,9 +337,21 @@
         "height": 6.850000000000003,
         "thickness": 0.15000000000000568,
         "normal_offset": 0.07499999999999929,
+        "along_offset": -5.329070518200751e-15,
         "bottom": 0.0
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            29.91,
+            21.462500000000002
+          ],
+          "length": 2.6799999999999993,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        }
+      ]
     },
     {
       "name": "D2_01_FrontBedroom_Middle",
@@ -276,9 +377,21 @@
         "height": 6.850000000000003,
         "thickness": 0.15000000000000036,
         "normal_offset": 0.07500000000000018,
+        "along_offset": 0.0,
         "bottom": 0.0
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            35.91,
+            13.0875
+          ],
+          "length": 2.18,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        }
+      ]
     },
     {
       "name": "D2_02_Service_Front",
@@ -304,9 +417,21 @@
         "height": 6.850000000000003,
         "thickness": 0.14999999999999858,
         "normal_offset": 0.07499999999999929,
+        "along_offset": 1.7763568394002505e-15,
         "bottom": 0.0
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            17.535,
+            27.4625
+          ],
+          "length": 2.1799999999999993,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        }
+      ]
     },
     {
       "name": "D2_03_Service_Front",
@@ -332,9 +457,21 @@
         "height": 6.850000000000003,
         "thickness": 0.14999999999999858,
         "normal_offset": 0.07499999999999929,
+        "along_offset": -1.7763568394002505e-15,
         "bottom": 0.0
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            21.035,
+            27.4625
+          ],
+          "length": 2.1799999999999993,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        }
+      ]
     },
     {
       "name": "D2_04_RearBedroom_Right_Inside",
@@ -360,9 +497,21 @@
         "height": 6.85,
         "thickness": 0.14999999999999514,
         "normal_offset": 0.07499999999999751,
+        "along_offset": 1.7763568394002505e-15,
         "bottom": 0.0
       },
-      "frame_width": 0.15
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            29.162500000000005,
+            25.91
+          ],
+          "length": 2.1799999999999993,
+          "start": 1.5707963267948966,
+          "end": 3.141592653589793
+        }
+      ]
     }
   ],
   "door_host_cut_probes": "passed",

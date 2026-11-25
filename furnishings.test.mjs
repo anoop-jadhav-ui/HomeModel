@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {createFurnishings,FT} from './output/furnishings.js';
+import {createFurnishings,furnishingBounds,FT} from './output/furnishings.js';
 import {KITCHEN_SINK} from './output/kitchen-fixtures.js';
 
 const source=readFileSync(new URL('./output/review-data.js',import.meta.url),'utf8');
@@ -68,7 +68,7 @@ test('refinement keeps the source immutable, shares geometry and stays within th
  assert(meshes<=360,`${meshes} meshes`);
  assert(triangles<=60000,`${triangles} triangles`);
  assert(geometries.size<meshes/2,'Repeated legs, drawers and cushions should share buffers');
- assert.equal(textures.size,3);
+ assert.equal(textures.size,7);
 });
 test('draped bedding retains continuous smooth normals across duplicate bevel vertices',()=>{
  const quilt=assets.items.find(i=>i.kind==='bed').group.children.find(m=>m.geometry?.name==='Draped duvet');
@@ -160,10 +160,12 @@ test('the kitchen appliance clears every cabinet part and worktop runs do not ov
  assert(fridge);
  const bounds=new THREE.Box3().setFromObject(fridge);
  for(const mesh of group.children.filter(m=>m.isMesh&&m!==fridge)){
-  const size=bounds.clone().intersect(new THREE.Box3().setFromObject(mesh)).getSize(new THREE.Vector3());
-  assert(!(size.x>.01*FT&&size.y>.01*FT&&size.z>.01*FT),'Fridge intersects '+(mesh.name||mesh.geometry.type));
+  for(const part of furnishingBounds(mesh)){
+   const size=bounds.clone().intersect(part).getSize(new THREE.Vector3());
+   assert(!(size.x>.01*FT&&size.y>.01*FT&&size.z>.01*FT),'Fridge intersects '+(mesh.name||mesh.geometry.type));
+  }
  }
- const counters=group.children.filter(m=>m.material===assets.materials.stone);
+ const counters=group.children.filter(m=>m.material===assets.materials.granite);
  assert.equal(counters.length,2);
  const overlap=new THREE.Box3().setFromObject(counters[0]).intersect(new THREE.Box3().setFromObject(counters[1])).getSize(new THREE.Vector3());
  assert(overlap.x<.001*FT||overlap.z<.001*FT,'L worktops have coplanar overlapping top surfaces');
@@ -181,6 +183,56 @@ test('the living mat is a warm matte woven textile, not white architectural floo
  assert(color.r>color.g&&color.g>color.b,'Jute should have an earthy warm tint');
  assert(color.r<.5,'The rug should not read as a near-white floor patch');
  assert.equal(mesh.material.map.image.width,128);
+});
+test('pull feet actually contact recessed joinery faces, including formerly missing fronts',()=>{
+ let mounts=0;
+ for(const item of assets.items){
+  const fronts=item.group.children.filter(mesh=>mesh.geometry?.name==='Inset joinery panel');
+  for(const hardware of item.group.children.filter(mesh=>mesh.userData.hardware)){
+   for(const mount of hardware.userData.mounts??[]){
+    const position=new THREE.Vector3().fromArray(mount.position),q=new THREE.Quaternion().fromArray(mount.quaternion);
+    const normal=new THREE.Vector3(0,0,1).applyQuaternion(q);
+    const ray=new THREE.Raycaster(position.clone().addScaledVector(normal,.005),normal.clone().negate(),0,.012);
+    const hit=ray.intersectObjects(fronts,false)[0];
+    assert(hit,item.name+' has a floating or backwards pull');
+    assert(Math.abs(hit.distance-.005)<.00015,item.name+' pull is not mounted to its actual inset surface');
+    mounts++;
+   }
+  }
+ }
+ assert.equal(mounts,44);
+ for(const name of ['Media console and screen','Prayer alcove cabinet']){
+  const group=assets.items.find(item=>item.name===name).group;
+  assert(group.getObjectByName('Mounted cabinet pulls'),name+' needs usable front hardware');
+ }
+});
+test('suspended extractor covers the existing hob without touching window, cabinets or refrigerator',()=>{
+ const group=assets.items.find(i=>i.kind==='kitchen').group,hood=group.getObjectByName('Kitchen suspended extractor - exhaust and support UNRESOLVED');
+ const hob=group.getObjectByName('Kitchen hob'),hb=new THREE.Box3().setFromObject(hood),cb=new THREE.Box3().setFromObject(hob);
+ assert(hood.userData.conceptOnly&&hood.userData.mount==='ceiling-suspended');
+ assert(hb.min.x<cb.min.x&&hb.max.x>cb.max.x&&hb.min.z<cb.min.z&&hb.max.z>cb.max.z);
+ const kitchen=model.rooms.find(r=>r.name==='Kitchen');
+ const burnerTop=(model.dimensions.floor_elevation+3.025)*FT;
+ assert(Math.abs((hb.min.y-burnerTop)*1000-750)<.5,'750mm is a measured illustrative gap, not an installation certification');
+ assert((hb.min.x-kitchen.x*FT)*1000>45,'Retained glazing/frame plane must have a physical gap');
+ for(const mesh of group.children.filter(m=>m.isMesh&&!m.userData.hardware&&m!==hob)){
+  const size=hb.clone().intersect(new THREE.Box3().setFromObject(mesh)).getSize(new THREE.Vector3());
+  assert(!(size.x>.002&&size.y>.002&&size.z>.002),'Extractor intersects '+mesh.name);
+ }
+});
+test('wood, fabric and stone maps use metric UVs and restrained distinct physical texture periods',()=>{
+ for(const name of ['wood','linen','granite']){
+  const mat=assets.materials[name];
+  assert(mat.map&&mat.bumpMap&&mat.roughnessMap);
+  assert(mat.bumpScale<.0004);
+  assert(mat.map.userData.periodMetres.every(value=>value>0));
+ }
+ const table=assets.items.find(i=>i.name==='Dining table').group.children[0];
+ assert(table.geometry.userData.metricUV);
+ const p=table.geometry.attributes.position,uv=table.geometry.attributes.uv,n=table.geometry.attributes.normal;
+ for(let i=0;i<p.count;i++)if(n.getY(i)>.99){
+  assert(Math.abs(uv.getY(i)-p.getX(i))<1e-6);
+ }
 });
 test('the kitchen tap reaches down into a genuinely recessed inset steel bowl, not through an uncut counter',()=>{
  const group=assets.items.find(i=>i.kind==='kitchen').group;

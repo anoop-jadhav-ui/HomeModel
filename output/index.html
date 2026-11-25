@@ -86,7 +86,7 @@ button:disabled{opacity:.42;cursor:default}
 }
 @media(max-width:360px){#view-modes button{font-size:12px;padding:8px 4px;gap:4px}#walk-dock{padding:7px 6px;column-gap:8px}}
 </style>
-<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/controls/OrbitControls.js":"./vendor/OrbitControls.js","three/addons/geometries/RoundedBoxGeometry.js":"./vendor/RoundedBoxGeometry.js","three/addons/environments/RoomEnvironment.js":"./vendor/RoomEnvironment.js"}}</script>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/controls/OrbitControls.js":"./vendor/OrbitControls.js","three/addons/geometries/RoundedBoxGeometry.js":"./vendor/RoundedBoxGeometry.js","three/addons/environments/RoomEnvironment.js":"./vendor/RoomEnvironment.js","three/addons/objects/Reflector.js":"./vendor/Reflector.js"}}</script>
 </head><body data-view="exterior">
 <header><div><h1>Jadhav Nivaas</h1><div class="sub">Single storey · FreeCAD BIM<span class="sub-detail"> · East-facing entrance</span></div></div>
 <div class="header-actions"><span id="status" role="status" aria-live="polite">Loading…</span><details id="files"><summary>Files &#9662;</summary><div class="file-menu">
@@ -110,7 +110,7 @@ button:disabled{opacity:.42;cursor:default}
 <section id="walk-dock" aria-label="Interior navigation player" hidden>
 <div class="dock-context"><div class="dock-place"><strong id="walk-location">Outside</strong><span id="walk-notice" role="status" aria-live="polite"></span></div>
 <div class="travel-mode" role="radiogroup" aria-label="Navigation mode">
-<button id="walk-mode" role="radio" aria-checked="true" tabindex="0" title="Grounded walking with collision clearance"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="13" cy="4" r="2"/><path d="m8 12 3-5 4 3 4 1M11 8l-1 7-4 5m5-7 4 3 2 5"/></svg>Walk</button>
+<button id="walk-mode" role="radio" aria-checked="true" tabindex="0" title="5ft4in person; eyes5ft above the walked surface; approximate collision clearance"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="13" cy="4" r="2"/><path d="m8 12 3-5 4 3 4 1M11 8l-1 7-4 5m5-7 4 3 2 5"/></svg>Walk</button>
 <button id="fly-mode" role="radio" aria-checked="false" tabindex="-1" title="Advanced free flight: collisions are bypassed"><svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 13 7 1 4 7 2-1-2-8 6-7-1-2-7 6-8-2-1 2 7 4"/></svg>Fly</button>
 </div></div>
 <div id="walk-controls" role="group" aria-label="Hold arrows to move; drag the scene to look">
