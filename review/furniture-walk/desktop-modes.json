@@ -1,0 +1,111 @@
+{
+  "walk": {
+    "state": {
+      "mode": "interior",
+      "roof": true,
+      "doors": 9,
+      "doorLeaves": 10,
+      "doorsOpen": true,
+      "furnitureVisible": true,
+      "furnishingGroups": 30,
+      "conceptualStructureVisible": false,
+      "renderCalls": 1262,
+      "triangles": 162768,
+      "threeRevision": "180",
+      "walking": {
+        "navigation": "walk",
+        "position": [
+          15.03125,
+          30.922631233257302
+        ],
+        "room": "Wash_point",
+        "inside": true,
+        "destination": null,
+        "waypoints": 0,
+        "history": [
+          "Kitchen",
+          "Bedroom_rear_left",
+          "Bedroom_rear_right",
+          "Attached_bath",
+          "Wash_point"
+        ],
+        "historyIndex": 4
+      }
+    },
+    "primary": 0,
+    "reflection": 18,
+    "free": true
+  },
+  "fly": {
+    "state": {
+      "mode": "interior",
+      "roof": true,
+      "doors": 9,
+      "doorLeaves": 10,
+      "doorsOpen": true,
+      "furnitureVisible": true,
+      "furnishingGroups": 30,
+      "conceptualStructureVisible": false,
+      "renderCalls": 1255,
+      "triangles": 161656,
+      "threeRevision": "180",
+      "walking": {
+        "navigation": "fly",
+        "position": [
+          15.03125,
+          30.922631233257302,
+          9
+        ],
+        "room": "Wash_point",
+        "inside": true,
+        "destination": null,
+        "waypoints": 0,
+        "history": [
+          "Kitchen",
+          "Bedroom_rear_left",
+          "Bedroom_rear_right",
+          "Attached_bath",
+          "Wash_point"
+        ],
+        "historyIndex": 4
+      }
+    },
+    "primary": 0,
+    "reflection": 18
+  },
+  "returned": {
+    "state": {
+      "mode": "interior",
+      "roof": true,
+      "doors": 9,
+      "doorLeaves": 10,
+      "doorsOpen": true,
+      "furnitureVisible": true,
+      "furnishingGroups": 30,
+      "conceptualStructureVisible": false,
+      "renderCalls": 1262,
+      "triangles": 162768,
+      "threeRevision": "180",
+      "walking": {
+        "navigation": "walk",
+        "position": [
+          15.03125,
+          30.922631233257302
+        ],
+        "room": "Wash_point",
+        "inside": true,
+        "destination": null,
+        "waypoints": 0,
+        "history": [
+          "Kitchen",
+          "Bedroom_rear_left",
+          "Bedroom_rear_right",
+          "Attached_bath",
+          "Wash_point"
+        ],
+        "historyIndex": 4
+      }
+    },
+    "eye": 5
+  }
+}

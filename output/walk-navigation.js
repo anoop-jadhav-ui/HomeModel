@@ -82,7 +82,7 @@ export function createWalkMap(model,furniture=[],doorProgress=()=>1,furnitureVis
    item.x+Math.cos(angle)*sign*(item.width/2-item.frame_width/2),item.y+Math.sin(angle)*sign*(item.width/2-item.frame_width/2),item.frame_width,item.wall_thickness,angle));
  }
  const furnitureShapes=furniture.map(box=>rectangle((box.minX+box.maxX)/2,(box.minY+box.maxY)/2,box.maxX-box.minX,box.maxY-box.minY));
- const doors=model.doorways,portals=[...doors,...model.passages],sweeps=new Map(doors.map(door=>[door.name,doorLeaves(door).map(doorSweep)]));
+ const doors=model.doorways,sweeps=new Map(doors.map(door=>[door.name,doorLeaves(door).map(doorSweep)]));
  function staticFree(point){
   const onFloor=point[0]>=radius&&point[0]<=width-radius&&point[1]>=radius&&point[1]<=depth-radius;
   const onApproach=Math.abs(point[0]-entry.x)<=entry.width/2-radius&&point[1]>=entry.minY+radius&&point[1]<=radius;
@@ -188,47 +188,34 @@ export function createWalkMap(model,furniture=[],doorProgress=()=>1,furnitureVis
    return sweeps.get(door.name).some(shape=>intersects(point,shape,radius+.08));
   });
  }
- function snapHeading(position,bearing){
-  let best=null,bestDistance=3.1;
-  for(const portal of portals){
-   const d=distance(position,[portal.x,portal.y]);if(d>.2&&d<bestDistance){
-    const a=portal.angle_degrees*Math.PI/180,n=[-Math.sin(a),Math.cos(a)];
-    const side=(position[0]-portal.x)*n[0]+(position[1]-portal.y)*n[1],sign=side>0?-1:1;
-    const aim=[portal.x+n[0]*sign*.8,portal.y+n[1]*sign*.8],angle=heading(aim[0]-position[0],aim[1]-position[1]);
-    if(Math.abs(angleDifference(angle,bearing))<.55&&lineFree(position,aim)){best=angle;bestDistance=d}
-   }
-  }
-  if(best===null&&model.rooms.some(room=>roomContains(room.name,position))){
-   const cardinal=Math.round(bearing/(Math.PI/2))*Math.PI/2;
-   if(Math.abs(angleDifference(cardinal,bearing))<.18&&lineFree(position,[position[0]-Math.sin(cardinal),position[1]+Math.cos(cardinal)]))return cardinal;
-  }
-  return best;
- }
  function floorHeight(p){
   if(p[1]>=0)return model.dimensions.floor_elevation;
   const tread=entry.run/entry.steps,index=clamp(Math.floor((p[1]+entry.run)/tread)+1,0,entry.steps);
   return grade+(floor-grade)*index/entry.steps;
  }
- return {radius,entry,floorHeight,isFree,lineFree,move,nearest,route,closestRoom,canClose,snapHeading,furnitureClear,
+ return {radius,entry,floorHeight,isFree,lineFree,move,nearest,route,closestRoom,canClose,furnitureClear,
   roomAt:p=>p[1]<0?'Outside / illustrative approach':model.rooms.find(r=>roomContains(r.name,p))?.name||'Circulation'};
 }
 
 export class WalkController{
- constructor(map){this.map=map;this.position=[0,0];this.velocity=[0,0];this.bearing=0;this.targetBearing=0;this.tilt=0;this.targetTilt=0;this.path=[];this.room=null;this.overrideUntil=0;this.time=0;this.arrived=false;this.stalled=0}
- place(position,bearing,tilt){this.position=[...position];this.velocity=[0,0];this.bearing=this.targetBearing=bearing;this.tilt=this.targetTilt=tilt;this.path=[]}
+ constructor(map){this.map=map;this.position=[0,0];this.velocity=[0,0];this.bearing=0;this.targetBearing=0;this.tilt=0;this.targetTilt=0;this.path=[];this.room=null;this.guidedLook=false;this.arrived=false;this.stalled=0}
+ place(position,bearing,tilt){this.position=[...position];this.velocity=[0,0];this.bearing=this.targetBearing=bearing;this.tilt=this.targetTilt=tilt;this.path=[];this.guidedLook=false}
  goTo(preferred,room,aim){
   const path=this.map.route(this.position,preferred,room);
   if(!path)return false;
   this.followRoute(path,room,aim);return true;
  }
  followRoute(path,room,aim){
-  this.path=path.slice(1);this.room=room;this.aim=aim;this.arrived=false;this.stalled=0;return true;
+  this.path=path.slice(1);this.room=room;this.aim=aim;this.guidedLook=true;this.arrived=false;this.stalled=0;return true;
  }
 
- cancel(){this.path=[];this.room=null}
- look(dx,dy){this.cancel();this.targetBearing-=dx*.004;this.targetTilt=clamp(this.targetTilt-dy*.004,-1.3,1.3);this.overrideUntil=this.time+1.4}
+ cancel(){
+  if(this.guidedLook){this.targetBearing=this.bearing;this.targetTilt=this.tilt;this.guidedLook=false}
+  this.path=[];this.room=null;
+ }
+ look(dx,dy){this.cancel();this.targetBearing-=dx*.004;this.targetTilt=clamp(this.targetTilt-dy*.004,-1.3,1.3)}
  update(dt,{forward=0,strafe=0,slow=false,looking=false,reducedMotion=false}={}){
-  dt=clamp(dt,0,.05);this.time+=dt;this.arrived=false;let blocked=false;
+  dt=clamp(dt,0,.1);this.arrived=false;let blocked=false;
   const manual=forward!==0||strafe!==0;if(manual)this.cancel();
   let desired=[0,0],speed=slow?1.45:reducedMotion?2.45:3.5;
   if(this.position[1]<0&&this.position[1]>-this.map.entry.run-.5)speed*=.65;
@@ -246,9 +233,6 @@ export class WalkController{
    }
   }
   if(manual){
-   if(forward>0&&!strafe&&!looking&&this.time>this.overrideUntil){
-    const snap=this.map.snapHeading(this.position,this.targetBearing);if(snap!==null)this.targetBearing=snap;
-   }
    const magnitude=Math.max(1,Math.hypot(forward,strafe));
    desired=[(-Math.sin(this.bearing)*forward+Math.cos(this.bearing)*strafe)*speed/magnitude,
     (Math.cos(this.bearing)*forward+Math.sin(this.bearing)*strafe)*speed/magnitude];
@@ -275,7 +259,7 @@ export class FlyController{
  place(position,bearing,tilt){this.position=[...position];this.velocity=[0,0,0];this.bearing=this.targetBearing=bearing;this.tilt=this.targetTilt=tilt}
  look(dx,dy){this.targetBearing-=dx*.004;this.targetTilt=clamp(this.targetTilt-dy*.004,-1.3,1.3)}
  update(dt,{forward=0,strafe=0,vertical=0,slow=false,looking=false,reducedMotion=false}={}){
-  dt=clamp(dt,0,.05);
+  dt=clamp(dt,0,.1);
   const speed=slow?2.8:reducedMotion?5:7,c=Math.cos(this.tilt);
   const vector=[-Math.sin(this.bearing)*c*forward+Math.cos(this.bearing)*strafe,
    Math.cos(this.bearing)*c*forward+Math.sin(this.bearing)*strafe,Math.sin(this.tilt)*forward+vertical];

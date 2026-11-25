@@ -228,7 +228,8 @@ export function createFurnishings(model){
   items.push({room:room.name,name,kind,soft,group});return group;
  }
  function nightstand(g,x,y,face,room){
-  box(g,1.15,1.32,1.6,x,y-face*.04,F+.95,M.wood);box(g,1.2,1.45,.12,x,y,F+1.81,M.stone);
+  box(g,1.15,1.32,1.6,x,y-face*.04,F+.95,M.wood).name='Nightstand body';
+  box(g,1.2,1.45,.12,x,y,F+1.81,M.stone).name='Nightstand top';
   for(const z of [.6,1.25]){
    panel(g,1.03,.55,x,y+face*.66,F+z,M.wood,face>0?Math.PI:0);
    pull(g,x,y+face*.655,F+z,face>0?Math.PI:0);
@@ -254,8 +255,8 @@ export function createFurnishings(model){
    for(const dx of [-2.6,2.6])box(g,.16,6.8,.55,cx+dx,cy,F+.96,M.wood);
    for(const dy of [-3.4,3.4])box(g,5.35,.16,.55,cx,cy+dy,F+.96,M.wood);
    box(g,5.2,6.8,.12,cx,cy,F+1.19,M.darkWood);
-   box(g,5.1,6.65,.65,cx,cy,F+1.58,M.linen);
-   box(g,5.6,.24,2.9,cx,head,F+1.55,M.cushion);
+   box(g,5.1,6.65,.65,cx,cy,F+1.58,M.linen).name='Mattress';
+   box(g,5.6,.24,2.9,cx,head,F+1.55,M.cushion).name='Bed headboard';
    for(const dx of [-1.8,0,1.8])box(g,1.76,.13,2.68,cx+dx,head-sign*.15,F+1.58,M.cushion);
    const quilt=new THREE.Mesh(duvet(),M.cushion);quilt.position.copy(point(cx,cy-sign*.5,F+2.005));
    if(front)quilt.rotation.y=Math.PI;quilt.castShadow=true;quilt.receiveShadow=true;g.add(quilt);
@@ -272,7 +273,7 @@ export function createFurnishings(model){
   });
   asset(r,r.name+' wardrobe','wardrobe',g=>{
    const w=front?2:5.7,d=front?5.7:2,cx=front?r.x+1.3:r.x+r.width-(r.name.includes('rear_right')?3.1:8.6),cy=r.y+(front?3.3:1.3);
-   box(g,w-(front?.12:0),d-(front?0:.12),7,cx-(front?.06:0),cy-(front?0:.06),F+3.5,M.wood);
+   box(g,w-(front?.12:0),d-(front?0:.12),7,cx-(front?.06:0),cy-(front?0:.06),F+3.5,M.wood).name='Wardrobe carcass';
    for(const offset of [-1.9,0,1.9]){
     if(front){
      panel(g,1.86,6.65,cx+w/2-.07,cy+offset,F+3.5,M.cream,Math.PI/2);
@@ -292,27 +293,29 @@ export function createFurnishings(model){
    [[.75,0],[.97,0],[1,.025],[1,.07],[.97,.1],[.77,.1],[.73,.07],[.73,.025],[.75,0]]
     .map(p=>new THREE.Vector2(...p)),32));
   const seat=new THREE.Mesh(seatGeometry,M.ceramic);
-  seat.scale.set(.52*FT,FT,.72*FT);seat.position.copy(point(x,y-.22,F+1.5));seat.castShadow=true;g.add(seat);
+  seat.name='Toilet seat';seat.scale.set(.52*FT,FT,.72*FT);seat.position.copy(point(x,y-.22,F+1.5));seat.castShadow=true;g.add(seat);
   ellipsoid(g,.27,.39,.015,x,y-.13,F+.78,M.water);
   cylinder(g,.33,.31,.8,x,y+.05,F+.43,M.ceramic);
   cylinder(g,.1,.1,.025,x,y+.8,F+2.3075,M.metal,16);
  }
  function basin(g,x,y,w=1.7){
-  box(g,w,1.21,1.95,x,y+.02,F+1.5,M.wood);box(g,w+.12,1.4,.15,x,y,F+2.55,M.stone);
-  bowl(g,w*.35,.49,.24,x,y,F+2.625,M.ceramic);
+  box(g,w,1.21,1.95,x,y+.02,F+1.5,M.wood).name='Vanity body';
+  box(g,w+.12,1.4,.15,x,y,F+2.55,M.stone).name='Vanity countertop';
+  bowl(g,w*.35,.49,.24,x,y,F+2.625,M.ceramic).name='Vanity washbowl';
   cylinder(g,.04,.04,.012,x,y,F+2.704,M.metal,12);
   tap(g,x,y+.45,F+2.65);
   for(const dz of [1,1.95]){
    panel(g,w-.13,.78,x,y-.6,F+dz,M.wood);
    pull(g,x,y-.595,F+dz+.2);
   }
-  box(g,w, .035,1.7,x,y+.64,F+4.65,M.mirror);
+  box(g,w, .035,1.7,x,y+.64,F+4.65,M.mirror).name='Vanity mirror';
  }
  function shower(g,x,y,size=2.6){
-  box(g,size,size,.12,x,y,F+.1,M.ceramic);
+  box(g,size,size,.12,x,y,F+.1,M.ceramic).name='Shower tray';
   box(g,size,.03,6.6,x,y-size/2,F+3.45,M.glass);
   cylinder(g,.035,.035,3.4,x,y+size/2-.16,F+4.8,M.metal);
-  box(g,.07,.7,.07,x,y+size/2-.45,F+6.5,M.metal);box(g,.55,.55,.05,x,y+size/2-.72,F+6.46,M.metal);
+  box(g,.07,.7,.07,x,y+size/2-.45,F+6.5,M.metal);
+  box(g,.55,.55,.05,x,y+size/2-.72,F+6.46,M.metal).name='Shower head';
   box(g,.4,.08,.2,x,y+size/2-.2,F+3.5,M.metal);
  }
  for(const r of model.rooms){
@@ -451,18 +454,19 @@ export function createFurnishings(model){
   box(hood,.018,.5,.08,hx+.6/FT/2+.003,hy,bottom+.075,M.black).name='Extractor front controls';
  });
  const dining=model.rooms.find(r=>r.name==='Dining_central_zone'),cx=dining.x+dining.width/2,cy=dining.y+5;
+ const tableHeight=.75/FT,seatHeight=.46/FT,seatDrop=1.61-seatHeight,legHeight=tableHeight-.17;
  asset(dining,'Dining table','table',g=>{
-  box(g,6,3,.18,cx,cy,F+2.48,M.wood);
-  for(const xx of [-2.4,2.4])for(const yy of [-1,1])cylinder(g,.065,.095,2.4,cx+xx,cy+yy,F+1.2,M.darkWood,12);
-  for(const yy of [-1.1,1.1])box(g,5,.1,.35,cx,cy+yy,F+2.15,M.darkWood);
-  cylinder(g,.33,.2,.65,cx,cy,F+2.9,M.ceramic);
-  for(let i=0;i<5;i++)ellipsoid(g,.16,.12,.08,cx+Math.cos(i)*.35,cy+Math.sin(i)*.3,F+3.25,M.leaf);
+  box(g,6,3,.18,cx,cy,F+tableHeight-.09,M.wood).name='Dining tabletop';
+  for(const xx of [-2.4,2.4])for(const yy of [-1,1])cylinder(g,.065,.095,legHeight,cx+xx,cy+yy,F+legHeight/2,M.darkWood,12);
+  for(const yy of [-1.1,1.1])box(g,5,.1,.35,cx,cy+yy,F+tableHeight-.35,M.darkWood).name='Dining apron';
+  cylinder(g,.33,.2,.65,cx,cy,F+tableHeight+.33,M.ceramic);
+  for(let i=0;i<5;i++)ellipsoid(g,.16,.12,.08,cx+Math.cos(i)*.35,cy+Math.sin(i)*.3,F+tableHeight+.68,M.leaf);
  });
  function chair(x,y,rotation){
   asset(dining,'Dining chair '+items.length,'chair',g=>{
    const local=new THREE.Group();local.position.copy(point(x,y,F));local.rotation.y=rotation;g.add(local);
-   box(local,1.5,1.55,.12,0,0,1.38,M.wood);
-   box(local,1.44,1.48,.18,0,0,1.52,M.cushion);
+   box(local,1.5,1.55,.12,0,0,1.38-seatDrop,M.wood);
+   box(local,1.44,1.48,.18,0,0,seatHeight-.09,M.cushion).name='Dining seat cushion';
    const geometry=cached('curved-chair-back',()=>{
     const shape=new THREE.Shape();shape.moveTo(-.7,.58);shape.quadraticCurveTo(0,.84,.7,.58);
     shape.lineTo(.7,.68);shape.quadraticCurveTo(0,.94,-.7,.68);shape.closePath();
@@ -472,7 +476,7 @@ export function createFurnishings(model){
    const back=new THREE.Mesh(geometry,M.wood);back.scale.setScalar(FT);back.rotation.x=-Math.PI/2;
    back.position.y=2.14*FT;back.castShadow=true;back.receiveShadow=true;local.add(back);
    for(const xx of [-.57,.57])for(const yy of [-.58,.58]){
-    const rear=yy>0,height=rear?2.75:1.42;
+    const rear=yy>0,height=rear?2.75:1.42-seatDrop;
     between(local,[xx+Math.sign(xx)*.055,rear?.76:-.70,.012],
      [rear?Math.sign(xx)*.60:xx,rear?.70:yy,height],M.darkWood);
    }
@@ -490,7 +494,7 @@ export function createFurnishings(model){
   for(const dy of [-2.9,2.9])box(g,2.5,.4,1.4,x,y+dy,F+1.4,M.upholstery);
   const seams=[];
   for(const [i,dy]of [-1.95,0,1.95].entries()){
-   const seat=cushion(g,2.1,1.85,.37,x+.1,y+dy,F+1.3,M.linen,i%2);
+   const seat=cushion(g,2.1,1.85,.37,x+.1,y+dy,F+1.3,M.linen,i%2);seat.name='Sofa seat cushion';
    const back=cushion(g,.45,1.8,1.28,x-.72,y+dy,F+2.1,M.linen,i%2);back.rotation.z=.12;
    const seam=welt(2.1,1.85).clone();seam.applyMatrix4(seat.matrix.compose(seat.position,seat.quaternion,seat.scale));seams.push(seam);
   }
@@ -501,19 +505,19 @@ export function createFurnishings(model){
    accent.rotation.z=dy>0?.12:-.12;
   }
  });
- asset(hall,'Living coffee table','table',g=>{box(g,2.1,3.1,.12,hall.x+4.75,hall.y+6.7,F+1.35,M.wood);for(const dy of [-1.1,1.1])box(g,1.5,.12,1.3,hall.x+4.75,hall.y+6.7+dy,F+.67,M.black)});
+ asset(hall,'Living coffee table','table',g=>{box(g,2.1,3.1,.12,hall.x+4.75,hall.y+6.7,F+1.35,M.wood).name='Coffee tabletop';for(const dy of [-1.1,1.1])box(g,1.5,.12,1.3,hall.x+4.75,hall.y+6.7+dy,F+.67,M.black)});
  asset(hall,'Living rug','rug',g=>box(g,7,7,.025,hall.x+6.3,hall.y+6.7,F+.035,M.rug),{soft:true});
  asset(hall,'Media console and screen','media',g=>{
-  box(g,.85,6.6,1.4,hall.x+hall.width-.575,hall.y+6.6,F+.8,M.wood);
+  box(g,.85,6.6,1.4,hall.x+hall.width-.575,hall.y+6.6,F+.8,M.wood).name='Media console body';
   for(const dy of [-2.15,0,2.15]){
    panel(g,2.08,1.16,hall.x+hall.width-1.03,hall.y+6.6+dy,F+.8,M.wood,-Math.PI/2);
    pull(g,hall.x+hall.width-1.025,hall.y+6.6+dy,F+.95,-Math.PI/2);
   }
-  box(g,.1,4.6,2.5,hall.x+hall.width-.25,hall.y+6.6,F+3.2,M.black);
+  box(g,.1,4.6,2.5,hall.x+hall.width-.25,hall.y+6.6,F+3.2,M.black).name='Media screen';
  });
  const prayer=model.rooms.find(r=>r.name==='Prayer');
  asset(prayer,'Prayer alcove cabinet','cabinet',g=>{
-  box(g,4.5,1.15,2.3,prayer.x+3,prayer.y+prayer.depth-.725,F+1.15,M.wood);
+  box(g,4.5,1.15,2.3,prayer.x+3,prayer.y+prayer.depth-.725,F+1.15,M.wood).name='Prayer cabinet body';
   for(const dx of [-1.12,1.12]){
    panel(g,2.17,2.1,prayer.x+3+dx,prayer.y+prayer.depth-1.33,F+1.15,M.wood);
    pull(g,prayer.x+3+dx-Math.sign(dx)*.78,prayer.y+prayer.depth-1.325,F+1.45,0,true);

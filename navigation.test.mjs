@@ -125,18 +125,91 @@ test('moving door sweeps are reserved and manual look overrides a guided route s
  walker.update(1/60,{looking:true});
  assert(walker.bearing<0&&walker.bearing>walker.targetBearing);
 });
-test('eased motion and stopping are frame-rate independent',()=>{
+test('eased motion preserves elapsed time from10 to120fps, including uneven frame intervals',()=>{
  function simulate(hz){
   const walker=new WalkController(map);walker.place(hall,0,0);
   for(let i=0;i<hz;i++)walker.update(1/hz,{forward:1});
   for(let i=0;i<hz;i++)walker.update(1/hz);
   return walker;
  }
- const slow=simulate(30),fast=simulate(120);
- assert(Math.hypot(slow.position[0]-fast.position[0],slow.position[1]-fast.position[1])<1e-6);
+ const fast=simulate(120);
+ for(const hz of [10,15,20,30,60]){
+  const slow=simulate(hz);
+  assert(Math.hypot(slow.position[0]-fast.position[0],slow.position[1]-fast.position[1])<1e-6,'elapsed time lost at '+hz+'fps');
+ }
+ const uneven=new WalkController(map);uneven.place(hall,0,0);
+ for(let i=0;i<10;i++)for(const dt of [.01,.025,.065])uneven.update(dt,{forward:1});
+ for(let i=0;i<60;i++)uneven.update(1/60);
+ assert(Math.hypot(uneven.position[0]-fast.position[0],uneven.position[1]-fast.position[1])<1e-6);
  assert(Math.hypot(...fast.velocity)<.001);
  assert(map.canClose(hall));
  assert.equal(map.canClose([11,11.8]),false);
+});
+test('free WASD preserves the chosen heading through actual doorways in both directions',()=>{
+ const crossings=[
+  {start:[11.1,10.5],bearing:.1,duration:1.2},
+  {start:[31.4,10.5],bearing:.1,duration:1.2},
+  {start:[11.15,19.5],bearing:.1,duration:1.2},
+  {start:[31.4,19.5],bearing:.1,duration:1.2},
+  {start:[18.7,25.5],bearing:.05,duration:1.1},
+  {start:[22.2,25.5],bearing:.05,duration:1.1},
+  {start:[30.8,27],bearing:Math.PI/2+.05,duration:1.1}
+ ];
+ for(const {start,bearing,duration} of crossings)for(const hz of [15,60,120]){
+  assert(map.isFree(start),'invalid test start: '+start);
+  const walker=new WalkController(map);walker.place(start,bearing,0);
+  const simulate=()=>{
+   for(let i=0;i<Math.round(duration*hz);i++){
+    const previous=[...walker.position],state=walker.update(1/hz,{forward:1});
+    assert(map.isFree(walker.position),'door/frame contact: '+start);
+    assert(Math.abs(Math.atan2(Math.sin(state.bearing-walker.targetBearing),Math.cos(state.bearing-walker.targetBearing)))<1e-10);
+    assert(Math.hypot(walker.position[0]-previous[0],walker.position[1]-previous[1])>0,'unexpected stop: '+start);
+   }
+  };
+  simulate();
+  assert(Math.abs(Math.atan2(Math.sin(walker.bearing-bearing),Math.cos(walker.bearing-bearing)))<1e-10,'manual heading was changed near '+start);
+  assert(Math.hypot(walker.position[0]-start[0],walker.position[1]-start[1])>3,'doorway not traversed: '+start);
+  walker.place(walker.position,bearing+Math.PI,0);simulate();
+  assert(Math.hypot(walker.position[0]-start[0],walker.position[1]-start[1])<1e-8,'return traversal changed pace or hit a jamb: '+start);
+ }
+});
+test('low-frame-rate angled wall contact slides continuously without entering the wall',()=>{
+ for(const hz of [10,30,120]){
+  const walker=new WalkController(map);walker.place([12,5],-.4,0);
+  let previousSpeed=0;
+  for(let i=0;i<hz*1.5;i++){
+   const y=walker.position[1];walker.update(1/hz,{forward:1});
+   const speed=(walker.position[1]-y)*hz;
+   assert(map.isFree(walker.position));
+   assert(speed>=previousSpeed-1e-8,'tangential movement stuttered at '+hz+'fps');
+   previousSpeed=speed;
+  }
+  assert(walker.position[0]<=12.2&&walker.position[0]>12.18);
+  assert(walker.position[1]>9);
+ }
+});
+test('interrupting guided travel immediately releases its camera steering without resetting momentum',()=>{
+ const walker=new WalkController(map);walker.place(hall,1,0);
+ assert(walker.goTo([22,17],'Dining_central_zone'));
+ walker.update(1/60);
+ assert.notEqual(walker.bearing,walker.targetBearing);
+ const bearing=walker.bearing,velocity=[...walker.velocity];
+ walker.cancel();
+ assert.deepEqual(walker.velocity,velocity);
+ for(let i=0;i<60;i++)walker.update(1/60,{forward:1});
+ assert(Math.abs(walker.bearing-bearing)<1e-10,'cancelled route retained a pending turn');
+ walker.look(20,0);const target=walker.targetBearing;
+ walker.cancel();walker.update(1/60,{forward:1,looking:true});
+ assert.equal(walker.targetBearing,target,'key repeats must not cancel intentional mouse look');
+});
+test('all WASD axes and diagonals retain equal free-walk pace and user heading',()=>{
+ for(const input of [{forward:1},{forward:-1},{strafe:1},{strafe:-1},{forward:1,strafe:1},{forward:1,strafe:-1}]){
+  const walker=new WalkController(map);walker.place([23,7],.12,0);
+  for(let i=0;i<60;i++)walker.update(1/60,input);
+  assert(Math.abs(walker.bearing-.12)<1e-10);
+  assert(Math.abs(Math.hypot(walker.position[0]-23,walker.position[1]-7)-3.00045594098)<1e-8);
+  assert(map.isFree(walker.position));
+ }
 });
 test('carousel finds reachable unvisited rooms through real door paths until all rooms are visited',()=>{
  let position=hall;const visited=['Hall'];

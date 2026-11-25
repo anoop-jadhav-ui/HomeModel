@@ -1,0 +1,201 @@
+{
+  "base": "d76878f410041ec99599a873d032471f456e1be2",
+  "movementFeetPerOneSecond": [
+    {
+      "hz": 10,
+      "before": 1.265098691711163,
+      "after": 3.0004559409827767
+    },
+    {
+      "hz": 15,
+      "before": 2.1276237591995937,
+      "after": 3.0004559409827802
+    },
+    {
+      "hz": 20,
+      "before": 3.0004559409827785,
+      "after": 3.0004559409827785
+    },
+    {
+      "hz": 30,
+      "before": 3.000455940982775,
+      "after": 3.000455940982775
+    },
+    {
+      "hz": 60,
+      "before": 3.0004559409827785,
+      "after": 3.0004559409827785
+    },
+    {
+      "hz": 120,
+      "before": 3.000455940982773,
+      "after": 3.000455940982773
+    }
+  ],
+  "architecture": [
+    {
+      "file": "parameters.json",
+      "sha256": "32f8f7a745dfcd67da17825ef2d554f49a6da7f9aa90f78b9900ba19d617c222",
+      "unchanged": true
+    },
+    {
+      "file": "build_home.py",
+      "sha256": "818aa268c978387c6ad6aca4569bece539416c28115f5eed7c9404a4fda7dbf0",
+      "unchanged": true
+    },
+    {
+      "file": "output\\Home.FCStd",
+      "sha256": "e958e6374a837eb8c8beee4052e0099bc8e3288f307e2d7c254ffbecc3b85f31",
+      "unchanged": true
+    },
+    {
+      "file": "output\\Home.ifc",
+      "sha256": "e0165c902670fbc9038664e9cd765e3656cca32cbe201eea2de32bcbeb6c8cfb",
+      "unchanged": true
+    },
+    {
+      "file": "output\\review-data.js",
+      "sha256": "6a48eff2795693f88d40097432391b87e6409f7fe7a4e99b6b298e3b1ca02db9",
+      "unchanged": true
+    },
+    {
+      "file": "output\\architectural-plan.svg",
+      "sha256": "3cbb5be5d66d1151e5daad2f9bd2820929ad16b38242faf46da32ac40e8d3ef3",
+      "unchanged": true
+    }
+  ],
+  "acceptance": "57 integrated tests passed; scene fit/geometry and static deployment passed; native files not regenerated. Desktop/mobile browser traces are separate files. Mobile arrow-pad keyboard activation and responsive rendering were exercised; physical touch hardware and physical-phone performance were not certified.",
+  "imageNotes": "Dining views use the same camera and viewport; walker position differs following the two free-walk runs. Not pixel-identical model-state comparisons.",
+  "footprintComparison": [
+    {
+      "name": "Bedroom_front_right bed suite",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Bedroom_front_right wardrobe",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Bedroom_rear_left bed suite",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Bedroom_rear_left wardrobe",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Bedroom_rear_right bed suite",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Bedroom_rear_right wardrobe",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Bath_right toilet",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Bath_right shower",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Bath_right vanity",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Rear common washbasin",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Common WC sanitary fixture",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Common bath shower",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Attached_bath toilet",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Attached_bath shower",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Attached_bath vanity",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "L-shaped kitchen cabinetry and appliances",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining table",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining chair 17",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining chair 18",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining chair 19",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining chair 20",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining chair 21",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining chair 22",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining chair 23",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Dining chair 24",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Living sofa",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Living coffee table",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Living rug",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Media console and screen",
+      "maximumPlanChangeMM": 0
+    },
+    {
+      "name": "Prayer alcove cabinet",
+      "maximumPlanChangeMM": 0
+    }
+  ],
+  "furnishingBudget": {
+    "before": {
+      "meshes": 351,
+      "triangles": 62900
+    },
+    "after": {
+      "meshes": 351,
+      "triangles": 62900
+    }
+  }
+}

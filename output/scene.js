@@ -402,7 +402,7 @@ try{
  function resize(){const r=stage.getBoundingClientRect();if(!r.width||!r.height)return;camera.aspect=r.width/r.height;camera.updateProjectionMatrix();renderer.setSize(r.width,r.height,false);fitViewport();if(orbit.enabled)orbit.update()}
  new ResizeObserver(resize).observe(stage);resize();view('exterior');
  function animate(time){
-  const dt=Math.min((time-lastTime)/1000,.05)||.016;lastTime=time;
+  const dt=Math.min((time-lastTime)/1000,.1)||1/60;lastTime=time;
   for(const d of doors)d.pivot.rotation.y=THREE.MathUtils.damp(d.pivot.rotation.y,doorsOpen?d.angle:0,9,dt);
   if(walk){
    if(pendingRequest&&doors.every(d=>progress(d.name)>=.98))startRequest(pendingRequest);

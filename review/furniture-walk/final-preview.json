@@ -1,0 +1,17 @@
+{
+  "state": {
+    "mode": "cutaway",
+    "roof": false,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": true,
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 1355,
+    "triangles": 160143,
+    "threeRevision": "180"
+  },
+  "tabletopMM": 750,
+  "hasPlumbingElectrical": false
+}

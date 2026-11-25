@@ -10,6 +10,27 @@ const model=JSON.parse(source.slice('window.HOME_MODEL='.length,-1));
 const original=JSON.stringify(model),assets=createFurnishings(model);
 assets.root.updateMatrixWorld(true);
 
+test('dining uses measured750mm tabletop and460mm seats without shrinking footprints or floating supports',()=>{
+ const floor=model.dimensions.floor_elevation*FT;
+ const table=assets.items.find(item=>item.name==='Dining table'),top=new THREE.Box3().setFromObject(table.group.getObjectByName('Dining tabletop'));
+ assert(Math.abs((top.max.y-floor)*1000-750)<.01);
+ assert(Math.abs((top.max.x-top.min.x)/FT-6)<1e-6);
+ assert(Math.abs((top.max.z-top.min.z)/FT-3)<1e-6);
+ for(const apron of table.group.children.filter(mesh=>mesh.name==='Dining apron'))
+  assert(new THREE.Box3().setFromObject(apron).max.y>=top.min.y,'apron floats below the tabletop');
+ for(const item of assets.items.filter(item=>item.kind==='chair')){
+  const seat=new THREE.Box3().setFromObject(item.group.getObjectByName('Dining seat cushion'));
+  assert(Math.abs((seat.max.y-floor)*1000-460)<.01,item.name);
+  const footprint=new THREE.Box3().setFromObject(item.group),size=footprint.getSize(new THREE.Vector3());
+  assert(Math.abs(Math.min(size.x,size.z)/FT-1.5)<1e-6);
+  assert(footprint.min.y-floor>=0&&footprint.min.y-floor<.002,item.name+' feet left the floor');
+  for(const leg of item.group.children[0].children.filter(mesh=>mesh.geometry?.type==='CylinderGeometry')){
+   const bounds=new THREE.Box3().setFromObject(leg);
+   if(bounds.min.y-floor<.01)assert(bounds.max.y>=seat.min.y-.025,item.name+' leg no longer supports the seat');
+  }
+ }
+});
+
 test('authored furniture is closed after welding seams, including curved spouts and hollow ceramics',()=>{
  const checked=new Set();
  assets.root.traverse(mesh=>{

@@ -1,0 +1,1033 @@
+{
+  "units": "mm; worldX/worldY are plan axes, dimensions measured after full transforms",
+  "scope": "30 furnishing groups plus6 nested lamps. Component bounds, not combined suite/fixture bounds, determine functional sizes. Generic visual references, not specifications, universal standards, accessibility or use-clearance certification.",
+  "personMM": 1625.6,
+  "eyeMM": 1524,
+  "inventory": [
+    {
+      "room": "Bedroom_front_right",
+      "name": "Bedroom_front_right bed suite",
+      "kind": "bed",
+      "bounds": {
+        "name": "Bedroom_front_right bed suite",
+        "worldXMM": 2560.32,
+        "worldYMM": 2164.08,
+        "heightMM": 914.4,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 914.4
+      },
+      "parts": [
+        {
+          "name": "Mattress",
+          "worldXMM": 1554.48,
+          "worldYMM": 2026.92,
+          "heightMM": 198.12,
+          "bottomAboveFFLMM": 382.524,
+          "topAboveFFLMM": 580.644
+        },
+        {
+          "name": "Bed headboard",
+          "worldXMM": 1706.88,
+          "worldYMM": 73.152,
+          "heightMM": 883.92,
+          "bottomAboveFFLMM": 30.48,
+          "topAboveFFLMM": 914.4
+        },
+        {
+          "name": "Nightstand body",
+          "worldXMM": 350.52,
+          "worldYMM": 402.336,
+          "heightMM": 487.68,
+          "bottomAboveFFLMM": 45.72,
+          "topAboveFFLMM": 533.4
+        },
+        {
+          "name": "Nightstand top",
+          "worldXMM": 365.76,
+          "worldYMM": 441.96,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 533.4,
+          "topAboveFFLMM": 569.976
+        },
+        {
+          "name": "Nightstand body",
+          "worldXMM": 350.52,
+          "worldYMM": 402.336,
+          "heightMM": 487.68,
+          "bottomAboveFFLMM": 45.72,
+          "topAboveFFLMM": 533.4
+        },
+        {
+          "name": "Nightstand top",
+          "worldXMM": 365.76,
+          "worldYMM": 441.96,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 533.4,
+          "topAboveFFLMM": 569.976
+        }
+      ],
+      "finding": "Queen-like generic mattress1554 x2027mm; suite bounds include two nightstands and lamps, not a2560mm-wide bed. No scale change."
+    },
+    {
+      "room": "Bedroom_front_right",
+      "name": "Bedroom_front_right wardrobe",
+      "kind": "wardrobe",
+      "bounds": {
+        "name": "Bedroom_front_right wardrobe",
+        "worldXMM": 619.963,
+        "worldYMM": 1737.36,
+        "heightMM": 2133.6,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 2133.6
+      },
+      "parts": [
+        {
+          "name": "Wardrobe carcass",
+          "worldXMM": 573.024,
+          "worldYMM": 1737.36,
+          "heightMM": 2133.6,
+          "bottomAboveFFLMM": 0,
+          "topAboveFFLMM": 2133.6
+        }
+      ],
+      "finding": "About1737 x620 x2134mm including fronts/pulls. Front-bedroom orientation swaps world axes. No scale change."
+    },
+    {
+      "room": "Bedroom_rear_left",
+      "name": "Bedroom_rear_left bed suite",
+      "kind": "bed",
+      "bounds": {
+        "name": "Bedroom_rear_left bed suite",
+        "worldXMM": 2560.32,
+        "worldYMM": 2164.08,
+        "heightMM": 914.4,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 914.4
+      },
+      "parts": [
+        {
+          "name": "Mattress",
+          "worldXMM": 1554.48,
+          "worldYMM": 2026.92,
+          "heightMM": 198.12,
+          "bottomAboveFFLMM": 382.524,
+          "topAboveFFLMM": 580.644
+        },
+        {
+          "name": "Bed headboard",
+          "worldXMM": 1706.88,
+          "worldYMM": 73.152,
+          "heightMM": 883.92,
+          "bottomAboveFFLMM": 30.48,
+          "topAboveFFLMM": 914.4
+        },
+        {
+          "name": "Nightstand body",
+          "worldXMM": 350.52,
+          "worldYMM": 402.336,
+          "heightMM": 487.68,
+          "bottomAboveFFLMM": 45.72,
+          "topAboveFFLMM": 533.4
+        },
+        {
+          "name": "Nightstand top",
+          "worldXMM": 365.76,
+          "worldYMM": 441.96,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 533.4,
+          "topAboveFFLMM": 569.976
+        },
+        {
+          "name": "Nightstand body",
+          "worldXMM": 350.52,
+          "worldYMM": 402.336,
+          "heightMM": 487.68,
+          "bottomAboveFFLMM": 45.72,
+          "topAboveFFLMM": 533.4
+        },
+        {
+          "name": "Nightstand top",
+          "worldXMM": 365.76,
+          "worldYMM": 441.96,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 533.4,
+          "topAboveFFLMM": 569.976
+        }
+      ],
+      "finding": "Queen-like generic mattress1554 x2027mm; suite bounds include two nightstands and lamps, not a2560mm-wide bed. No scale change."
+    },
+    {
+      "room": "Bedroom_rear_left",
+      "name": "Bedroom_rear_left wardrobe",
+      "kind": "wardrobe",
+      "bounds": {
+        "name": "Bedroom_rear_left wardrobe",
+        "worldXMM": 1737.36,
+        "worldYMM": 619.963,
+        "heightMM": 2133.6,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 2133.6
+      },
+      "parts": [
+        {
+          "name": "Wardrobe carcass",
+          "worldXMM": 1737.36,
+          "worldYMM": 573.024,
+          "heightMM": 2133.6,
+          "bottomAboveFFLMM": 0,
+          "topAboveFFLMM": 2133.6
+        }
+      ],
+      "finding": "About1737 x620 x2134mm including fronts/pulls. Front-bedroom orientation swaps world axes. No scale change."
+    },
+    {
+      "room": "Bedroom_rear_right",
+      "name": "Bedroom_rear_right bed suite",
+      "kind": "bed",
+      "bounds": {
+        "name": "Bedroom_rear_right bed suite",
+        "worldXMM": 2560.32,
+        "worldYMM": 2164.08,
+        "heightMM": 914.4,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 914.4
+      },
+      "parts": [
+        {
+          "name": "Mattress",
+          "worldXMM": 1554.48,
+          "worldYMM": 2026.92,
+          "heightMM": 198.12,
+          "bottomAboveFFLMM": 382.524,
+          "topAboveFFLMM": 580.644
+        },
+        {
+          "name": "Bed headboard",
+          "worldXMM": 1706.88,
+          "worldYMM": 73.152,
+          "heightMM": 883.92,
+          "bottomAboveFFLMM": 30.48,
+          "topAboveFFLMM": 914.4
+        },
+        {
+          "name": "Nightstand body",
+          "worldXMM": 350.52,
+          "worldYMM": 402.336,
+          "heightMM": 487.68,
+          "bottomAboveFFLMM": 45.72,
+          "topAboveFFLMM": 533.4
+        },
+        {
+          "name": "Nightstand top",
+          "worldXMM": 365.76,
+          "worldYMM": 441.96,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 533.4,
+          "topAboveFFLMM": 569.976
+        },
+        {
+          "name": "Nightstand body",
+          "worldXMM": 350.52,
+          "worldYMM": 402.336,
+          "heightMM": 487.68,
+          "bottomAboveFFLMM": 45.72,
+          "topAboveFFLMM": 533.4
+        },
+        {
+          "name": "Nightstand top",
+          "worldXMM": 365.76,
+          "worldYMM": 441.96,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 533.4,
+          "topAboveFFLMM": 569.976
+        }
+      ],
+      "finding": "Queen-like generic mattress1554 x2027mm; suite bounds include two nightstands and lamps, not a2560mm-wide bed. No scale change."
+    },
+    {
+      "room": "Bedroom_rear_right",
+      "name": "Bedroom_rear_right wardrobe",
+      "kind": "wardrobe",
+      "bounds": {
+        "name": "Bedroom_rear_right wardrobe",
+        "worldXMM": 1737.36,
+        "worldYMM": 619.963,
+        "heightMM": 2133.6,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 2133.6
+      },
+      "parts": [
+        {
+          "name": "Wardrobe carcass",
+          "worldXMM": 1737.36,
+          "worldYMM": 573.024,
+          "heightMM": 2133.6,
+          "bottomAboveFFLMM": 0,
+          "topAboveFFLMM": 2133.6
+        }
+      ],
+      "finding": "About1737 x620 x2134mm including fronts/pulls. Front-bedroom orientation swaps world axes. No scale change."
+    },
+    {
+      "room": "Bath_right",
+      "name": "Bath_right toilet",
+      "kind": "toilet",
+      "bounds": {
+        "name": "Bath_right toilet",
+        "worldXMM": 381,
+        "worldYMM": 618.744,
+        "heightMM": 697.992,
+        "bottomAboveFFLMM": 9.144,
+        "topAboveFFLMM": 707.136
+      },
+      "parts": [
+        {
+          "name": "Toilet seat",
+          "worldXMM": 316.992,
+          "worldYMM": 438.912,
+          "heightMM": 30.48,
+          "bottomAboveFFLMM": 457.2,
+          "topAboveFFLMM": 487.68
+        }
+      ],
+      "finding": "Compact overall381 x619mm; seat488mm above floor is a TALL placeholder. Not confirmed appropriate for the1626mm person; select an actual fixture/seat before relying on comfort. No speculative resize."
+    },
+    {
+      "room": "Bath_right",
+      "name": "Bath_right shower",
+      "kind": "shower",
+      "bounds": {
+        "name": "Bath_right shower",
+        "worldXMM": 792.48,
+        "worldYMM": 797.052,
+        "heightMM": 2045.208,
+        "bottomAboveFFLMM": 12.192,
+        "topAboveFFLMM": 2057.4
+      },
+      "parts": [
+        {
+          "name": "Shower tray",
+          "worldXMM": 792.48,
+          "worldYMM": 792.48,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 12.192,
+          "topAboveFFLMM": 48.768
+        },
+        {
+          "name": "Shower head",
+          "worldXMM": 167.64,
+          "worldYMM": 167.64,
+          "heightMM": 15.24,
+          "bottomAboveFFLMM": 1961.388,
+          "topAboveFFLMM": 1976.628
+        }
+      ],
+      "finding": "Compact792mm tray, glass about2057mm high and head about1977mm above floor. These are illustrative, not selected enclosure/installation dimensions."
+    },
+    {
+      "room": "Bath_right",
+      "name": "Bath_right vanity",
+      "kind": "basin",
+      "bounds": {
+        "name": "Bath_right vanity",
+        "worldXMM": 554.736,
+        "worldYMM": 427.939,
+        "heightMM": 1516.38,
+        "bottomAboveFFLMM": 160.02,
+        "topAboveFFLMM": 1676.4
+      },
+      "parts": [
+        {
+          "name": "Vanity body",
+          "worldXMM": 518.16,
+          "worldYMM": 368.808,
+          "heightMM": 594.36,
+          "bottomAboveFFLMM": 160.02,
+          "topAboveFFLMM": 754.38
+        },
+        {
+          "name": "Vanity countertop",
+          "worldXMM": 554.736,
+          "worldYMM": 426.72,
+          "heightMM": 45.72,
+          "bottomAboveFFLMM": 754.38,
+          "topAboveFFLMM": 800.1
+        },
+        {
+          "name": "Vanity washbowl",
+          "worldXMM": 362.712,
+          "worldYMM": 298.704,
+          "heightMM": 73.152,
+          "bottomAboveFFLMM": 800.1,
+          "topAboveFFLMM": 873.252
+        },
+        {
+          "name": "Vanity mirror",
+          "worldXMM": 518.16,
+          "worldYMM": 10.668,
+          "heightMM": 518.16,
+          "bottomAboveFFLMM": 1158.24,
+          "topAboveFFLMM": 1676.4
+        }
+      ],
+      "finding": "Countertops555/799mm wide; ceramic rim about873mm above floor. Mirror and tap are not basin height. No scale change."
+    },
+    {
+      "room": "Wash_point",
+      "name": "Rear common washbasin",
+      "kind": "basin",
+      "bounds": {
+        "name": "Rear common washbasin",
+        "worldXMM": 798.576,
+        "worldYMM": 427.939,
+        "heightMM": 1516.38,
+        "bottomAboveFFLMM": 160.02,
+        "topAboveFFLMM": 1676.4
+      },
+      "parts": [
+        {
+          "name": "Vanity body",
+          "worldXMM": 762,
+          "worldYMM": 368.808,
+          "heightMM": 594.36,
+          "bottomAboveFFLMM": 160.02,
+          "topAboveFFLMM": 754.38
+        },
+        {
+          "name": "Vanity countertop",
+          "worldXMM": 798.576,
+          "worldYMM": 426.72,
+          "heightMM": 45.72,
+          "bottomAboveFFLMM": 754.38,
+          "topAboveFFLMM": 800.1
+        },
+        {
+          "name": "Vanity washbowl",
+          "worldXMM": 533.4,
+          "worldYMM": 298.704,
+          "heightMM": 73.152,
+          "bottomAboveFFLMM": 800.1,
+          "topAboveFFLMM": 873.252
+        },
+        {
+          "name": "Vanity mirror",
+          "worldXMM": 762,
+          "worldYMM": 10.668,
+          "heightMM": 518.16,
+          "bottomAboveFFLMM": 1158.24,
+          "topAboveFFLMM": 1676.4
+        }
+      ],
+      "finding": "Countertops555/799mm wide; ceramic rim about873mm above floor. Mirror and tap are not basin height. No scale change."
+    },
+    {
+      "room": "WC",
+      "name": "Common WC sanitary fixture",
+      "kind": "toilet",
+      "bounds": {
+        "name": "Common WC sanitary fixture",
+        "worldXMM": 381,
+        "worldYMM": 618.744,
+        "heightMM": 697.992,
+        "bottomAboveFFLMM": 9.144,
+        "topAboveFFLMM": 707.136
+      },
+      "parts": [
+        {
+          "name": "Toilet seat",
+          "worldXMM": 316.992,
+          "worldYMM": 438.912,
+          "heightMM": 30.48,
+          "bottomAboveFFLMM": 457.2,
+          "topAboveFFLMM": 487.68
+        }
+      ],
+      "finding": "Compact overall381 x619mm; seat488mm above floor is a TALL placeholder. Not confirmed appropriate for the1626mm person; select an actual fixture/seat before relying on comfort. No speculative resize."
+    },
+    {
+      "room": "Common_bath",
+      "name": "Common bath shower",
+      "kind": "shower",
+      "bounds": {
+        "name": "Common bath shower",
+        "worldXMM": 792.48,
+        "worldYMM": 797.052,
+        "heightMM": 2045.208,
+        "bottomAboveFFLMM": 12.192,
+        "topAboveFFLMM": 2057.4
+      },
+      "parts": [
+        {
+          "name": "Shower tray",
+          "worldXMM": 792.48,
+          "worldYMM": 792.48,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 12.192,
+          "topAboveFFLMM": 48.768
+        },
+        {
+          "name": "Shower head",
+          "worldXMM": 167.64,
+          "worldYMM": 167.64,
+          "heightMM": 15.24,
+          "bottomAboveFFLMM": 1961.388,
+          "topAboveFFLMM": 1976.628
+        }
+      ],
+      "finding": "Compact792mm tray, glass about2057mm high and head about1977mm above floor. These are illustrative, not selected enclosure/installation dimensions."
+    },
+    {
+      "room": "Attached_bath",
+      "name": "Attached_bath toilet",
+      "kind": "toilet",
+      "bounds": {
+        "name": "Attached_bath toilet",
+        "worldXMM": 381,
+        "worldYMM": 618.744,
+        "heightMM": 697.992,
+        "bottomAboveFFLMM": 9.144,
+        "topAboveFFLMM": 707.136
+      },
+      "parts": [
+        {
+          "name": "Toilet seat",
+          "worldXMM": 316.992,
+          "worldYMM": 438.912,
+          "heightMM": 30.48,
+          "bottomAboveFFLMM": 457.2,
+          "topAboveFFLMM": 487.68
+        }
+      ],
+      "finding": "Compact overall381 x619mm; seat488mm above floor is a TALL placeholder. Not confirmed appropriate for the1626mm person; select an actual fixture/seat before relying on comfort. No speculative resize."
+    },
+    {
+      "room": "Attached_bath",
+      "name": "Attached_bath shower",
+      "kind": "shower",
+      "bounds": {
+        "name": "Attached_bath shower",
+        "worldXMM": 792.48,
+        "worldYMM": 797.052,
+        "heightMM": 2045.208,
+        "bottomAboveFFLMM": 12.192,
+        "topAboveFFLMM": 2057.4
+      },
+      "parts": [
+        {
+          "name": "Shower tray",
+          "worldXMM": 792.48,
+          "worldYMM": 792.48,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 12.192,
+          "topAboveFFLMM": 48.768
+        },
+        {
+          "name": "Shower head",
+          "worldXMM": 167.64,
+          "worldYMM": 167.64,
+          "heightMM": 15.24,
+          "bottomAboveFFLMM": 1961.388,
+          "topAboveFFLMM": 1976.628
+        }
+      ],
+      "finding": "Compact792mm tray, glass about2057mm high and head about1977mm above floor. These are illustrative, not selected enclosure/installation dimensions."
+    },
+    {
+      "room": "Attached_bath",
+      "name": "Attached_bath vanity",
+      "kind": "basin",
+      "bounds": {
+        "name": "Attached_bath vanity",
+        "worldXMM": 554.736,
+        "worldYMM": 427.939,
+        "heightMM": 1516.38,
+        "bottomAboveFFLMM": 160.02,
+        "topAboveFFLMM": 1676.4
+      },
+      "parts": [
+        {
+          "name": "Vanity body",
+          "worldXMM": 518.16,
+          "worldYMM": 368.808,
+          "heightMM": 594.36,
+          "bottomAboveFFLMM": 160.02,
+          "topAboveFFLMM": 754.38
+        },
+        {
+          "name": "Vanity countertop",
+          "worldXMM": 554.736,
+          "worldYMM": 426.72,
+          "heightMM": 45.72,
+          "bottomAboveFFLMM": 754.38,
+          "topAboveFFLMM": 800.1
+        },
+        {
+          "name": "Vanity washbowl",
+          "worldXMM": 362.712,
+          "worldYMM": 298.704,
+          "heightMM": 73.152,
+          "bottomAboveFFLMM": 800.1,
+          "topAboveFFLMM": 873.252
+        },
+        {
+          "name": "Vanity mirror",
+          "worldXMM": 518.16,
+          "worldYMM": 10.668,
+          "heightMM": 518.16,
+          "bottomAboveFFLMM": 1158.24,
+          "topAboveFFLMM": 1676.4
+        }
+      ],
+      "finding": "Countertops555/799mm wide; ceramic rim about873mm above floor. Mirror and tap are not basin height. No scale change."
+    },
+    {
+      "room": "Kitchen",
+      "name": "L-shaped kitchen cabinetry and appliances",
+      "kind": "kitchen",
+      "bounds": {
+        "name": "L-shaped kitchen cabinetry and appliances",
+        "worldXMM": 3948.656,
+        "worldYMM": 3608.832,
+        "heightMM": 3690.619,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 3690.619
+      },
+      "parts": [
+        {
+          "name": "Kitchen refrigerator",
+          "worldXMM": 746.76,
+          "worldYMM": 762,
+          "heightMM": 1920.24,
+          "bottomAboveFFLMM": 0,
+          "topAboveFFLMM": 1920.24
+        },
+        {
+          "name": "Kitchen inset steel sink",
+          "worldXMM": 701.04,
+          "worldYMM": 493.776,
+          "heightMM": 195.072,
+          "bottomAboveFFLMM": 701.04,
+          "topAboveFFLMM": 896.112
+        },
+        {
+          "name": "Kitchen hob",
+          "worldXMM": 518.16,
+          "worldYMM": 716.28,
+          "heightMM": 12.192,
+          "bottomAboveFFLMM": 896.112,
+          "topAboveFFLMM": 908.304
+        },
+        {
+          "name": "Extractor capture canopy",
+          "worldXMM": 600,
+          "worldYMM": 800,
+          "heightMM": 55,
+          "bottomAboveFFLMM": 1681.164,
+          "topAboveFFLMM": 1736.164
+        }
+      ],
+      "finding": "Combined group includes EXTERIOR exhaust and ceiling suspension: its bounding box is not a cabinet size. Refrigerator747 x762 x1920mm; counter top about890mm, hob518 x716mm; retained hood800 x600mm. No appliance scale change."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining table",
+      "kind": "table",
+      "bounds": {
+        "name": "Dining table",
+        "worldXMM": 1828.8,
+        "worldYMM": 914.4,
+        "heightMM": 981.648,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 981.648
+      },
+      "parts": [
+        {
+          "name": "Dining tabletop",
+          "worldXMM": 1828.8,
+          "worldYMM": 914.4,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 695.136,
+          "topAboveFFLMM": 750
+        }
+      ],
+      "finding": "1829 x914mm top; measured height corrected783 to750mm. Supports/aprons/centerpiece follow; footprint and eight chair locations retained. Eight places are compact, not certified comfortable capacity."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining chair 17",
+      "kind": "chair",
+      "bounds": {
+        "name": "Dining chair 17",
+        "worldXMM": 457.2,
+        "worldYMM": 490.736,
+        "heightMM": 847.849,
+        "bottomAboveFFLMM": 1.019,
+        "topAboveFFLMM": 848.868
+      },
+      "parts": [
+        {
+          "name": "Dining seat cushion",
+          "worldXMM": 438.912,
+          "worldYMM": 451.104,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 405.136,
+          "topAboveFFLMM": 460
+        }
+      ],
+      "finding": "Eight chairs:457 x491mm overall footprint with849mm back. Measured seat corrected491 to460mm to match the cited reference; front supports adjusted, feet/positions/footprints/back height retained."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining chair 18",
+      "kind": "chair",
+      "bounds": {
+        "name": "Dining chair 18",
+        "worldXMM": 457.2,
+        "worldYMM": 490.736,
+        "heightMM": 847.849,
+        "bottomAboveFFLMM": 1.019,
+        "topAboveFFLMM": 848.868
+      },
+      "parts": [
+        {
+          "name": "Dining seat cushion",
+          "worldXMM": 438.912,
+          "worldYMM": 451.104,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 405.136,
+          "topAboveFFLMM": 460
+        }
+      ],
+      "finding": "Eight chairs:457 x491mm overall footprint with849mm back. Measured seat corrected491 to460mm to match the cited reference; front supports adjusted, feet/positions/footprints/back height retained."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining chair 19",
+      "kind": "chair",
+      "bounds": {
+        "name": "Dining chair 19",
+        "worldXMM": 457.2,
+        "worldYMM": 490.736,
+        "heightMM": 847.849,
+        "bottomAboveFFLMM": 1.019,
+        "topAboveFFLMM": 848.868
+      },
+      "parts": [
+        {
+          "name": "Dining seat cushion",
+          "worldXMM": 438.912,
+          "worldYMM": 451.104,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 405.136,
+          "topAboveFFLMM": 460
+        }
+      ],
+      "finding": "Eight chairs:457 x491mm overall footprint with849mm back. Measured seat corrected491 to460mm to match the cited reference; front supports adjusted, feet/positions/footprints/back height retained."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining chair 20",
+      "kind": "chair",
+      "bounds": {
+        "name": "Dining chair 20",
+        "worldXMM": 457.2,
+        "worldYMM": 490.736,
+        "heightMM": 847.849,
+        "bottomAboveFFLMM": 1.019,
+        "topAboveFFLMM": 848.868
+      },
+      "parts": [
+        {
+          "name": "Dining seat cushion",
+          "worldXMM": 438.912,
+          "worldYMM": 451.104,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 405.136,
+          "topAboveFFLMM": 460
+        }
+      ],
+      "finding": "Eight chairs:457 x491mm overall footprint with849mm back. Measured seat corrected491 to460mm to match the cited reference; front supports adjusted, feet/positions/footprints/back height retained."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining chair 21",
+      "kind": "chair",
+      "bounds": {
+        "name": "Dining chair 21",
+        "worldXMM": 457.2,
+        "worldYMM": 490.736,
+        "heightMM": 847.849,
+        "bottomAboveFFLMM": 1.019,
+        "topAboveFFLMM": 848.868
+      },
+      "parts": [
+        {
+          "name": "Dining seat cushion",
+          "worldXMM": 438.912,
+          "worldYMM": 451.104,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 405.136,
+          "topAboveFFLMM": 460
+        }
+      ],
+      "finding": "Eight chairs:457 x491mm overall footprint with849mm back. Measured seat corrected491 to460mm to match the cited reference; front supports adjusted, feet/positions/footprints/back height retained."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining chair 22",
+      "kind": "chair",
+      "bounds": {
+        "name": "Dining chair 22",
+        "worldXMM": 457.2,
+        "worldYMM": 490.736,
+        "heightMM": 847.849,
+        "bottomAboveFFLMM": 1.019,
+        "topAboveFFLMM": 848.868
+      },
+      "parts": [
+        {
+          "name": "Dining seat cushion",
+          "worldXMM": 438.912,
+          "worldYMM": 451.104,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 405.136,
+          "topAboveFFLMM": 460
+        }
+      ],
+      "finding": "Eight chairs:457 x491mm overall footprint with849mm back. Measured seat corrected491 to460mm to match the cited reference; front supports adjusted, feet/positions/footprints/back height retained."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining chair 23",
+      "kind": "chair",
+      "bounds": {
+        "name": "Dining chair 23",
+        "worldXMM": 490.736,
+        "worldYMM": 457.2,
+        "heightMM": 847.849,
+        "bottomAboveFFLMM": 1.019,
+        "topAboveFFLMM": 848.868
+      },
+      "parts": [
+        {
+          "name": "Dining seat cushion",
+          "worldXMM": 451.104,
+          "worldYMM": 438.912,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 405.136,
+          "topAboveFFLMM": 460
+        }
+      ],
+      "finding": "Eight chairs:457 x491mm overall footprint with849mm back. Measured seat corrected491 to460mm to match the cited reference; front supports adjusted, feet/positions/footprints/back height retained."
+    },
+    {
+      "room": "Dining_central_zone",
+      "name": "Dining chair 24",
+      "kind": "chair",
+      "bounds": {
+        "name": "Dining chair 24",
+        "worldXMM": 490.736,
+        "worldYMM": 457.2,
+        "heightMM": 847.849,
+        "bottomAboveFFLMM": 1.019,
+        "topAboveFFLMM": 848.868
+      },
+      "parts": [
+        {
+          "name": "Dining seat cushion",
+          "worldXMM": 451.104,
+          "worldYMM": 438.912,
+          "heightMM": 54.864,
+          "bottomAboveFFLMM": 405.136,
+          "topAboveFFLMM": 460
+        }
+      ],
+      "finding": "Eight chairs:457 x491mm overall footprint with849mm back. Measured seat corrected491 to460mm to match the cited reference; front supports adjusted, feet/positions/footprints/back height retained."
+    },
+    {
+      "room": "Hall",
+      "name": "Living sofa",
+      "kind": "sofa",
+      "bounds": {
+        "name": "Living sofa",
+        "worldXMM": 807.72,
+        "worldYMM": 2042.16,
+        "heightMM": 835.882,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 835.882
+      },
+      "parts": [
+        {
+          "name": "Sofa seat cushion",
+          "worldXMM": 640.08,
+          "worldYMM": 563.88,
+          "heightMM": 111.007,
+          "bottomAboveFFLMM": 339.852,
+          "topAboveFFLMM": 450.859
+        },
+        {
+          "name": "Sofa seat cushion",
+          "worldXMM": 640.08,
+          "worldYMM": 563.88,
+          "heightMM": 111.003,
+          "bottomAboveFFLMM": 339.852,
+          "topAboveFFLMM": 450.855
+        },
+        {
+          "name": "Sofa seat cushion",
+          "worldXMM": 640.08,
+          "worldYMM": 563.88,
+          "heightMM": 111.007,
+          "bottomAboveFFLMM": 339.852,
+          "topAboveFFLMM": 450.859
+        }
+      ],
+      "finding": "Compact3-seat sofa2042 x808 x836mm; measured cushion top about451mm. Consistent with a45cm seat reference, not an exact product replica."
+    },
+    {
+      "room": "Hall",
+      "name": "Living coffee table",
+      "kind": "table",
+      "bounds": {
+        "name": "Living coffee table",
+        "worldXMM": 640.08,
+        "worldYMM": 944.88,
+        "heightMM": 423.672,
+        "bottomAboveFFLMM": 6.096,
+        "topAboveFFLMM": 429.768
+      },
+      "parts": [
+        {
+          "name": "Coffee tabletop",
+          "worldXMM": 640.08,
+          "worldYMM": 944.88,
+          "heightMM": 36.576,
+          "bottomAboveFFLMM": 393.192,
+          "topAboveFFLMM": 429.768
+        }
+      ],
+      "finding": "640 x945mm top at430mm; normal low-table proportions, retained."
+    },
+    {
+      "room": "Hall",
+      "name": "Living rug",
+      "kind": "rug",
+      "bounds": {
+        "name": "Living rug",
+        "worldXMM": 2133.6,
+        "worldYMM": 2133.6,
+        "heightMM": 7.62,
+        "bottomAboveFFLMM": 6.858,
+        "topAboveFFLMM": 14.478
+      },
+      "parts": [],
+      "finding": "2134 x2134mm; custom loose rug, not a standard-size claim. No scale change."
+    },
+    {
+      "room": "Hall",
+      "name": "Media console and screen",
+      "kind": "media",
+      "bounds": {
+        "name": "Media console and screen",
+        "worldXMM": 299.923,
+        "worldYMM": 2011.68,
+        "heightMM": 1325.88,
+        "bottomAboveFFLMM": 30.48,
+        "topAboveFFLMM": 1356.36
+      },
+      "parts": [
+        {
+          "name": "Media console body",
+          "worldXMM": 259.08,
+          "worldYMM": 2011.68,
+          "heightMM": 426.72,
+          "bottomAboveFFLMM": 30.48,
+          "topAboveFFLMM": 457.2
+        },
+        {
+          "name": "Media screen",
+          "worldXMM": 30.48,
+          "worldYMM": 1402.08,
+          "heightMM": 762,
+          "bottomAboveFFLMM": 594.36,
+          "topAboveFFLMM": 1356.36
+        }
+      ],
+      "finding": "2012mm-wide shallow console, about300mm maximum projection including pulls. Screen about63in diagonal; not a purchased TV/cabinet. No scale change."
+    },
+    {
+      "room": "Prayer",
+      "name": "Prayer alcove cabinet",
+      "kind": "cabinet",
+      "bounds": {
+        "name": "Prayer alcove cabinet",
+        "worldXMM": 1402.08,
+        "worldYMM": 400.507,
+        "heightMM": 1615.44,
+        "bottomAboveFFLMM": 0,
+        "topAboveFFLMM": 1615.44
+      },
+      "parts": [
+        {
+          "name": "Prayer cabinet body",
+          "worldXMM": 1371.6,
+          "worldYMM": 350.52,
+          "heightMM": 701.04,
+          "bottomAboveFFLMM": 0,
+          "topAboveFFLMM": 701.04
+        }
+      ],
+      "finding": "Custom prayer cabinet body1372 x351 x701mm; decorative back reaches1615mm. No universal product size applies. No scale change."
+    }
+  ],
+  "lamps": [
+    {
+      "name": "Bedroom_front_right bedside lamp left",
+      "worldXMM": 231.648,
+      "worldYMM": 231.648,
+      "heightMM": 298.704,
+      "bottomAboveFFLMM": 569.976,
+      "topAboveFFLMM": 868.68
+    },
+    {
+      "name": "Bedroom_front_right bedside lamp right",
+      "worldXMM": 231.648,
+      "worldYMM": 231.648,
+      "heightMM": 298.704,
+      "bottomAboveFFLMM": 569.976,
+      "topAboveFFLMM": 868.68
+    },
+    {
+      "name": "Bedroom_rear_left bedside lamp left",
+      "worldXMM": 231.648,
+      "worldYMM": 231.648,
+      "heightMM": 298.704,
+      "bottomAboveFFLMM": 569.976,
+      "topAboveFFLMM": 868.68
+    },
+    {
+      "name": "Bedroom_rear_left bedside lamp right",
+      "worldXMM": 231.648,
+      "worldYMM": 231.648,
+      "heightMM": 298.704,
+      "bottomAboveFFLMM": 569.976,
+      "topAboveFFLMM": 868.68
+    },
+    {
+      "name": "Bedroom_rear_right bedside lamp left",
+      "worldXMM": 231.648,
+      "worldYMM": 231.648,
+      "heightMM": 298.704,
+      "bottomAboveFFLMM": 569.976,
+      "topAboveFFLMM": 868.68
+    },
+    {
+      "name": "Bedroom_rear_right bedside lamp right",
+      "worldXMM": 231.648,
+      "worldYMM": 231.648,
+      "heightMM": 298.704,
+      "bottomAboveFFLMM": 569.976,
+      "topAboveFFLMM": 868.68
+    }
+  ]
+}
