@@ -153,15 +153,22 @@ try{
  let history=[],historyIndex=-1,nextExhausted=false,noticeMessage='',noticeUntil=0,pausedRequest=null;
  const visited=new Set(),roomNames=new Set(model.rooms.map(room=>room.name));
  const keys=new Set(),touchKeys=new Set(),touchPointers=new Map();
- const lampControls=createLampControls({scene,camera,canvas:renderer.domElement,furnishing,panel:document.getElementById('lamp-controls'),
+ const lampControls=createLampControls({scene,camera,canvas:renderer.domElement,furnishing,
   enabled:()=>mode!=='plan'&&furnishing.root.visible,
   canTap:()=>!keys.size&&!touchPointers.size&&!pendingRequest&&!walker.path.length});
  const planFrame=document.getElementById('plan'),walkControls=document.getElementById('walk-controls'),dock=document.getElementById('walk-dock');
  const structureNote=document.getElementById('structure-note'),structureControls=document.getElementById('structure-controls');
  const levels=structuralConcept.root.userData.levels,signed=n=>(n>=0?'+':'')+n;
  document.getElementById('structure-levels').textContent=`Local datum: grade ${signed(levels.grade)} ft / FFL ${signed(levels.floor)} ft / wall top ${signed(levels.wallTop)} ft`;
+ const example=structuralConcept.root.userData.exampleSectionsMM;
+ document.getElementById('structure-sizes').textContent=`EXAMPLE/UNVERIFIED: column ${example.column.join(' x ')} / beam ${example.beam.join(' x ')} mm. Native walls ${structuralConcept.context.userData.nominalWallInches.join(' / ')} in.`;
+ document.getElementById('structure-clash-summary').textContent=`${structuralConcept.openingClashes.length} opening clashes (orange boxes).`;
  document.getElementById('structure-context').onclick=event=>{
   const visible=!structuralConcept.context.visible;structuralConcept.setContext(visible);event.currentTarget.setAttribute('aria-pressed',String(visible));
+  document.getElementById('structure-cut').disabled=!visible;
+ };
+ document.getElementById('structure-cut').onclick=event=>{
+  structuralConcept.setCutWalls(!structuralConcept.cutWalls);event.currentTarget.setAttribute('aria-pressed',String(structuralConcept.cutWalls));
  };
  document.getElementById('structure-roof').onclick=event=>{
   const visible=!structuralConcept.roof.visible;structuralConcept.setRoof(visible);event.currentTarget.setAttribute('aria-pressed',String(visible));

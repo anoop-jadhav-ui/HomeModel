@@ -53,21 +53,17 @@ iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;ba
 <style>
 #stage{display:grid;grid-template-rows:minmax(0,1fr) auto}
 #viewport{position:relative;min-width:0;min-height:0;overflow:hidden}
-#lamp-controls{position:absolute;left:12px;bottom:12px;z-index:3;max-width:min(260px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:#f9fbf7ef;border:1px solid #becac0;border-radius:9px;font-size:12px}
-#lamp-controls summary{min-height:44px;padding:12px;box-sizing:border-box;cursor:pointer}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 #structure-note{justify-self:center;width:min(760px,calc(100% - 24px));margin:8px 0;padding:9px 12px;border:1px solid #c9ab7f;border-radius:9px;background:#fff7e8;font-size:12px;line-height:1.45}
 #structure-note p{margin:3px 0}#structure-note strong{color:#75400b}
 #structure-note .structure-legend{display:flex;flex-wrap:wrap;gap:4px 14px}
 .structure-legend span::before{content:"";display:inline-block;width:12px;height:7px;margin-right:5px;background:var(--swatch)}
 #structure-levels{font-size:10px;color:#625b4d}
+#structure-sizes{font-size:11px;color:#4f514a}
 #structure-controls{display:flex;gap:6px;flex-wrap:wrap}
 body[data-view=structure] .model-controls{display:none}
 @media(max-width:700px){.view-controls{grid-template-columns:repeat(3,minmax(0,1fr))}#structure-note{font-size:11px;padding:7px 9px;margin:6px 0}}
-@media(max-height:500px) and (min-width:600px){.view-controls{grid-template-columns:repeat(5,minmax(0,1fr))}#structure-note{font-size:11px;line-height:1.3}#structure-levels{display:none}}
-#lamp-controls p{margin:0 12px 8px;color:#627267}
-[data-lamp-list]{display:grid;gap:4px;padding:0 8px 8px}
-[data-lamp-list] button{text-align:left;font-size:11px;min-height:44px}
-[data-lamp-list] button[aria-pressed=true]{background:#f3dfb9;color:#65491c;border-color:#b99a61}
+@media(max-height:500px) and (min-width:600px){.view-controls{grid-template-columns:repeat(5,minmax(0,1fr))}#structure-note{font-size:11px;line-height:1.3}#structure-levels,.structure-legend{display:none!important}}
 #walk-dock{width:min(640px,calc(100% - 24px));justify-self:center;display:grid;grid-template-columns:140px minmax(0,1fr);gap:7px 14px;padding:10px 12px;margin:8px 0 max(8px,env(safe-area-inset-bottom));background:#f9fbf7;border:1px solid #becac0;border-radius:14px;box-shadow:0 3px 14px #253c2517}
 .dock-context{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
 .dock-place{min-width:0;flex:1}#walk-location{display:block;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
@@ -103,14 +99,14 @@ button:disabled{opacity:.42;cursor:default}
 <div class="model-controls" role="group" aria-label="Model visibility">
 <button id="roof" aria-pressed="true" title="Toggle roof visibility">Roof</button><button id="furniture" aria-pressed="true" title="Toggle illustrative furniture">Furniture</button>
 </div>
-<div id="structure-controls" role="group" aria-label="Conceptual framing references" hidden><button id="structure-context" aria-pressed="false">Wall context</button><button id="structure-roof" aria-pressed="true">Roof envelope</button></div>
+<div id="structure-controls" role="group" aria-label="Conceptual construction references" hidden><button id="structure-context" aria-pressed="true" title="Original native masonry walls and openings">Walls</button><button id="structure-cut" aria-pressed="true" title="Cut masonry at the native architectural plan height">Cut walls</button><button id="structure-roof" aria-pressed="true" title="Architectural hipped roof envelope only - not roof framing">Roof outline</button></div>
 </nav>
 <main id="stage"><div id="viewport"><iframe id="plan" title="Dimensioned architectural cut plan" src="plan.html?embed=1"></iframe>
 <div id="crosshair"></div><div id="failure" role="alert"></div>
-<details id="lamp-controls" hidden><summary>Lamps · tap to switch</summary><p>Tap a visible bedside lamp, or use these switches. Pressed means on.</p><div data-lamp-list role="group" aria-label="Individual bedside lamp switches"></div></details></div>
+</div>
 <section id="structure-note" aria-label="Conceptual structure limitations" hidden><strong>Conceptual - not engineered</strong>
-<div class="structure-legend"><span style="--swatch:#397ba2">Column study markers</span><span style="--swatch:#376b85">Dashed beam axes - not sized</span><span style="--swatch:#bf671e">Unresolved support</span></div>
-<p>Amber: roof/hall support unresolved. No member sizes or foundations designed. <a href="Structure-assumptions.html" target="_blank" rel="noopener">Assumptions</a></p><div id="structure-levels"></div></section>
+<div class="structure-legend"><span style="--swatch:#969a92">RCC examples</span><span style="--swatch:#8e4c32">Native masonry</span><span style="--swatch:#bf671e">Unresolved / clashes</span></div><div id="structure-sizes"></div>
+<p><span id="structure-clash-summary"></span> Roof/hall supports unresolved; no foundations designed. <a href="Structure-assumptions.html" target="_blank" rel="noopener">Assumptions</a></p><div id="structure-levels"></div></section>
 <section id="walk-dock" aria-label="Interior navigation player" hidden>
 <div class="dock-context"><div class="dock-place"><strong id="walk-location">Outside</strong><span id="walk-notice" role="status" aria-live="polite"></span></div>
 <div class="travel-mode" role="radiogroup" aria-label="Navigation mode">

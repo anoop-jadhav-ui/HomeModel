@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {readFileSync} from 'node:fs';
-import {LampTapGesture,pickLamp,setLampOn} from './output/lamp-controls.js';
+import {LampTapGesture,pickLamp,setLampOn,nearestVisibleLamp} from './output/lamp-controls.js';
 import {createFurnishings} from './output/furnishings.js';
 
 const event=(id,x=10,y=10)=>({pointerId:id,clientX:x,clientY:y,button:0});
@@ -42,4 +42,15 @@ test('six real bedside lamps switch independently with emission and finite unsha
  assert(a.light.intensity>0&&a.light.distance<=1.5&&!a.light.castShadow);
  assert(!b.on);assert.equal(b.light.intensity,0);assert.notEqual(a.shade.material,b.shade.material);
  setLampOn(b,true);setLampOn(a,false);assert(b.on);assert(!a.on);assert.equal(a.light.intensity,0);
+});
+test('the non-dashboard keyboard action chooses only a visible, unoccluded lamp',()=>{
+ const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(60,1,.1,100);
+ camera.position.z=5;camera.lookAt(0,0,0);
+ function lamp(x,z){const group=new THREE.Group(),shade=new THREE.Mesh(new THREE.BoxGeometry(.4,.4,.4),new THREE.MeshBasicMaterial());
+  group.position.set(x,0,z);group.add(shade);scene.add(group);return {group,shade}}
+ const a=lamp(-.8,1),b=lamp(.8,0),outside=lamp(20,4),lamps=[a,b,outside];
+ assert.equal(nearestVisibleLamp(scene,camera,lamps),a);
+ const wall=new THREE.Mesh(new THREE.BoxGeometry(.65,1,.2),new THREE.MeshBasicMaterial());wall.position.set(-.6,0,2);scene.add(wall);
+ assert.equal(nearestVisibleLamp(scene,camera,lamps),b,'Occluded closest lamp is not keyboard-switchable');
+ b.group.visible=false;assert.equal(nearestVisibleLamp(scene,camera,lamps),null,'No offscreen or hidden-lamp fallback');
 });

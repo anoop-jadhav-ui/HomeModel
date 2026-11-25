@@ -1,0 +1,77 @@
+{
+  "scope":"CONCEPT_ONLY_NOT_ENGINEERED",
+  "branch":"feat/conceptual-structure",
+  "previousLocalCheckpoint":"23e7297dcd678361df4222ffe395c6018f8181c9",
+  "approvedMaster":"809cb192f9a0341a593f703c9d90504b99c15815",
+  "preview":{"url":"http://127.0.0.1:8768/","canvas":"home-structure-review","mobile":"home-structure-mobile"},
+  "system":"Illustrative RCC frame and clay-brick masonry infill; not a confirmed structural-system choice",
+  "exampleSectionsMM":{"status":"EXAMPLE_UNVERIFIED","columnXY":[300,300],"beamWidthDepth":[230,450]},
+  "nativeWalls":{"inches":[9,4.5],"millimetres":[228.6,114.3],"source":"Original native wall meshes/opening voids and CAD-derived plan section faces","geometryUnchanged":true},
+  "architecturalPreservation":{"FCStdGitBlob":"0a09172ecb7ac3cc879d2bc70435b7fc82ec4a46","IFCGitBlob":"e917860e8d31afad39176390963e370c4b0327eb","nativeInputsExportsArchivesUnchanged":true,"structuralCADIFCPackageAdded":false,"flatRCCRoofSlabAdded":false},
+  "dimensionalFindings":{
+    "columnProjectionBeyondOriginalFacadeMM":35.7,
+    "openingClashes":[
+      {"beam":"B-ref-08","vent":"V_01_Rear_W"},
+      {"beam":"B-ref-08","vent":"V1_01_Rear_W"},
+      {"beam":"B-ref-08","vent":"V1_02_Rear_W"},
+      {"beam":"B-ref-08","vent":"V1_03_Rear_W"},
+      {"beam":"B-ref-05","vent":"V_02_Right_N"},
+      {"beam":"B-ref-05","vent":"V_03_Right_N"}
+    ],
+    "ventHeadOverlapMM":145.2,
+    "meaning":"Geometric conflicts of EXAMPLE members, not load/strength analysis or a request to alter approved walls/vents.",
+    "diagnostics":"Actual intersecting boxes and original apertures remain outlined, including when walls are cut/hidden.",
+    "unresolved":"Monitor/hip transfers, full open hall span, internal gravity/lateral system, slab/foundations/soil, lintels/ties and joints; no guessed supports in the passage."
+  },
+  "validation":{
+    "command":"node --test structural-concept.test.mjs navigation.test.mjs wall-sections.test.mjs furnishings.test.mjs lamp-controls.test.mjs door-presentation.test.mjs site.test.mjs validate-deployment.test.mjs",
+    "passed":56,
+    "failed":0,
+    "targeted":"Seven structural and four lamp tests: real mm/member bounds, column-face beam joints, exact native walls/slab, all six geometric vent clashes and changed-section recomputation, preserved open passage, datum translation, explicit invalid inputs, occlusion/gesture/nearest-visible keyboard selection.",
+    "build":{"command":"npm run build","files":40,"assetModuleChecks":83},
+    "browserChecks":[
+      "Solid study and wall/roof references isolated from normal modes.",
+      "Cut walls and full walls change only the display clip and native caps.",
+      "Frame-only mode retains clash markers; cut action disables when walls hidden.",
+      "Roof outline toggles without creating a roof slab.",
+      "Exterior roof/furniture preferences, selected radio and focus handling preserved.",
+      "Interior starts collision-clear and Fly returns to safe walking.",
+      "Architectural plan remains separate.",
+      "No upfront Lamps panel, discovery prompt or hidden dashboard switch buttons.",
+      "Synthetic mouse/touch pointer sequences on actual projected lamp mesh toggle it; dragging is rejected.",
+      "Scene-focused L switches nearest visible lamp; independent state survives hidden furniture and mode restoration."
+    ],
+    "pointerTestLimit":"DOM pointer-sequence exercise with orbit disabled for synthetic pointer capture; not a physical touch-device test. The browser element-click helper dispatches click without the required pointer sequence, so it was not treated as proof of direct lamp tapping.",
+    "responsiveModes":["exterior","cutaway","interior","plan","structure"],
+    "responsiveCases":[
+      {"size":[320,568],"renderHeights":[345,345,219,396,181]},
+      {"size":[390,844],"renderHeights":[621,621,493,672,477]},
+      {"size":[667,375],"renderHeights":[214,214,122,265,137]},
+      {"size":[844,390],"renderHeights":[280,280,137,280,195]}
+    ],
+    "responsiveAssertions":"All20 cases: no horizontal overflow; all visible buttons >=44px; concept warning only in Structure; lamp panel absent."
+  },
+  "finalEntryRoute":{"outsideFeet":[21,-9],"enteredHallFeet":[21,0.9321998390077115],"flyReturnSafe":true,"restoredStructureStatus":"Ready","lampShortcutDisabledInStructure":true},
+  "budget":{"mainPassDrawCalls":60,"meshTriangles":1079,"geometryVertices":3533,"textureMaps":4,"authoredMapSizes":[[256,128],[256,128],[128,128],[128,128]],"textureSourceBytes":393216,"limits":"Actual responsive browser renders, not a physical low-end-phone/FPS benchmark. Materials are generic authored textures, not photogrammetric realism."},
+  "reviewImages":{
+    "priorDiagram":"structure-overview.png",
+    "solidOverview":"structure-solid-overview.png",
+    "fullWalls":"structure-solid-full-walls.png",
+    "rearVentConflict":"structure-solid-vent-clash.png",
+    "columnBeamMasonryJunction":"structure-solid-junction.png",
+    "responsiveRender":"structure-solid-mobile.png",
+    "note":"Saved WebGL renders have explicit non-engineered/example labels. The mobile image is a rendered viewport, not a full-page UI screenshot."
+  },
+  "detailCameraFeet":{
+    "rearVents":{"position":[21,52,19],"target":[21,33.875,12.5]},
+    "junction":{"position":[49,-8,17],"target":[41,3,9]},
+    "mapping":"Three.js = (x,z,-y) * 0.3048"
+  },
+  "references":[
+    {"url":"https://www.iitk.ac.in/nicee/EQTips/EQTip17.pdf","use":"RC-frame/masonry-infill system explanation and need for an engineered complete system; not section sizing."},
+    {"url":"https://www.iitk.ac.in/nicee/EQTips/EQTip22.pdf","use":"Infill/window interaction and explicit distinction between a view cut and proposed partial-height walls."},
+    {"url":"https://www.rkbbuildpro.com/product-page/rkb-standard-bricks","use":"Manufacturer's 230 x110 x75mm clay-brick material scale; no product performance/suitability claim."}
+  ],
+  "assetLicense":"All new concrete/clay/mortar maps and geometry are locally authored. No reference photos, copied drawings, commercial meshes or externally hosted runtime assets.",
+  "delivery":"Local feature only. No merge, push or PR authorized/performed."
+}
