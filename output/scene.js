@@ -165,10 +165,6 @@ try{
  document.getElementById('structure-clash-summary').textContent=`${structuralConcept.openingClashes.length} opening clashes (orange boxes).`;
  document.getElementById('structure-context').onclick=event=>{
   const visible=!structuralConcept.context.visible;structuralConcept.setContext(visible);event.currentTarget.setAttribute('aria-pressed',String(visible));
-  document.getElementById('structure-cut').disabled=!visible;
- };
- document.getElementById('structure-cut').onclick=event=>{
-  structuralConcept.setCutWalls(!structuralConcept.cutWalls);event.currentTarget.setAttribute('aria-pressed',String(structuralConcept.cutWalls));
  };
  document.getElementById('structure-roof').onclick=event=>{
   const visible=!structuralConcept.roof.visible;structuralConcept.setRoof(visible);event.currentTarget.setAttribute('aria-pressed',String(visible));

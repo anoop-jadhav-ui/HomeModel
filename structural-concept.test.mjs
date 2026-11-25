@@ -29,8 +29,9 @@ test('solid example column sections are correctly scaled, clear approved opening
  assert(Math.abs(study.root.userData.outerProjectionMM-35.7)<1e-3,'Example columns must not silently enlarge approved walls');
  assert.equal(JSON.stringify(model),original,'Structure mode may not revise the approved architectural export');
 });
-test('solid masonry, its original openings/cut faces, slab and roof use the unchanged native export',()=>{
- const study=createStructuralConcept(model),record=model.objects.find(o=>o.name==='Ground Floor Slab');
+test('full-height masonry ignores cut-plan data and preserves original openings, slab and roof envelopes',()=>{
+ const withoutCutPlan=structuredClone(model);delete withoutCutPlan.plan.wall_faces;delete withoutCutPlan.plan.cut_height;
+ const study=createStructuralConcept(withoutCutPlan),record=model.objects.find(o=>o.name==='Ground Floor Slab');
  const p=study.slab.geometry.attributes.position;
  for(let i=0;i<p.count;i++){
   const [x,y,z]=record.vertices[i];
@@ -43,11 +44,13 @@ test('solid masonry, its original openings/cut faces, slab and roof use the unch
    const [x,y,z]=native.vertices[index];
    assert(Math.hypot(positions.getX(i)-x*FT,positions.getY(i)-z*FT,positions.getZ(i)+y*FT)<1e-6);
   });
-  assert(wall.material.clippingPlanes[0].distanceToPoint(new THREE.Vector3(0,(model.dimensions.floor_elevation+model.plan.cut_height)*FT,0))===0);
+  assert.equal(wall.material.clippingPlanes?.length??0,0,'Structure walls must not use a cut plane');
+  const box=new THREE.Box3().setFromObject(wall);
+  assert(Math.abs(box.min.y-model.dimensions.floor_elevation*FT)<1e-6);
+  assert(Math.abs(box.max.y-(model.dimensions.floor_elevation+model.dimensions.wall_height)*FT)<1e-6);
  }
- assert(!study.root.visible&&study.context.visible&&study.caps.visible);
+ assert(!study.root.visible&&study.context.visible);
  assert.deepEqual(study.context.userData.nominalWallInches,[9,4.5]);
- assert.equal(study.caps.userData.sourceFaces,model.plan.wall_faces.length);
  assert(study.roof.userData.notStructuralMembers);
  assert(!study.slab.userData.structuralDesign);
  assert(study.root.userData.issues.some(s=>s.includes('foundations')));

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import {FT,point} from './furnishings.js';
-import {createWallSections} from './wall-sections.js';
 import {STRUCTURE_SETTINGS} from './structure-settings.js';
 
 const STATUS='CONCEPT_ONLY_NOT_ENGINEERED',EXAMPLE='EXAMPLE_UNVERIFIED';
@@ -117,22 +116,15 @@ export function createStructuralConcept(model,settings=STRUCTURE_SETTINGS){
   root.add(mesh);beams.push(mesh);
  }
  const context=new THREE.Group();context.name='Native masonry wall reference - original openings';root.add(context);
- const cutPlane=new THREE.Plane(new THREE.Vector3(0,-1,0),(floor+model.plan.cut_height)*FT),walls=[];
+ const walls=[];
  for(const record of model.objects.filter(o=>o.group==='Walls')){
   const mesh=new THREE.Mesh(surfaceUV(nativeGeometry(record)),materials.masonry);mesh.name=record.name+' - native wall envelope';
   mesh.castShadow=mesh.receiveShadow=true;mesh.userData={status:'ARCHITECTURAL_ENVELOPE_ONLY',source:record.name,structuralDesign:false};
   context.add(mesh);walls.push(mesh);
  }
  if(!walls.length)throw new Error('Missing native masonry wall references.');
- const caps=createWallSections(model);caps.material.dispose();caps.geometry=surfaceUV(caps.geometry);
- caps.material=materials.masonry.clone();caps.material.clippingPlanes=[];context.add(caps);
- context.userData={status:'ARCHITECTURAL_ENVELOPE_ONLY',source:'Unmodified native wall solids and CAD-derived plan cut faces',
-  cutHeight:model.plan.cut_height,nominalWallInches:[...new Set(model.plan.openings.map(o=>o.wall_thickness*12))].sort((a,b)=>b-a),structuralDesign:false};
- let cutWalls=true;
- function setCutWalls(cut){
-  cutWalls=cut;materials.masonry.clippingPlanes=cut?[cutPlane]:[];materials.masonry.needsUpdate=true;caps.visible=cut;
- }
- setCutWalls(true);
+ context.userData={status:'ARCHITECTURAL_ENVELOPE_ONLY',source:'Unmodified full-height native wall solids',
+  nominalWallInches:[...new Set(model.plan.openings.map(o=>o.wall_thickness*12))].sort((a,b)=>b-a),structuralDesign:false};
  const positions=[];
  for(const record of model.objects.filter(o=>o.name.startsWith('Hip Roof ')||o.name.startsWith('Monitor Cap '))){
   const g=nativeGeometry(record),edges=new THREE.EdgesGeometry(g,8);positions.push(...edges.attributes.position.array);g.dispose();edges.dispose();
@@ -187,7 +179,6 @@ export function createStructuralConcept(model,settings=STRUCTURE_SETTINGS){
  lines(datum,colors.datum,'Shared grade and finished-floor reference outlines',{dashed:true,opacity:.5});
  root.userData.levels={grade,floor,wallTop:top,monitorBase:mb.min.z};
  root.updateMatrixWorld(true);
- return {root,columns,beams,context,walls,caps,roof,slab,unresolved,openingClashes,clashMarkers,materials,
-  get cutWalls(){return cutWalls},setCutWalls,
+ return {root,columns,beams,context,walls,roof,slab,unresolved,openingClashes,clashMarkers,materials,
   setContext(visible){context.visible=visible},setRoof(visible){roof.visible=visible}};
 }
