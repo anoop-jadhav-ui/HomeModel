@@ -101,12 +101,12 @@ def build():
     wall("Right_N", width-e/2, e, width-e/2, depth-e, e)
     wall("Kitchen_Hall", a+t/2, e, a+t/2, c+t/2)
     wall("Hall_FrontBedroom", b+t/2, e, b+t/2, c+t/2)
-    wall("Kitchen_Middle", e, c+t/2, a+t/2, c+t/2)
-    wall("FrontBedroom_Middle", b+t/2, c+t/2, width-e, c+t/2)
+    wall("Kitchen_Middle", e, c+t/2, a+t, c+t/2)
+    wall("FrontBedroom_Middle", b, c+t/2, width-e, c+t/2)
     if not P["hall_dining_full_bay"]:
         wall("Hall_Dining", a+t/2, c+t/2, b+t/2, c+t/2)
-    wall("RearBedroom_Left_Front", e, d+t/2, a+t/2, d+t/2)
-    wall("RearBedroom_Right_Front", b+t/2, d+t/2, width-e, d+t/2)
+    wall("RearBedroom_Left_Front", e, d+t/2, a+t, d+t/2)
+    wall("RearBedroom_Right_Front", b, d+t/2, width-e, d+t/2)
     wall("RearBedroom_Left_Inside", a+t/2, d+t/2, a+t/2, depth-e)
     wall("RearBedroom_Right_Inside", b+t/2, d+t/2, b+t/2, depth-e)
     # The prayer-room edge is marked OPEN, with no side wall or door in the sketch.
@@ -125,8 +125,8 @@ def build():
     for i, x in enumerate(bounds[1:-1], 1):
         bottom = bath_bottom if i == 3 else svc_bottom
         wall("Service_Partition_%d" % i, x, bottom-t/2, x, rear_inner)
-    wall("Service_Front", bounds[1], svc_bottom-t/2, bounds[3], svc_bottom-t/2)
-    wall("RearBath_Front", bounds[3], bath_bottom-t/2, b, bath_bottom-t/2)
+    wall("Service_Front", bounds[1]-t/2, svc_bottom-t/2, bounds[3], svc_bottom-t/2)
+    wall("RearBath_Front", bounds[3]-t/2, bath_bottom-t/2, b, bath_bottom-t/2)
 
     opening_counts = Counter()
     doorways = []
@@ -406,7 +406,42 @@ def build():
     panel("Monitor_Cap_Right",[cap[1],cap[2],ridge2])
     panel("Monitor_Cap_Rear",[cap[2],cap[3],ridge1,ridge2])
     panel("Monitor_Cap_Left",[cap[3],cap[0],ridge1])
+    exhaust=dict(P["kitchen_exhaust"])
+    if not (0 < exhaust["duct_diameter_mm"] < exhaust["wall_opening_diameter_mm"]
+            and exhaust["bend_centerline_radius_mm"] > exhaust["duct_diameter_mm"]
+            and 0 <= exhaust["fall_degrees"] <= 3):
+        raise ValueError("Invalid provisional kitchen exhaust diameters, bend radius or outward fall.")
+    exhaust.update(host="Left S",wall_thickness=e,
+                   wall_center=[e/2,e+exhaust["wall_offset_from_kitchen_front_ft"],
+                                floor_z+exhaust["wall_center_above_ffl_ft"]],
+                   duct_start=[e+1.15,e+6.3,
+                               floor_z+3.025+exhaust["hood_clearance_mm"]/FT+.03+55/FT],
+                   status="CONCEPT_ONLY_NOT_INSTALLATION_DESIGN",
+                   note="South-wall infill proposal beside the kitchen window. Actual lintels, structure, hidden services, terminal/window separation, support, fire/weather sealing and selected-appliance requirements remain UNVERIFIED.")
+    service_group=doc.addObject("App::DocumentObjectGroup","ServiceCoordination")
+    service_group.Label="Provisional kitchen exhaust - NOT installation design"
+    penetration=doc.addObject("Part::Cylinder","KitchenExhaustPenetration")
+    penetration.Label="Kitchen Exhaust Provisional Penetration"
+    slope=math.tan(math.radians(exhaust["fall_degrees"]))
+    cx,cy,cz=exhaust["wall_center"]
+    penetration.Radius=exhaust["wall_opening_diameter_mm"]/2
+    penetration.Height=(e+.2)*FT/math.cos(math.radians(exhaust["fall_degrees"]))
+    penetration.Placement=App.Placement(V(-.1*FT,cy*FT,(cz-(cx+.1)*slope)*FT),
+                                         App.Rotation(V(0,0,1),V(1,0,slope)))
+    penetration.addProperty("App::PropertyString","DesignNote","Concept")
+    penetration.DesignNote=exhaust["note"]
     doc.recompute()
+    before_service_volume=wallmap["Left_S"].Shape.Volume
+    wallmap["Left_S"].Subtractions=wallmap["Left_S"].Subtractions+[penetration]
+    service_group.addObject(penetration)
+    service_group.addProperty("App::PropertyString","ParametersJSON","Concept")
+    service_group.ParametersJSON=json.dumps(exhaust)
+    doc.recompute()
+    penetration.ViewObject.Visibility=False
+    expected_service_volume=math.pi*penetration.Radius.Value**2*e*FT/math.cos(math.radians(exhaust["fall_degrees"]))
+    removed_service_volume=before_service_volume-wallmap["Left_S"].Shape.Volume
+    if abs(removed_service_volume-expected_service_volume)>.1:
+        raise RuntimeError("The provisional service hole must pass entirely through solid wall, not a window, door or wall edge.")
     slab_obj=next(obj for obj in groups["Floors"].Group if obj.Label=="Ground Floor Slab")
     slab_obj.ViewObject.DiffuseColor=[palette["Floors"] if abs(face.normalAt(0,0).z)>.99 else base_color
                                     for face in slab_obj.Shape.Faces]
@@ -539,6 +574,12 @@ def build():
         center=V(item["x"]*FT,item["y"]*FT,plan_z+.04*FT)
         open_lines.append(Part.makeLine(center-delta,center+delta))
     plan_feature("PlanOPENPassages",open_lines,(.08,.43,.27),True)
+    service_y=exhaust["wall_center"][1]
+    service_z=exhaust["wall_center"][2]
+    plan_feature("PlanHighKitchenExhaust_DASHED",
+                 [Part.makeLine(V(-.6*FT,service_y*FT,plan_z+.04*FT),
+                                V(2*FT,service_y*FT,plan_z+.04*FT))],
+                 (.58,.27,.12),True)
     plan_group.ViewObject.Visibility=False
     doc.recompute()
     if App.GuiUp:
@@ -560,6 +601,7 @@ def build():
                            "monitor_base":mz,"overall_height":capz+P["monitor_cap_rise"]+P["roof_thickness"]},
             "rooms":records,"objects":mesh_records,"opening_counts":dict(opening_counts),
             "navigation":navigation,
+            "services":{"kitchen_exhaust":exhaust},
             "finishes":{"base":P["base_finish"],"base_rgb":base_color},
             "doorways":doorways,"passages":passages,"monitor_enclosure":enclosure,
             "plan":{"cut_height":P["plan_cut_height"],"wall_faces":plan_wall_faces,"openings":plan_openings,
@@ -574,6 +616,7 @@ def build():
             "rooms":records,"doorways":doorways,"door_host_cut_probes":"passed",
             "plan_cut_wall_faces":len(plan_wall_faces),
             "plan_symbols":dict(Counter(obj["kind"] for obj in plan_openings)),"ifc_status":"not attempted"}
+    report["provisional_kitchen_exhaust"]=exhaust
     try:
         from importers import importIFC
         import ifcopenshell
@@ -638,6 +681,19 @@ def build():
             raise RuntimeError("Missing IFC slab/plinth finish targets.")
         exported.create_entity("IfcRelDefinesByProperties",GlobalId=ifcopenshell.guid.new(),OwnerHistory=owner,
                                RelatedObjects=base_products,RelatingPropertyDefinition=finish)
+        service_voids=[p for p in exported.by_type("IfcOpeningElement") if p.Name==penetration.Label]
+        if len(service_voids)!=1 or service_voids[0].VoidsElements[0].RelatingBuildingElement.Name!="Left S":
+            raise RuntimeError("The provisional kitchen penetration must export as a real hosted IFC opening.")
+        service_properties=exported.create_entity("IfcPropertySet",GlobalId=ifcopenshell.guid.new(),OwnerHistory=owner,
+                    Name="ConceptKitchenExhaust",HasProperties=[
+                    exported.create_entity("IfcPropertySingleValue",Name="Status",
+                        NominalValue=exported.create_entity("IfcLabel",exhaust["status"])),
+                    exported.create_entity("IfcPropertySingleValue",Name="Coordination",
+                        NominalValue=exported.create_entity("IfcText",exhaust["note"])),
+                    exported.create_entity("IfcPropertySingleValue",Name="IllustrativeRouteParametersJSON",
+                        NominalValue=exported.create_entity("IfcText",json.dumps(exhaust)))])
+        exported.create_entity("IfcRelDefinesByProperties",GlobalId=ifcopenshell.guid.new(),OwnerHistory=owner,
+                               RelatedObjects=service_voids,RelatingPropertyDefinition=service_properties)
         exported.write(ifcpath)
         exported=ifcopenshell.open(ifcpath)
         products=exported.by_type("IfcProduct")

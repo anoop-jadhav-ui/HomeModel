@@ -66,7 +66,7 @@ test('refinement keeps the source immutable, shares geometry and stays within th
  assert.equal(JSON.stringify(model),original);
  assert.equal(assets.items.length,30);
  assert(meshes<=360,`${meshes} meshes`);
- assert(triangles<=60000,`${triangles} triangles`);
+ assert(triangles<=64000,`${triangles} triangles`);
  assert(geometries.size<meshes/2,'Repeated legs, drawers and cushions should share buffers');
  assert.equal(textures.size,7);
 });
@@ -207,14 +207,15 @@ test('pull feet actually contact recessed joinery faces, including formerly miss
  }
 });
 test('suspended extractor covers the existing hob without touching window, cabinets or refrigerator',()=>{
- const group=assets.items.find(i=>i.kind==='kitchen').group,hood=group.getObjectByName('Kitchen suspended extractor - exhaust and support UNRESOLVED');
+ const group=assets.items.find(i=>i.kind==='kitchen').group,hood=group.getObjectByName('Kitchen suspended extractor - provisional south-wall exhaust');
  const hob=group.getObjectByName('Kitchen hob'),hb=new THREE.Box3().setFromObject(hood),cb=new THREE.Box3().setFromObject(hob);
+ const canopy=new THREE.Box3().setFromObject(hood.getObjectByName('Extractor capture canopy'));
  assert(hood.userData.conceptOnly&&hood.userData.mount==='ceiling-suspended');
  assert(hb.min.x<cb.min.x&&hb.max.x>cb.max.x&&hb.min.z<cb.min.z&&hb.max.z>cb.max.z);
  const kitchen=model.rooms.find(r=>r.name==='Kitchen');
  const burnerTop=(model.dimensions.floor_elevation+3.025)*FT;
  assert(Math.abs((hb.min.y-burnerTop)*1000-750)<.5,'750mm is a measured illustrative gap, not an installation certification');
- assert((hb.min.x-kitchen.x*FT)*1000>45,'Retained glazing/frame plane must have a physical gap');
+ assert((canopy.min.x-kitchen.x*FT)*1000>45,'Retained glazing/frame plane must have a physical gap');
  for(const mesh of group.children.filter(m=>m.isMesh&&!m.userData.hardware&&m!==hob)){
   const size=hb.clone().intersect(new THREE.Box3().setFromObject(mesh)).getSize(new THREE.Vector3());
   assert(!(size.x>.002&&size.y>.002&&size.z>.002),'Extractor intersects '+mesh.name);

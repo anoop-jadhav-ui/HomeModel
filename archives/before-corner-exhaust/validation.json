@@ -1,0 +1,539 @@
+{
+  "native_file": "C:\\Users\\anoopjadhav\\Documents\\PersonalProjects\\HomeModel\\tools\\hardware-detail\\output\\Home.FCStd",
+  "valid_solid_objects": 70,
+  "invalid_objects": [],
+  "opening_counts": {
+    "D": 1,
+    "W2": 2,
+    "W": 8,
+    "W1": 1,
+    "D1": 4,
+    "D2": 4,
+    "V": 3,
+    "V1": 3
+  },
+  "dimensions_ft": {
+    "width": 42.25,
+    "depth": 34.25,
+    "grid_width": 40,
+    "grid_depth": 32,
+    "floor_elevation": 4,
+    "wall_height": 10,
+    "monitor_base": 21.052903329594354,
+    "overall_height": 25.302903329594354,
+    "ground_elevation": 2,
+    "floor_above_grade": 2
+  },
+  "front_wall_cut_volume_ft3": 241.87500000000006,
+  "rooms": [
+    {
+      "name": "Kitchen",
+      "x": 0.75,
+      "y": 0.75,
+      "width": 12.0,
+      "depth": 12.0
+    },
+    {
+      "name": "Hall",
+      "x": 13.125,
+      "y": 0.75,
+      "width": 16.0,
+      "depth": 12.0
+    },
+    {
+      "name": "Bedroom_front_right",
+      "x": 29.5,
+      "y": 0.75,
+      "width": 12.0,
+      "depth": 12.0
+    },
+    {
+      "name": "Prayer",
+      "x": 0.75,
+      "y": 13.125,
+      "width": 8.0,
+      "depth": 8.0
+    },
+    {
+      "name": "Bath_right",
+      "x": 35.5,
+      "y": 13.125,
+      "width": 6.0,
+      "depth": 8.0
+    },
+    {
+      "name": "Bedroom_rear_left",
+      "x": 0.75,
+      "y": 21.5,
+      "width": 12.0,
+      "depth": 12.0
+    },
+    {
+      "name": "Bedroom_rear_right",
+      "x": 29.5,
+      "y": 21.5,
+      "width": 12.0,
+      "depth": 12.0
+    },
+    {
+      "name": "Dining_central_zone",
+      "x": 13.125,
+      "y": 13.125,
+      "width": 16.0,
+      "depth": 12.0
+    },
+    {
+      "name": "Wash_point",
+      "x": 13.125,
+      "y": 27.5,
+      "width": 3.8125,
+      "depth": 6.0
+    },
+    {
+      "name": "WC",
+      "x": 17.3125,
+      "y": 27.5,
+      "width": 2.625,
+      "depth": 6.0
+    },
+    {
+      "name": "Common_bath",
+      "x": 20.3125,
+      "y": 27.5,
+      "width": 3.625,
+      "depth": 6.0
+    },
+    {
+      "name": "Attached_bath",
+      "x": 24.3125,
+      "y": 25.5,
+      "width": 4.8125,
+      "depth": 8.0
+    }
+  ],
+  "doorways": [
+    {
+      "name": "D_01_Front_E",
+      "mark": "D",
+      "host": "Front E",
+      "x": 21.125,
+      "y": 0.375,
+      "angle_degrees": 0,
+      "width": 4,
+      "height": 7,
+      "connects": [
+        "Outside east",
+        "Hall"
+      ],
+      "swing_assumed": true,
+      "hinge": "start",
+      "opens_to": [
+        0,
+        1
+      ],
+      "leaf_count": 2,
+      "fitting_gaps": {
+        "leaf_count": 2,
+        "side_gap": 0.01,
+        "meeting_gap": 0.02,
+        "top_gap": 0.01,
+        "bottom_gap": 0.02
+      },
+      "leaf": {
+        "width": 1.8300000000000018,
+        "height": 6.82,
+        "thickness": 0.15000000000000152,
+        "normal_offset": 0.07499999999999926,
+        "along_offset": -0.9249999999999989,
+        "bottom": 0.019999999999999574
+      },
+      "frame_width": 0.15,
+      "leaves": [
+        {
+          "hinge": "start",
+          "leaf": {
+            "width": 1.8300000000000018,
+            "height": 6.82,
+            "thickness": 0.15000000000000152,
+            "normal_offset": 0.07499999999999926,
+            "along_offset": -0.9249999999999989,
+            "bottom": 0.019999999999999574
+          }
+        },
+        {
+          "hinge": "end",
+          "leaf": {
+            "width": 1.8300000000000018,
+            "height": 6.82,
+            "thickness": 0.15000000000000152,
+            "normal_offset": 0.07499999999999926,
+            "along_offset": 0.9250000000000025,
+            "bottom": 0.019999999999999574
+          }
+        }
+      ],
+      "plan_leaves": [
+        {
+          "pivot": [
+            19.285,
+            0.525
+          ],
+          "length": 1.8300000000000018,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        },
+        {
+          "pivot": [
+            22.965,
+            0.525
+          ],
+          "length": 1.8300000000000018,
+          "start": -3.141592653589793,
+          "end": 1.5707963267948966
+        }
+      ]
+    },
+    {
+      "name": "D1_01_Kitchen_Middle",
+      "mark": "D1",
+      "host": "Kitchen Middle",
+      "x": 11.0,
+      "y": 12.9375,
+      "angle_degrees": 0,
+      "width": 3,
+      "height": 7,
+      "connects": [
+        "Kitchen",
+        "Left middle circulation"
+      ],
+      "swing_assumed": true,
+      "hinge": "end",
+      "opens_to": [
+        0,
+        -1
+      ],
+      "leaf": {
+        "width": 2.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000036,
+        "normal_offset": 0.07500000000000018,
+        "along_offset": 1.7763568394002505e-15,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            12.34,
+            12.9375
+          ],
+          "length": 2.6799999999999993,
+          "start": -3.141592653589793,
+          "end": -1.5707963267948966
+        }
+      ]
+    },
+    {
+      "name": "D1_02_FrontBedroom_Middle",
+      "mark": "D1",
+      "host": "FrontBedroom Middle",
+      "x": 31.25,
+      "y": 12.9375,
+      "angle_degrees": 0,
+      "width": 3,
+      "height": 7,
+      "connects": [
+        "Bedroom front right",
+        "Right middle circulation"
+      ],
+      "swing_assumed": true,
+      "hinge": "start",
+      "opens_to": [
+        0,
+        -1
+      ],
+      "leaf": {
+        "width": 2.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000036,
+        "normal_offset": 0.07500000000000018,
+        "along_offset": -5.329070518200751e-15,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            29.91,
+            12.9375
+          ],
+          "length": 2.6799999999999993,
+          "start": 0.0,
+          "end": -1.5707963267948966
+        }
+      ]
+    },
+    {
+      "name": "D1_03_RearBedroom_Left_Front",
+      "mark": "D1",
+      "host": "RearBedroom Left Front",
+      "x": 11.0,
+      "y": 21.3125,
+      "angle_degrees": 0,
+      "width": 3,
+      "height": 7,
+      "connects": [
+        "Bedroom rear left",
+        "Left middle circulation"
+      ],
+      "swing_assumed": true,
+      "hinge": "end",
+      "opens_to": [
+        0,
+        1
+      ],
+      "leaf": {
+        "width": 2.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000568,
+        "normal_offset": 0.07499999999999929,
+        "along_offset": 1.7763568394002505e-15,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            12.34,
+            21.462500000000002
+          ],
+          "length": 2.6799999999999993,
+          "start": -3.141592653589793,
+          "end": 1.5707963267948966
+        }
+      ]
+    },
+    {
+      "name": "D1_04_RearBedroom_Right_Front",
+      "mark": "D1",
+      "host": "RearBedroom Right Front",
+      "x": 31.25,
+      "y": 21.3125,
+      "angle_degrees": 0,
+      "width": 3,
+      "height": 7,
+      "connects": [
+        "Bedroom rear right",
+        "Right middle circulation"
+      ],
+      "swing_assumed": true,
+      "hinge": "start",
+      "opens_to": [
+        0,
+        1
+      ],
+      "leaf": {
+        "width": 2.6999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000568,
+        "normal_offset": 0.07499999999999929,
+        "along_offset": -5.329070518200751e-15,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            29.91,
+            21.462500000000002
+          ],
+          "length": 2.6799999999999993,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        }
+      ]
+    },
+    {
+      "name": "D2_01_FrontBedroom_Middle",
+      "mark": "D2",
+      "host": "FrontBedroom Middle",
+      "x": 37.0,
+      "y": 12.9375,
+      "angle_degrees": 0,
+      "width": 2.5,
+      "height": 7,
+      "connects": [
+        "Bath right",
+        "Bedroom front right"
+      ],
+      "swing_assumed": true,
+      "hinge": "start",
+      "opens_to": [
+        0,
+        1
+      ],
+      "leaf": {
+        "width": 2.200000000000003,
+        "height": 6.850000000000003,
+        "thickness": 0.15000000000000036,
+        "normal_offset": 0.07500000000000018,
+        "along_offset": 0.0,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            35.91,
+            13.0875
+          ],
+          "length": 2.18,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        }
+      ]
+    },
+    {
+      "name": "D2_02_Service_Front",
+      "mark": "D2",
+      "host": "Service Front",
+      "x": 18.625,
+      "y": 27.3125,
+      "angle_degrees": 0,
+      "width": 2.5,
+      "height": 7,
+      "connects": [
+        "WC",
+        "Central circulation"
+      ],
+      "swing_assumed": true,
+      "hinge": "start",
+      "opens_to": [
+        0,
+        1
+      ],
+      "leaf": {
+        "width": 2.1999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.14999999999999858,
+        "normal_offset": 0.07499999999999929,
+        "along_offset": 1.7763568394002505e-15,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            17.535,
+            27.4625
+          ],
+          "length": 2.1799999999999993,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        }
+      ]
+    },
+    {
+      "name": "D2_03_Service_Front",
+      "mark": "D2",
+      "host": "Service Front",
+      "x": 22.125,
+      "y": 27.3125,
+      "angle_degrees": 0,
+      "width": 2.5,
+      "height": 7,
+      "connects": [
+        "Common bath",
+        "Central circulation"
+      ],
+      "swing_assumed": true,
+      "hinge": "start",
+      "opens_to": [
+        0,
+        1
+      ],
+      "leaf": {
+        "width": 2.1999999999999993,
+        "height": 6.850000000000003,
+        "thickness": 0.14999999999999858,
+        "normal_offset": 0.07499999999999929,
+        "along_offset": -1.7763568394002505e-15,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            21.035,
+            27.4625
+          ],
+          "length": 2.1799999999999993,
+          "start": 0.0,
+          "end": 1.5707963267948966
+        }
+      ]
+    },
+    {
+      "name": "D2_04_RearBedroom_Right_Inside",
+      "mark": "D2",
+      "host": "RearBedroom Right Inside",
+      "x": 29.3125,
+      "y": 27.0,
+      "angle_degrees": 90,
+      "width": 2.5,
+      "height": 7,
+      "connects": [
+        "Attached bath",
+        "Bedroom rear right"
+      ],
+      "swing_assumed": true,
+      "hinge": "start",
+      "opens_to": [
+        -1,
+        0
+      ],
+      "leaf": {
+        "width": 2.1999999999999993,
+        "height": 6.85,
+        "thickness": 0.14999999999999514,
+        "normal_offset": 0.07499999999999751,
+        "along_offset": 1.7763568394002505e-15,
+        "bottom": 0.0
+      },
+      "frame_width": 0.15,
+      "plan_leaves": [
+        {
+          "pivot": [
+            29.162500000000005,
+            25.91
+          ],
+          "length": 2.1799999999999993,
+          "start": 1.5707963267948966,
+          "end": 3.141592653589793
+        }
+      ]
+    }
+  ],
+  "door_host_cut_probes": "passed",
+  "plan_cut_wall_faces": 38,
+  "plan_symbols": {
+    "door": 9,
+    "window": 11,
+    "vent": 6
+  },
+  "ifc_status": "exported and reopened with geometry",
+  "ifc_represented_products": 108,
+  "ifc_opening_dimensions_in_declared_units": true,
+  "ifc_filling_relationships_added": 26,
+  "ifc_classes": {
+    "IfcBuildingElementProxy": 9,
+    "IfcDoor": 9,
+    "IfcMember": 4,
+    "IfcRoof": 8,
+    "IfcSlab": 1,
+    "IfcWall": 22,
+    "IfcWindow": 17,
+    "IfcOpeningElement": 26,
+    "IfcSpace": 12
+  }
+}

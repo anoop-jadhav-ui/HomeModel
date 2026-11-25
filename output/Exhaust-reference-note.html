@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Provisional south-wall kitchen exhaust</title>
+<style>body{font:16px/1.6 system-ui;max-width:980px;margin:32px auto;padding:0 24px;color:#293d32}aside{background:#fff1d8;padding:18px;border-left:4px solid #a15a28}table{border-collapse:collapse}td,th{border:1px solid #b7c2b9;padding:8px;text-align:left}</style>
+<h1>Provisional south-wall kitchen exhaust</h1>
+<aside><b>Conceptual coordination only. NOT an installation design or permission to cut.</b>
+The hood/appliance, terminal product, structural drawings and actual site conditions have not been selected or verified.</aside>
+<p>The original sketch marks SOUTH on drawing-left, NORTH on drawing-right, WEST at the rear and EAST at the entrance.
+The retained suspended hood now discharges through a high solid south-wall pier beside the kitchen window, not through the roof.
+Four slender illustrative ceiling-suspension rods are separate from the round exhaust pipe; their fixings and load path remain unengineered.</p>
+<p>Furnished Cutaway omits the upper duct, suspension rods and outside termination as a component-based presentation choice.
+The capture canopy, underside details, fridge and cabinets remain visible. Exterior and Interior restore the complete service assembly.
+This is not a changed route or a physical cut to the CAD/IFC model.</p>
+<table><tr><th>Editable parameter</th><th>Illustrative choice</th><th>Status</th></tr>
+<tr><td>Round metal duct</td><td>150 mm outside diameter, 1.5 mm visual skin</td><td>Coordination proxy, not a selected product or wall-gauge specification</td></tr>
+<tr><td>Turns</td><td>Two separated smooth 90-degree turns, nominal 225 mm centreline radius</td><td>Authored 1.5-diameter radius assumption; the cited manual does NOT specify this radius</td></tr>
+<tr><td>Wall penetration</td><td>170 mm nominal round hole; centre +7.75 ft above FFL and 10.25 ft from the kitchen front clear-wall line</td><td>Actual hole in native FreeCAD wall, IFC opening and viewer mesh; radius and placement remain provisional</td></tr>
+<tr><td>Outward fall</td><td>1 degree along the high-level horizontal route</td><td>Reference-manual detail, subject to chosen appliance and installed drainage/weathering design</td></tr>
+<tr><td>Outside termination</td><td>Protected downward-open metal cowl, annular seal and illustrative backdraft flap</td><td>Not a bare hole, ordinary fine insect mesh or product-approved terminal assembly</td></tr>
+<tr><td>Hood-to-burner gap</td><td>Existing illustrative 750 mm retained</td><td>NOT validated for a selected hood/hob; do not transfer another model's burner-clearance specification</td></tr></table>
+<h2>Manufacturer reference actually read</h2>
+<p><a href="https://media3.bosch-home.com/Documents/9001096092_F.pdf">Bosch official installation manual 9001096092_F.pdf</a>,
+English printed pages 4, 7 and 14: metal ducting and outdoor discharge; short, smooth, adequately sized routing;
+that manual's recommended nominal 150 mm round duct; slight outward fall; an exterior wall sleeve and back-pressure flap.
+This is a different appliance and jurisdiction, used for general visual coordination only. It does not approve the generic 800 x 600 mm suspended hood, the illustrated terminal or Indian installation clearances.</p>
+<p>The referenced Broan NTM and rangehood PDFs could not be retrieved (HTTP 403); their search extracts were not treated as inspected installation instructions.</p>
+<h2>What still needs professional coordination</h2>
+<p>The proposal clears the represented window/glazing/frame and EXAMPLE beams/columns geometrically. That overlay is not a real structural design.
+In particular, actual window lintels and their bearings, hidden reinforcement/services, masonry stability and opening permission are unknown.
+The terminal remains near an operable window; exhaust-to-window/boundary separation, re-entry and nuisance, airflow/pressure loss, make-up air,
+fire/grease provisions, cleaning access, power, support, wall sleeve, corrosion protection, flashing and weather sealing all need a qualified local
+designer/installer and the chosen appliance/terminal manuals. No beam, column, window or roof is cut by the proposal.</p>
+<h2>Editing and scope</h2>
+<p>Edit <code>kitchen_exhaust</code> in <code>parameters.json</code> and regenerate with the existing FreeCAD workflow.
+The architectural master retains a parametric cylinder in <code>ServiceCoordination</code> linked to the south ArchWall's
+<code>Subtractions</code>; the IFC contains its hosted <code>IfcOpeningElement</code> and concept metadata.
+The hood, duct/cowl and ceiling rods are illustrative viewer fixtures, like the existing furniture, not an exported MEP equipment model.
+The native cut plan and vector plan identify the high-level service proposal without pretending it is a door/window at the 4-ft section.
+Pre-change native, IFC, parameters and generation/review source are preserved in <code>archives\before-corner-exhaust</code>.</p>
+<p><a href="index.html">Return to model</a> | <a href="architectural-plan.svg">Review plan</a> | <a href="Guide.md">Editing guide</a></p>
+</html>

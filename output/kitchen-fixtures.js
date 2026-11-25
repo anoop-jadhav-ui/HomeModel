@@ -1,6 +1,33 @@
 import * as THREE from 'three';
 
 const FT=.3048;
+export function kitchenExhaustRoute(spec){
+ const [x,y,z]=spec.duct_start,[wx,wy,wz]=spec.wall_center;
+ const radius=spec.bend_centerline_radius_mm/1000/FT,slope=Math.tan(spec.fall_degrees*Math.PI/180);
+ const straight=wy-y-2*radius,endX=-spec.outlet_projection_mm/1000/FT;
+ const top=wz+slope*(straight+radius*Math.PI/2+x-radius-wx);
+ const lengths=[top-radius+slope*radius-z,radius*Math.PI/2,straight,radius*Math.PI/2,x-radius-endX];
+ if(lengths.some(length=>!Number.isFinite(length)||length<=0))
+  throw new Error('Kitchen exhaust route needs positive upright, separated bends and an outward outlet.');
+ const total=lengths.reduce((sum,length)=>sum+length,0);
+ const nativeAt=t=>{
+  let distance=THREE.MathUtils.clamp(t,0,1)*total,index=0;
+  while(index<lengths.length-1&&distance>lengths[index])distance-=lengths[index++];
+  const angle=distance/radius;
+  if(index===0)return [x,y,z+distance];
+  if(index===1)return [x,y+radius-radius*Math.cos(angle),top-radius+radius*Math.sin(angle)+slope*radius*Math.cos(angle)];
+  if(index===2)return [x,y+radius+distance,top-slope*distance];
+  if(index===3)return [x-radius+radius*Math.cos(angle),wy-radius+radius*Math.sin(angle),top-slope*(straight+distance)];
+  return [x-radius-distance,wy,top-slope*(straight+radius*Math.PI/2+distance)];
+ };
+ class Route extends THREE.Curve{
+  getPoint(t,target=new THREE.Vector3()){
+   const [px,py,pz]=nativeAt(t);return target.set(px*FT,pz*FT,-py*FT);
+  }
+ }
+ return {curve:new Route(),nativeAt,lengths,total,wallParameter:1-(wx-endX)/total};
+}
+
 export const KITCHEN_SINK=Object.freeze({
  x:6.2,y:1.15,cutWidth:2.08,cutDepth:1.38,width:2.3,depth:1.62,
  innerWidth:1.98,innerDepth:1.28,bowlDepth:.62,tapX:6.2,tapY:.35,tapRotation:Math.PI

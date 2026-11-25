@@ -14,6 +14,18 @@
   "base_finish": "#8b6749",
   "navigation": {"person_height": 5.333333333333333, "eye_below_crown": 0.3333333333333333, "maximum_step_rise": 0.5, "step_depth": 1, "entry_offset": 9},
   "main_entry": {"leaf_count": 2, "side_gap": 0.01, "meeting_gap": 0.02, "top_gap": 0.01, "bottom_gap": 0.02},
+  "kitchen_exhaust": {
+    "duct_diameter_mm": 150,
+    "wall_opening_diameter_mm": 170,
+    "bend_centerline_radius_mm": 225,
+    "wall_offset_from_kitchen_front_ft": 10.25,
+    "wall_center_above_ffl_ft": 7.75,
+    "outlet_projection_mm": 140,
+    "fall_degrees": 1,
+    "hood_clearance_mm": 750,
+    "canopy_depth_mm": 600,
+    "canopy_width_mm": 800
+  },
   "floor_thickness": 0.5,
   "roof_pitch_degrees": 25,
   "roof_overhang": 2,

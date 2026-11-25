@@ -12,7 +12,12 @@
     "finished_floor": 4,
     "floor_above_grade": 2
   },
-  "native_solids_unchanged_except_paired_entry": 69,
+  "native_solids_unchanged_from_before_corner_exhaust": 63,
+  "native_internal_corner_closures": 6,
+  "native_and_ifc_provisional_kitchen_service_penetration": true,
+  "ifc_service_centerline_clear_and_neighboring_wall_solid": true,
+  "native_service_radius_edit_recomputes_host": true,
+  "ifc_internal_corner_closures": 6,
   "paired_entrance_native_leaf_widths_ft": [
     1.8300000000000018,
     1.8300000000000047
@@ -43,5 +48,5 @@
     "window": 11,
     "vent": 6
   },
-  "native_plan_review_features": 6
+  "native_plan_review_features": 7
 }

@@ -1,0 +1,130 @@
+{
+  "base_revision": "58a802c87ba82bd6843cf565348f0b5a3b0e3f23",
+  "branch": "feat/corners-wall-exhaust",
+  "delivery_state": "Feature-branch review acceptance; Git history and remote refs record commit/push state. No master merge or production deployment is part of this review.",
+  "preview": {
+    "url": "http://127.0.0.1:8770/",
+    "canvas": "home-corner-exhaust-review",
+    "mobile_canvas": "home-corner-exhaust-mobile",
+    "approved_master_8765_unchanged": true
+  },
+  "architectural_geometry": {
+    "native_and_ifc_reopened": true,
+    "valid_native_bim_solids": 70,
+    "unchanged_native_solids_from_archive": 63,
+    "internal_L_junctions_closed_in_native_ifc_and_cut_caps": 6,
+    "former_missing_quarter_side_mm": 57.15,
+    "native_closure_probe_heights_ft": [4.1, 8, 13.9],
+    "real_hosted_ifc_service_opening": true,
+    "ifc_service_centerline_clear_and_neighboring_masonry_solid": true,
+    "native_radius_edit_recomputes_host_after_reopening": true,
+    "room_sizes_and_26_door_window_dimensions_preserved": true,
+    "paired_entry_retains_two_actual_ifc_leaf_components": true,
+    "archive": "archives\\before-corner-exhaust"
+  },
+  "exhaust": {
+    "wall": "SOUTH / Left S",
+    "duct_diameter_mm": 150,
+    "wall_opening_diameter_mm": 170,
+    "illustrative_nominal_bend_radius_mm": 225,
+    "turns": 2,
+    "centerline_length_mm": 2383.417360262389,
+    "first_upright_mm": 428.47901320468526,
+    "straight_between_turns_mm": 753.96,
+    "outward_fall_degrees": 1,
+    "minimum_checked_service_vertex_to_example_beam_bounds_mm": 96.86434543925566,
+    "minimum_checked_service_vertex_to_example_column_bounds_mm": 300.549993443489,
+    "service_triangle_intersections_with_represented_opening_roof_and_example_member_bounds": 0,
+    "terminal": "Protected downward-open cowl, annular seal and separate illustrative backdraft flap; no ordinary fine insect mesh.",
+    "roof_exhaust_or_penetration": false,
+    "ceiling_support": "Four separate slender illustrative suspension rods; not engineered.",
+    "scope": "Native/IFC architectural service opening; hood/duct/cowl remain viewer fixtures, not exported engineered MEP equipment.",
+    "inspected_reference": "https://media3.bosch-home.com/Documents/9001096092_F.pdf",
+    "inspected_printed_pages": [4, 7, 14],
+    "reference_limit": "Different appliance/jurisdiction. 225mm radius is an authored assumption, not prescribed by this manual.",
+    "unresolved": [
+      "Actual lintels, bearings, structure and hidden services",
+      "Selected hood/hob/terminal compatibility and installation clearances",
+      "Nearby operable-window and boundary separation, re-entry and nuisance",
+      "Supports, fixings, fire provisions, power, weather sealing and cleaning access",
+      "Airflow/pressure loss, make-up air and applicable local requirements"
+    ]
+  },
+  "furnishing_budget": {
+    "meshes": 351,
+    "triangles": 62900,
+    "mesh_limit_unchanged": 360,
+    "triangle_limit": 64000,
+    "prior_triangle_limit": 60000,
+    "reason": "Closed hollow duct, thin solid weathering/cowl/flap parts and separate rods.",
+    "shared_authored_128px_textures": 7,
+    "physical_phone_performance_certified": false
+  },
+  "ground_directions": {
+    "reference": "Original sketch, not surveyed true north",
+    "flat_normal": [0, 1, 0],
+    "height_above_shared_grade_ft": 0.015,
+    "native_positions_ft": {
+      "N": [53.25, 12.125, 2.015],
+      "S": [-11, 12.125, 2.015],
+      "W": [21.125, 45.25, 2.015],
+      "E": [27.125, -21, 2.015]
+    },
+    "all_four_project_inside_desktop_and_390px_mobile_frustum": true,
+    "all_four_visible_in_top_review": true,
+    "oblique_occlusion": "Letters behind the house may be naturally occluded; they are ground geometry, not billboards.",
+    "front_E_clears_gateway_corridor": true,
+    "visible_mode": "Exterior only",
+    "external_font_or_image_dependency": false
+  },
+  "cutaway_presentation": {
+    "policy": "Omit only the grouped upper duct, ceiling rods and outdoor terminal in Cutaway; keep canopy, underside details, fridge and cabinets.",
+    "native_ifc_route_or_dimensions_changed_for_presentation": false,
+    "actual_primary_upper_service_render_items_desktop_and_mobile": 0,
+    "complete_upper_services_restore_in_exterior_and_interior": true,
+    "mode_sequence_checked": ["cutaway", "interior", "cutaway", "exterior", "structure", "plan", "exterior"]
+  },
+  "walk_fly_mirror_preservation": {
+    "desktop_responsive_host": {
+      "walk_eye_offset_ft": 5,
+      "safe_return_eye_offset_ft": 5,
+      "fly_primary_layer_mask": 1,
+      "primary_avatar_render_items_in_fly": 0,
+      "actual_reflected_avatar_render_items": 18,
+      "active_planar_mirrors": 1,
+      "observed_mirror_resolution_px": 256
+    },
+    "mobile": {
+      "viewport_px": [390, 844],
+      "horizontal_overflow": false,
+      "walk_eye_offset_ft": 5,
+      "safe_return_eye_offset_ft": 5,
+      "fly_primary_layer_mask": 1,
+      "primary_avatar_render_items_in_fly": 0,
+      "actual_reflected_avatar_render_items": 18,
+      "active_planar_mirrors": 1,
+      "mirror_resolution_px": 256
+    }
+  },
+  "validation": {
+    "integrated_regressions_before_final_cutaway_presentation": 72,
+    "focused_regressions_after_final_cutaway_presentation": 21,
+    "fixture_closed_solids_and_room_fit": "passed; explicitly routed service geometry checked separately",
+    "static_build_files": 49,
+    "static_asset_module_checks": 107,
+    "diff_whitespace_check": "passed"
+  },
+  "evidence_images": [
+    "kitchen-corner-before.png",
+    "kitchen-corner-after.png",
+    "exterior-compass.png",
+    "top-compass.png",
+    "kitchen-wall-route.png",
+    "south-wall-terminal.png",
+    "wall-terminal-downward-open.png",
+    "mobile-compass.png",
+    "mobile-mirror-preserved.png",
+    "mobile-cutaway-upper-hidden.png",
+    "cutaway-upper-services-hidden.png"
+  ]
+}

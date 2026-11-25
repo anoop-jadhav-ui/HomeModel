@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js';
-import {KITCHEN_SINK,kitchenCounterGeometry,kitchenSinkGeometry} from './kitchen-fixtures.js';
+import {KITCHEN_SINK,kitchenCounterGeometry,kitchenSinkGeometry,kitchenExhaustRoute} from './kitchen-fixtures.js';
 import {furnitureSurfaces,metricSurfaceUV} from './furniture-surfaces.js';
 
 export const FT=.3048;
@@ -12,7 +12,7 @@ export function furnishingBounds(mesh){
 }
 
 export function createFurnishings(model){
- const root=new THREE.Group(),items=[],lamps=[];
+ const root=new THREE.Group(),items=[],lamps=[],upperServices=[];
  const textile=color=>new THREE.MeshPhysicalMaterial({color,roughness:.92,sheen:.32,sheenColor:'#ede5d1',sheenRoughness:.85});
  const M={wood:material('#795036',.48),darkWood:material('#443125',.54),cream:material('#e8ddc8'),
   linen:textile('#dcd5c5'),green:material('#687561'),pillow:textile('#eee6d6'),black:material('#232b29'),
@@ -369,11 +369,12 @@ export function createFurnishings(model){
   box(g,1.7,2.35,.04,x+1.15,y+6.3,F+2.96,M.black).name='Kitchen hob';
   const burnerGeometry=cached('burner',()=>new THREE.TorusGeometry(.2*FT,.025*FT,6,20));
   for(const dx of [-.4,.4])for(const dy of [-.65,.65]){const burner=new THREE.Mesh(burnerGeometry,M.metal);burner.rotation.x=Math.PI/2;burner.position.copy(point(x+1.15+dx,y+6.3+dy,F+3));g.add(burner)}
-  const hood=new THREE.Group();hood.name='Kitchen suspended extractor - exhaust and support UNRESOLVED';g.add(hood);
-  const clearance=.75/FT,bottom=F+3.025+clearance,hx=x+1.15,hy=y+6.3;
-  hood.userData={conceptOnly:true,mount:'ceiling-suspended',hobClearanceMM:750,
-   unresolved:'Support/fixings, exhaust route, appliance selection and installation clearances require coordination. Window view partly masked by user choice.'};
-  box(hood,.6/FT,.8/FT,.055/FT,hx,hy,bottom+.03+.0275/FT,M.steel).name='Extractor capture canopy';
+  const hood=new THREE.Group();hood.name='Kitchen suspended extractor - provisional south-wall exhaust';g.add(hood);
+  const spec=model.services.kitchen_exhaust;
+  const clearance=spec.hood_clearance_mm/1000/FT,bottom=F+3.025+clearance,hx=x+1.15,hy=y+6.3;
+  hood.userData={conceptOnly:true,mount:'ceiling-suspended',hobClearanceMM:spec.hood_clearance_mm,
+   unresolved:spec.note};
+  box(hood,spec.canopy_depth_mm/1000/FT,spec.canopy_width_mm/1000/FT,.055/FT,hx,hy,bottom+.03+.0275/FT,M.steel).name='Extractor capture canopy';
   box(hood,1.3,1.8,.025,hx,hy,bottom+.0125,M.black).name='Extractor underside filter';
   const baffleGeometry=cached('extractor-baffles',()=>{
    const parts=[];
@@ -387,10 +388,65 @@ export function createFurnishings(model){
   if(!roof)throw new Error('Suspended extractor needs the approved left roof envelope.');
   const minRoofX=Math.min(...roof.vertices.map(p=>p[0])),maxRoofX=Math.max(...roof.vertices.map(p=>p[0]));
   const wallTop=F+model.dimensions.wall_height,slope=(model.dimensions.monitor_base-wallTop)/(maxRoofX-minRoofX);
-  const top=wallTop+(hx-.525-minRoofX)*slope-.04;
-  hood.userData.enclosureTopFt=top;hood.userData.roofInterface='Stops below existing slope; no penetration or confirmed attachment/route.';
-  box(hood,1.05,1.05,top-(bottom+.18),hx,hy,(top+bottom+.18)/2,M.steel).name='Illustrative suspended duct enclosure - no roof penetration';
-  box(hood,1.08,1.08,.035,hx,hy,bottom+.8,M.metal).name='Extractor telescopic enclosure seam';
+  const upper=new THREE.Group();upper.name='Upper kitchen exhaust and suspension - omitted in cutaway';
+  hood.add(upper);upperServices.push(upper);
+  hood.userData.roofInterface='Four illustrative suspension rods only; exhaust turns to SOUTH wall. No roof penetration; fixings/support unverified.';
+  const rods=[];
+  for(const dx of [-.75,.75])for(const dy of [-.95,.95]){
+   const top=wallTop+(hx+dx-minRoofX)*slope-.06,low=spec.duct_start[2];
+   const rod=new THREE.CylinderGeometry(.006,.006,(top-low)*FT,8);
+   rod.translate((hx+dx)*FT,(top+low)/2*FT,-(hy+dy)*FT);rods.push(rod);
+  }
+  const support=new THREE.Mesh(joined(rods),M.metal);support.name='Illustrative ceiling suspension rods - not exhaust';upper.add(support);
+  const route=kitchenExhaustRoute(spec),r=spec.duct_diameter_mm/2000;
+  const outer=new THREE.TubeGeometry(route.curve,40,r,16,false),parts=[outer];
+  const inner=new THREE.TubeGeometry(route.curve,40,r-.0015,16,false),indices=inner.index.array;
+  for(let i=0;i<indices.length;i+=3)[indices[i],indices[i+2]]=[indices[i+2],indices[i]];
+  inner.computeVertexNormals();parts.push(inner);
+  for(const t of [0,1]){
+   const positions=[],normal=route.curve.getTangent(t).multiplyScalar(t?1:-1);
+   const at=(geometry,i)=>new THREE.Vector3().fromBufferAttribute(geometry.attributes.position,(t?40*17:0)+i);
+   for(let i=0;i<16;i++)for(const tri of [[at(outer,i),at(outer,i+1),at(inner,i)],
+    [at(outer,i+1),at(inner,i+1),at(inner,i)]]){
+    if(new THREE.Vector3().subVectors(tri[1],tri[0]).cross(new THREE.Vector3().subVectors(tri[2],tri[0])).dot(normal)<0)
+     [tri[1],tri[2]]=[tri[2],tri[1]];
+    for(const p of tri)positions.push(...p.toArray());
+   }
+   const ring=new THREE.BufferGeometry();ring.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+   ring.setAttribute('uv',new THREE.Float32BufferAttribute(new Float32Array(positions.length/3*2),2));
+   ring.computeVertexNormals();parts.push(ring);
+  }
+  const duct=new THREE.Mesh(joined(parts),M.steel);duct.name='Continuous hollow metal exhaust - two long-radius turns to SOUTH wall';
+  duct.castShadow=duct.receiveShadow=true;duct.userData.exhaustRoute={...spec,centerlineLengthMM:route.total*FT*1000};
+  upper.add(duct);
+  const [,wy,wz]=spec.wall_center,centerZ=wz-spec.wall_center[0]*Math.tan(spec.fall_degrees*Math.PI/180);
+  const plate=new THREE.Shape([[-.14,-.14],[.14,-.14],[.14,.14],[-.14,.14]].map(p=>new THREE.Vector2(...p)));
+  const opening=new THREE.Path();opening.absarc(0,0,spec.wall_opening_diameter_mm/2000,0,2*Math.PI,false);plate.holes.push(opening);
+  const plateMesh=new THREE.Mesh(new THREE.ExtrudeGeometry(plate,{depth:.002,bevelEnabled:false,curveSegments:16}),M.steel);
+  plateMesh.rotation.y=-Math.PI/2;plateMesh.position.copy(point(-.005,wy,centerZ));
+  plateMesh.name='South-wall terminal weathering plate - flashing and sealing provisional';upper.add(plateMesh);
+  const sealShape=new THREE.Shape();sealShape.absarc(0,0,spec.wall_opening_diameter_mm/2000,0,2*Math.PI,false);
+  const sealHole=new THREE.Path();sealHole.absarc(0,0,r,0,2*Math.PI,false);sealShape.holes.push(sealHole);
+  const seal=new THREE.Mesh(new THREE.ExtrudeGeometry(sealShape,{depth:.003,bevelEnabled:false,curveSegments:16}),M.black);
+  seal.rotation.y=-Math.PI/2;seal.position.copy(point(-.008,wy,centerZ));
+  seal.name='Provisional annular weather seal - not a screen';upper.add(seal);
+  const shellParts=[];
+  const cheek=new THREE.Shape([[0,.14],[-.22,.08],[-.22,-.12],[0,-.14]].map(p=>new THREE.Vector2(...p)));
+  for(const side of [-1,1]){
+   const geometry=new THREE.ExtrudeGeometry(cheek,{depth:.002,bevelEnabled:false});
+   geometry.translate(-.003,centerZ*FT,-wy*FT+side*.13-.001);shellParts.push(geometry);
+  }
+  const lid=new THREE.BoxGeometry(Math.hypot(.22,.06),.002,.26);lid.rotateZ(Math.atan2(.06,.22));
+  lid.translate(-.113,centerZ*FT+.11,-wy*FT);shellParts.push(lid);
+  const apron=new THREE.BoxGeometry(.002,.2,.26);apron.translate(-.223,centerZ*FT-.02,-wy*FT);shellParts.push(apron);
+  const cowl=new THREE.Mesh(joined(shellParts),M.steel);
+  cowl.name='Protected downward-open wall exhaust cowl - no fine mesh';cowl.castShadow=true;upper.add(cowl);
+  const outlet=route.nativeAt(1),flapPivot=new THREE.Group();flapPivot.position.copy(point(outlet[0],wy,outlet[2]+(r-.003)/FT));
+  const flap=new THREE.Mesh(new THREE.CylinderGeometry(r-.003,r-.003,.0015,16),M.metal);
+  flap.rotation.z=Math.PI/2;flap.position.y=-(r-.003);
+  flapPivot.rotation.z=-Math.PI/12;flapPivot.name='Illustrative backdraft flap - shown partly open, appliance compatibility unverified';
+  flapPivot.add(flap);upper.add(flapPivot);
+  for(const mesh of [duct,plateMesh,seal,cowl,flap])mesh.userData.kitchenExhaust=true;
   for(const dy of [-.92,.92])box(hood,.12,.19,.015,hx+.65,hy+dy,bottom+.0075,M.cream);
   box(hood,.018,.5,.08,hx+.6/FT/2+.003,hy,bottom+.075,M.black).name='Extractor front controls';
  });
@@ -483,5 +539,7 @@ export function createFurnishings(model){
    metricSurfaceUV(mesh.geometry,mesh.scale);mapped.add(mesh.geometry);
   }
  });
- return {root,items,materials:M,lamps};
+ return {root,items,materials:M,lamps,setServiceView(view){
+  for(const upper of upperServices)upper.visible=view==='exterior'||view==='interior';
+ }};
 }

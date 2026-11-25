@@ -22,7 +22,11 @@ root.traverse(mesh=>{
   failures.push('Non-solid, nonfinite or zero-thickness furnishing in '+mesh.parent.name);
 });
 for(const item of items){
- const room=model.rooms.find(r=>r.name===item.room),bounds=new THREE.Box3().setFromObject(item.group);
+ const room=model.rooms.find(r=>r.name===item.room),bounds=new THREE.Box3();
+ item.group.traverse(mesh=>{
+  if(mesh.isMesh&&!mesh.userData.kitchenExhaust)
+   for(const part of furnishingBounds(mesh))bounds.union(part);
+ });
  const b={xmin:bounds.min.x/FT,xmax:bounds.max.x/FT,ymin:-bounds.max.z/FT,ymax:-bounds.min.z/FT};
  if(b.xmin<room.x-.03||b.xmax>room.x+room.width+.03||b.ymin<room.y-.03||b.ymax>room.y+room.depth+.03)failures.push(item.name+' outside its room');
  let sweepHits=0;
@@ -44,7 +48,7 @@ for(const item of items){
  reports.push({name:item.name,room:item.room,kind:item.kind,bounds_ft:b,assumed_door_sweep_hits:sweepHits});
 }
 const result={status:failures.length?'FAILED':'passed',furnishing_groups:items.length,failures,
- checks:['Actual mesh bounds remain within named clear-room rectangles','Hard furniture avoids all ten conceptual leaf sectors in nine door assemblies','Batched pull bounds retain real separate parts, not a blocking combined envelope'],
+ checks:['Actual non-service fixture mesh bounds remain within named clear-room rectangles','Provisional kitchen exhaust intentionally crosses its native hosted wall penetration; separately checked by kitchen-exhaust.test.mjs','Hard furniture avoids all ten conceptual leaf sectors in nine door assemblies','Batched pull bounds retain real separate parts, not a blocking combined envelope'],
  solid_asset_meshes:assetMeshes,minimum_local_solid_extent_ft:minExtent,
  limitations:['Not a building-code, accessibility, egress or fixture-use-clearance assessment','Grounded Walk uses approximate avatar/furniture/door collision clearance; advanced Fly explicitly bypasses it'],items:reports};
 let pairs=0;

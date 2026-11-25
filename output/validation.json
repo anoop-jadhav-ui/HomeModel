@@ -1,5 +1,5 @@
 {
-  "native_file": "C:\\Users\\anoopjadhav\\Documents\\PersonalProjects\\HomeModel\\tools\\hardware-detail\\output\\Home.FCStd",
+  "native_file": "C:\\Users\\anoopjadhav\\Documents\\PersonalProjects\\HomeModel\\tools\\corner-exhaust\\output\\Home.FCStd",
   "valid_solid_objects": 70,
   "invalid_objects": [],
   "opening_counts": {
@@ -522,7 +522,33 @@
     "vent": 6
   },
   "ifc_status": "exported and reopened with geometry",
-  "ifc_represented_products": 108,
+  "provisional_kitchen_exhaust": {
+    "duct_diameter_mm": 150,
+    "wall_opening_diameter_mm": 170,
+    "bend_centerline_radius_mm": 225,
+    "wall_offset_from_kitchen_front_ft": 10.25,
+    "wall_center_above_ffl_ft": 7.75,
+    "outlet_projection_mm": 140,
+    "fall_degrees": 1,
+    "hood_clearance_mm": 750,
+    "canopy_depth_mm": 600,
+    "canopy_width_mm": 800,
+    "host": "Left S",
+    "wall_thickness": 0.75,
+    "wall_center": [
+      0.375,
+      11.0,
+      11.75
+    ],
+    "duct_start": [
+      1.9,
+      7.05,
+      9.696076115485564
+    ],
+    "status": "CONCEPT_ONLY_NOT_INSTALLATION_DESIGN",
+    "note": "South-wall infill proposal beside the kitchen window. Actual lintels, structure, hidden services, terminal/window separation, support, fire/weather sealing and selected-appliance requirements remain UNVERIFIED."
+  },
+  "ifc_represented_products": 109,
   "ifc_opening_dimensions_in_declared_units": true,
   "ifc_filling_relationships_added": 26,
   "ifc_classes": {
@@ -533,7 +559,7 @@
     "IfcSlab": 1,
     "IfcWall": 22,
     "IfcWindow": 17,
-    "IfcOpeningElement": 26,
+    "IfcOpeningElement": 27,
     "IfcSpace": 12
   }
 }

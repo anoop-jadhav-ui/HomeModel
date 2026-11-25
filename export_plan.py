@@ -86,6 +86,12 @@ def export_review(model, parameters, output):
         dx,dy=math.cos(a)*item["width"]/2,math.sin(a)*item["width"]/2
         line([(item["x"]-dx,item["y"]-dy),(item["x"]+dx,item["y"]+dy)],"#267252",1.6,"5 4")
         text(item["x"]+(1 if dy else 0),item["y"]+(0 if dy else .8),"OPEN %g ft"%item["width"],12,"#267252",-90 if dy else 0)
+    service=model["services"]["kitchen_exhaust"]
+    _,sy,_=service["wall_center"]
+    line([(-.6,sy),(2,sy)],"#94451e",1.6,"4 3")
+    line([(-.25,sy-.2),(-.6,sy),(-.25,sy+.2)],"#94451e",1.6)
+    text(5.5,sy+.35,"HIGH exhaust: SOUTH wall",11,"#94451e")
+    text(5.5,sy-.25,"provisional %g mm hole / +%g ft FFL"%(service["wall_opening_diameter_mm"],service["wall_center_above_ffl_ft"]),10,"#94451e")
     for room in model["rooms"]:
         compact=room["width"]<6
         label={"Wash_point":"Wash","Common_bath":"Bath","Attached_bath":"Bath (att.)"}.get(room["name"],room["name"].replace("_"," "))
@@ -133,6 +139,7 @@ def export_review(model, parameters, output):
 <p>%s</p>
 <p>By user direction, the hall/dining connection is open across the full 16-ft central bay, with both short returns and the upper wall/lintel removed. Flanking vertical partitions and neighboring D1 hosts remain. This conceptual revision is not demolition advice; structural support/load paths remain unverified.</p>
 <p>By user direction, the main entry now has two equal inward-opening leaves inside the retained 4 x 7-ft rough opening. Both native leaves, no fixed centre post, and both plan swings are modeled. This is a conceptual arrangement, not a certified door, fire or egress specification.</p>
+<p><b>Provisional kitchen exhaust:</b> the native/IFC south wall now has a high-level round service penetration beside the retained window. The hood, smooth metal route and protected terminal are illustrative viewer fixtures, not a selected or engineered MEP installation. <a href="Exhaust-reference-note.html">Route parameters, manufacturer references and unresolved coordination</a>. Actual lintels, structure, window separation and hidden services must be checked before cutting.</p>
 <img src="architectural-plan.svg" alt="Dimensioned cut plan with door swings, windows, vents and clear room sizes">
 <p><a href="architectural-plan.svg">Open vector drawing</a> · <a href="Home.FCStd">Editable master</a> · <a href="Home.ifc">IFC</a> · <a href="index.html">Furnished visualization</a></p>
 <h2 class="break">Preliminary opening schedule</h2><table><thead><tr><th>Mark</th><th>Width (ft)</th><th>Height (ft)</th><th>Count</th><th>Sill above FFL (ft)</th></tr></thead><tbody>%s</tbody></table>

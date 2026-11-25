@@ -5,6 +5,7 @@ import {createFurnishings,furnishingBounds,FT,point} from './furnishings.js';
 import {createWalkMap,WalkController,FlyController,walkEyeHeight} from './walk-navigation.js';
 import {createWallSections,nativeFrameProfile,createBoxSection} from './wall-sections.js';
 import {createSite} from './site.js';
+import {createGroundDirections} from './ground-directions.js';
 import {createLampControls} from './lamp-controls.js';
 import {doorLeaves,doorPresentation} from './door-presentation.js';
 import {createDoorHardware} from './door-hardware.js';
@@ -161,6 +162,7 @@ try{
  }
  approach.userData.illustrativeOnly=true;scene.add(approach);
  const site=createSite(model);scene.add(site.root);
+ const directions=createGroundDirections(model,site.root.userData.site);scene.add(directions.root);
  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
  const flight=new FlyController(),preferences={exterior:{roof:true}};
  let mode='exterior',doorsOpen=false,walk=false,lastTime=0,lookPointer=null,lastLook=[0,0],fitScale=1;
@@ -320,7 +322,9 @@ try{
    document.getElementById(viewId).focus({preventScroll:true});
   orbit.enabled=!walk&&next!=='plan';document.getElementById('crosshair').style.display=walk?'block':'none';
   clipping(next==='cutaway');
+  furnishing.setServiceView(next);
   site.root.visible=next==='exterior'||walk;approach.visible=next!=='plan'&&next!=='structure';
+  directions.root.visible=next==='exterior';
   structuralConcept.root.visible=next==='structure';structure.visible=next!=='structure';ground.visible=next!=='structure';
   structureNote.hidden=structureControls.hidden=next!=='structure';
   if(next==='exterior'){setRoof(preferences.exterior.roof);setDoors(true);setFurniture(furniturePreference);const cx=(site.bounds.minX+site.bounds.maxX)/2,cy=(site.bounds.minY+site.bounds.maxY)/2;camera.position.copy(point(cx+44,cy-57,grade+41));orbit.target.copy(point(cx,cy,grade+3))}
@@ -430,7 +434,7 @@ try{
  }
  requestAnimationFrame(animate);
  status.textContent='Ready';status.title='Three.js · '+furnishing.items.length+' authored furnishing groups · Door swings assumed';
- window.homeScene={view,focusRoom,nextRoom,previousRoom,setNavigationMode,setDoors,scene,camera,orbit,renderer,furnishing,walker,flight,walkMap,approach,wallSections,site,structuralConcept,avatar,mirrors,architecture:structure,
+ window.homeScene={view,focusRoom,nextRoom,previousRoom,setNavigationMode,setDoors,scene,camera,orbit,renderer,furnishing,walker,flight,walkMap,approach,wallSections,site,directions,structuralConcept,avatar,mirrors,architecture:structure,
   state:()=>({mode,roof:roofGroup.visible,doors:model.doorways.length,doorLeaves:doors.length,doorsOpen,furnitureVisible:furnishing.root.visible,furnishingGroups:furnishing.items.length,conceptualStructureVisible:structuralConcept.root.visible,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,threeRevision:THREE.REVISION,
    walking:walk?{navigation,position:[...activePosition()],room:walkMap.roomAt(activePosition()),inside:insideHome(),destination,waypoints:walker.path.length,history:[...history],historyIndex}:undefined})};
  clearTimeout(window.sceneLoadTimer);document.getElementById('failure').style.display='none';

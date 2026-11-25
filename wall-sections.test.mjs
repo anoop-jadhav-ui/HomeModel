@@ -42,6 +42,14 @@ test('all four architectural exterior corners retain a filled native wall sectio
   assert(ray.intersectObject(mesh).length>0,`Architectural corner ${x},${y} has a gap`);
  }
 });
+test('six internal L-junctions close through the outer wall faces rather than leaving half-wall notches',()=>{
+ const mesh=createWallSections(model);mesh.visible=true;mesh.updateMatrixWorld(true);
+ const z=(model.dimensions.floor_elevation+model.plan.cut_height)*FT;
+ for(const [x,y] of [[13.03,13.03],[29.22,13.03],[13.03,21.22],[29.22,21.22],[17.03,27.22],[24.03,25.22]]){
+  const ray=new THREE.Raycaster(new THREE.Vector3(x*FT,z+FT,-y*FT),new THREE.Vector3(0,-1,0));
+  assert(ray.intersectObject(mesh).length>0,`Internal L-junction ${x},${y} has a missing outer quarter`);
+ }
+});
 test('animated solid leaves keep native thickness and their cut faces follow the hinge',()=>{
  for(const door of model.doorways){
   const {leaf}=door;

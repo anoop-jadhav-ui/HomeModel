@@ -20,6 +20,8 @@ enclosed=parameters["monitor_enclosure"]["enabled"]
 assert len(objects) == 63-int(parameters["hall_dining_full_bay"])+(8 if enclosed else 0), len(objects)
 assert all(not o.Shape.isNull() and o.Shape.isValid() and o.Shape.Volume > 0 for o in objects)
 by_label = {o.Label:o for o in doc.Objects}
+changed_service_walls={"Kitchen Middle","FrontBedroom Middle","RearBedroom Left Front",
+                       "RearBedroom Right Front","Service Front","RearBath Front","Left S"}
 screen_names=[prefix+side for side in ("Front","Right","Rear","Left")
               for prefix in ("Monitor Timber Louvers ","Monitor Recessed Grille ")]
 for label in screen_names:
@@ -97,6 +99,8 @@ baseline=App.openDocument(os.path.join(root,"archives","before-grade-change","Ho
 old={o.Label:o for o in baseline.Objects if hasattr(o,"Shape")}
 for current in objects:
     previous=old[current.Label]
+    if current.Label in changed_service_walls:
+        continue
     if current.Label=="D_01_Front_E" and parameters["main_entry"]["leaf_count"]==2:
         leaves=[s for s in current.Shape.Solids if abs(s.BoundBox.YLength/ft-.15)<1e-7]
         assert len(leaves)==2
@@ -124,7 +128,7 @@ App.closeDocument(baseline.Name)
 baseline=App.openDocument(os.path.join(root,"archives","before-paired-entry","Home.FCStd"))
 old={o.Label:o for o in baseline.Objects if hasattr(o,"Shape")}
 for current in objects:
-    if current.Label=="D_01_Front_E":
+    if current.Label=="D_01_Front_E" or current.Label in changed_service_walls:
         continue
     previous=old[current.Label]
     assert abs(current.Shape.Volume-previous.Shape.Volume)<1e-3,current.Label+" changed outside paired entry"
@@ -137,8 +141,32 @@ old_meshes={record["name"]:record for record in old_review["objects"]}
 assert review["rooms"]==old_review["rooms"]
 assert review["dimensions"]==old_review["dimensions"]
 for record in review["objects"]:
-    if record["name"]!="D_01_Front_E":
+    if record["name"]!="D_01_Front_E" and record["name"] not in changed_service_walls:
         assert record==old_meshes[record["name"]],record["name"]+" changed native exported geometry"
+baseline=App.openDocument(os.path.join(root,"archives","before-corner-exhaust","Home.FCStd"))
+old={o.Label:o for o in baseline.Objects if hasattr(o,"Shape")}
+corner_walls=changed_service_walls-{"Left S"}
+for current in objects:
+    previous=old[current.Label]
+    if current.Label in corner_walls:
+        assert previous.Shape.cut(current.Shape).Volume<1e-3,current.Label+" lost approved wall geometry"
+        added=current.Shape.cut(previous.Shape)
+        expected=(parameters["partition_wall"]*ft)**2/2*parameters["wall_height"]*ft
+        assert abs(added.Volume-expected)<1e-3,current.Label+" changed outside its half-thickness endpoint closure"
+    elif current.Label=="Left S":
+        cutter=by_label["Kitchen Exhaust Provisional Penetration"].Shape
+        assert current.Shape.cut(previous.Shape).Volume<1e-3,"Service wall gained unrelated geometry"
+        assert previous.Shape.cut(current.Shape).cut(cutter).Volume<1e-3,"Service wall lost geometry outside the proposed round hole"
+        assert current.Shape.common(cutter).Volume<1e-3,"Service cylinder did not cut the persisted wall"
+    else:
+        assert abs(current.Shape.Volume-previous.Shape.Volume)<1e-3,current.Label+" changed outside corner/exhaust scope"
+        for field in ("XMin","XMax","YMin","YMax","ZMin","ZMax"):
+            assert abs(getattr(current.Shape.BoundBox,field)-getattr(previous.Shape.BoundBox,field))<1e-5,current.Label
+App.closeDocument(baseline.Name)
+for x,y in ((13.03,13.03),(29.22,13.03),(13.03,21.22),(29.22,21.22),(17.03,27.22),(24.03,25.22)):
+    for z in (4.1,8,13.9):
+        assert any(o.Shape.isInside(App.Vector(x*ft,y*ft,z*ft),1e-5,True)
+                   for o in objects if o.ReviewRole=="Walls"),(x,y,z)
 assert review["passages"][0]["width"]==(16 if parameters["hall_dining_full_bay"] else parameters["hall_opening_width"])
 for record in review["doorways"]:
     native=by_label[record["name"]]
@@ -165,6 +193,9 @@ for label in screen_names:
 assert len(ifc.by_type("IfcDoor"))==9
 assert len(ifc.by_type("IfcWindow"))==17
 assert len(ifc.by_type("IfcSpace"))==12
+service_void=next(o for o in ifc.by_type("IfcOpeningElement") if o.Name=="Kitchen Exhaust Provisional Penetration")
+assert service_void.VoidsElements[0].RelatingBuildingElement.Name=="Left S"
+assert any(p.Name=="ConceptKitchenExhaust" for p in ifc.by_type("IfcPropertySet"))
 entry=next(d for d in ifc.by_type("IfcDoor") if d.Name=="D_01_Front_E")
 assert entry.OperationType=="DOUBLE_DOOR_SINGLE_SWING"
 assert any(p.Name=="ConceptPairedEntrance" for p in ifc.by_type("IfcPropertySet"))
@@ -188,6 +219,41 @@ for product in ifc.by_type("IfcDoor")+ifc.by_type("IfcWindow"):
     assert abs(product.OverallHeight*units-native.Height.Value/1000)<1e-7, product.Name
 settings=ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS,True)
+def intersections_x(product,y,z):
+    mesh=ifcopenshell.geom.create_shape(settings,product)
+    points=list(zip(mesh.geometry.verts[0::3],mesh.geometry.verts[1::3],mesh.geometry.verts[2::3]))
+    faces=mesh.geometry.faces
+    result=set()
+    for offset in range(0,len(faces),3):
+        a,b,c=(points[i] for i in faces[offset:offset+3])
+        determinant=(b[1]-c[1])*(a[2]-c[2])+(c[2]-b[2])*(a[1]-c[1])
+        if abs(determinant)<1e-12:
+            continue
+        u=((b[1]-c[1])*(z-c[2])+(c[2]-b[2])*(y-c[1]))/determinant
+        v=((c[1]-a[1])*(z-c[2])+(a[2]-c[2])*(y-c[1]))/determinant
+        if u>=-1e-8 and v>=-1e-8 and u+v<=1+1e-8:
+            result.add(round(u*a[0]+v*b[0]+(1-u-v)*c[0],8))
+    return result
+service=review["services"]["kitchen_exhaust"]
+_,service_y,service_z=service["wall_center"]
+service_host=next(p for p in ifc.by_type("IfcWall") if p.Name=="Left S")
+assert not intersections_x(service_host,service_y*.3048,service_z*.3048),"Persisted IFC wall still blocks the exhaust"
+assert intersections_x(service_host,(service_y+.4)*.3048,service_z*.3048),"IFC service hole removed neighboring masonry"
+for label,x,y in (("Kitchen Middle",13.03,13.03),("FrontBedroom Middle",29.22,13.03),
+                  ("RearBedroom Left Front",13.03,21.22),("RearBedroom Right Front",29.22,21.22),
+                  ("Service Front",17.03,27.22),("RearBath Front",24.03,25.22)):
+    product=next(p for p in ifc.by_type("IfcWall") if p.Name==label)
+    assert len([hit for hit in intersections_x(product,y*.3048,8*.3048) if hit>x*.3048])%2==1,label+" IFC corner is still notched"
+native_cutter=by_label["Kitchen Exhaust Provisional Penetration"]
+assert native_cutter in by_label["Left S"].Subtractions
+saved_radius=native_cutter.Radius.Value
+saved_volume=by_label["Left S"].Shape.Volume
+native_cutter.Radius=saved_radius+1
+doc.recompute()
+assert by_label["Left S"].Shape.Volume<saved_volume,"Native service opening did not remain parametric after reopening"
+native_cutter.Radius=saved_radius
+doc.recompute()
+assert abs(by_label["Left S"].Shape.Volume-saved_volume)<.1
 entry_mesh=ifcopenshell.geom.create_shape(settings,entry)
 entry_shape=entry_mesh.geometry
 points=list(zip(entry_shape.verts[0::3],entry_shape.verts[1::3],entry_shape.verts[2::3]))
@@ -250,7 +316,12 @@ result={"saved_native_reopened":True,"valid_bim_solids":len(objects),
         "uniform_service_vents_ft":{"width":1.5,"height":2,"count":len(vents)},
         "hall_dining_full_height_clear_width_ft":review["passages"][0]["width"],
         "shared_local_levels_ft":{"ground":grade,"finished_floor":4,"floor_above_grade":4-grade},
-        "native_solids_unchanged_except_paired_entry":len(objects)-1,
+        "native_solids_unchanged_from_before_corner_exhaust":len(objects)-len(changed_service_walls),
+        "native_internal_corner_closures":6,
+        "native_and_ifc_provisional_kitchen_service_penetration":True,
+        "ifc_service_centerline_clear_and_neighboring_wall_solid":True,
+        "native_service_radius_edit_recomputes_host":True,
+        "ifc_internal_corner_closures":6,
         "paired_entrance_native_leaf_widths_ft":[s.BoundBox.XLength/ft for s in by_label["D_01_Front_E"].Shape.Solids if abs(s.BoundBox.YLength/ft-.15)<1e-7],
         "paired_entrance_ifc_operation":entry.OperationType,
         "paired_entrance_ifc_actual_leaf_components":len(leaf_components),
