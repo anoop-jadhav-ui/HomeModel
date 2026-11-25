@@ -5,6 +5,8 @@ import {createFurnishings,FT,point} from './furnishings.js';
 import {createWalkMap,WalkController,FlyController} from './walk-navigation.js';
 import {createWallSections,nativeFrameProfile,createBoxSection} from './wall-sections.js';
 import {createSite} from './site.js';
+import {createLampControls} from './lamp-controls.js';
+import {doorPresentation} from './door-presentation.js';
 
 const model=window.HOME_MODEL,stage=document.getElementById('viewport'),status=document.getElementById('status');
 const grade=model.dimensions.ground_elevation,eyeHeight=model.navigation.eye_height;
@@ -95,17 +97,16 @@ try{
   for(const side of [-1,1])localBox(group,t,h,d,side*(w-t)/2,h/2,-normalOffset,fm);
   localBox(group,w,t,d,0,h-t/2,-normalOffset,fm);
   if(item.kind==='door'){
-   const assumption=model.doorways.find(x=>x.name===item.name),sign=assumption.hinge==='start'?-1:1;
-   const {leaf}=assumption,pivot=new THREE.Group();pivot.position.set(sign*(w/2-t)*FT,0,-leaf.normal_offset*FT);group.add(pivot);
-   const lw=leaf.width,lh=leaf.height;
-   const panel=localBox(pivot,lw,lh,leaf.thickness,-sign*lw/2,leaf.bottom+lh/2,0,leafMaterials);panel.name=item.name+' solid leaf';
-   for(const z of [-1,1].map(side=>side*(leaf.thickness/2+.035))){
+   const assumption=model.doorways.find(x=>x.name===item.name),fit=doorPresentation(assumption),{sign}=fit;
+   const pivot=new THREE.Group();pivot.name=item.name+' hinge';pivot.position.set(fit.pivotX*FT,0,fit.pivotZ*FT);group.add(pivot);
+   const lw=fit.width,lh=fit.height;
+   const panel=localBox(pivot,lw,lh,fit.thickness,-sign*lw/2,fit.bottom+lh/2,fit.centerZ,leafMaterials);panel.name=item.name+' solid leaf';
+   for(const z of [-1,1].map(side=>fit.centerZ+side*(fit.thickness/2+.035))){
     localBox(pivot,.38,.055,.06,-sign*(lw-.25),3.35,z,handle);
     localBox(pivot,.055,.26,.055,-sign*(lw-.25),3.25,z,handle);
    }
-   if(item.mark==='D')for(let i=0;i<6;i++)localBox(pivot,.025,lh-.4,.025,-sign*(.35+i*.5),lh/2,leaf.thickness/2+.0125,frameMat);
-   const a=item.angle_degrees*Math.PI/180,normal=assumption.opens_to[0]*Math.sin(a)-assumption.opens_to[1]*Math.cos(a);
-   doors.push({pivot,angle:Math.asin(Math.max(-1,Math.min(1,normal*sign))),name:item.name});
+   if(item.mark==='D')for(let i=0;i<6;i++)localBox(pivot,.025,lh-.4,.025,-sign*(.35+i*.5),fit.bottom+lh/2,fit.centerZ+fit.thickness/2+.0125,frameMat);
+   doors.push({pivot,angle:fit.angle,name:item.name});
   }else{
    localBox(group,w,t,d,0,t/2,-normalOffset,fm);
    localBox(group,w-2*t,h-2*t,.025,0,h/2,-normalOffset,glass);
@@ -150,6 +151,9 @@ try{
  let history=[],historyIndex=-1,nextExhausted=false,noticeMessage='',noticeUntil=0,pausedRequest=null;
  const visited=new Set(),roomNames=new Set(model.rooms.map(room=>room.name));
  const keys=new Set(),touchKeys=new Set(),touchPointers=new Map();
+ const lampControls=createLampControls({scene,camera,canvas:renderer.domElement,furnishing,panel:document.getElementById('lamp-controls'),
+  enabled:()=>mode!=='plan'&&furnishing.root.visible,
+  canTap:()=>!keys.size&&!touchPointers.size&&!pendingRequest&&!walker.path.length});
  const planFrame=document.getElementById('plan'),walkControls=document.getElementById('walk-controls'),dock=document.getElementById('walk-dock');
  const notice=document.getElementById('walk-notice'),location=document.getElementById('walk-location');
  const enterButton=document.getElementById('enter-home'),playButton=document.getElementById('play-walk');
@@ -203,7 +207,7 @@ try{
   if(!open){stopTravel();walker.velocity=[0,0]}
   doorsOpen=open;return true;
  }
- function setFurniture(visible){furnishing.root.visible=visible;document.getElementById('furniture').setAttribute('aria-pressed',String(visible));if(!walk)furniturePreference=visible}
+ function setFurniture(visible){furnishing.root.visible=visible;lampControls.sync();document.getElementById('furniture').setAttribute('aria-pressed',String(visible));if(!walk)furniturePreference=visible}
  function clipping(enabled){wallSections.visible=enabled;for(const cap of openingCaps)cap.visible=enabled;for(const m of clipMaterials){m.clippingPlanes=enabled?[clip]:[];m.clipShadows=true;m.needsUpdate=true}}
  function roomView(name){
   const r=model.rooms.find(x=>x.name===name);if(!r)throw new Error('Unknown interior room '+name);
@@ -301,7 +305,7 @@ try{
   }
   else renderer.domElement.setAttribute('aria-label','3D home. Drag to orbit; pinch to zoom; use two fingers to pan.');
   fitScale=1;fitViewport();
-  if(orbit.enabled)orbit.update();updateDock();
+  if(orbit.enabled)orbit.update();updateDock();lampControls.sync();
  }
  for(const id of ['exterior','cutaway','interior'])document.getElementById(id).onclick=()=>view(id);
  function wireRadioKeyboard(group){
@@ -345,7 +349,7 @@ try{
   button.addEventListener('blur',()=>keys.delete(button.dataset.key));
  }
  window.addEventListener('keydown',e=>{
-  if(!walk||e.ctrlKey||e.metaKey||e.altKey||e.target.closest('select,input,textarea,summary,a')||e.target.isContentEditable||document.getElementById('files').open)return;
+  if(!walk||e.ctrlKey||e.metaKey||e.altKey||e.target.closest('button,select,input,textarea,summary,a')||e.target.isContentEditable||document.getElementById('files').open)return;
   if(navigation==='walk'&&['KeyR','KeyF'].includes(e.code))return;
   if(/^(Key[WASDRF]|Arrow)/.test(e.code))stopTravel();keys.add(e.code);if(e.code.startsWith('Arrow'))e.preventDefault();
  });
@@ -374,7 +378,7 @@ try{
    }
    updateDock();
   }else if(mode!=='plan')orbit.update();
-  if(mode!=='plan')renderer.render(scene,camera);
+  lampControls.sync();if(mode!=='plan')renderer.render(scene,camera);
   requestAnimationFrame(animate);
  }
  requestAnimationFrame(animate);

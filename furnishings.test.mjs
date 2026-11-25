@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
 import {createFurnishings,FT} from './output/furnishings.js';
+import {KITCHEN_SINK} from './output/kitchen-fixtures.js';
 
 const source=readFileSync(new URL('./output/review-data.js',import.meta.url),'utf8');
 const model=JSON.parse(source.slice('window.HOME_MODEL='.length,-1));
@@ -67,7 +68,7 @@ test('refinement keeps the source immutable, shares geometry and stays within th
  assert(meshes<=360,`${meshes} meshes`);
  assert(triangles<=60000,`${triangles} triangles`);
  assert(geometries.size<meshes/2,'Repeated legs, drawers and cushions should share buffers');
- assert.equal(textures.size,2);
+ assert.equal(textures.size,3);
 });
 test('draped bedding retains continuous smooth normals across duplicate bevel vertices',()=>{
  const quilt=assets.items.find(i=>i.kind==='bed').group.children.find(m=>m.geometry?.name==='Draped duvet');
@@ -138,4 +139,64 @@ test('sofa feet support its raised base and chair backs have a genuine lower ope
  const local=assets.items.find(i=>i.kind==='chair').group.children[0];
  const back=local.children.find(m=>m.geometry?.type==='ExtrudeGeometry');
  assert(new THREE.Box3().setFromObject(back).min.y>(model.dimensions.floor_elevation+2)*FT);
+});
+test('all eight dining chairs face the table and their outward backs clear its solid parts',()=>{
+ const table=assets.items.find(i=>i.name==='Dining table'),top=new THREE.Box3().setFromObject(table.group.children[0]);
+ for(const chair of assets.items.filter(i=>i.kind==='chair')){
+  const local=chair.group.children[0],origin=local.getWorldPosition(new THREE.Vector3());
+  const forward=new THREE.Vector3(0,0,1).transformDirection(local.matrixWorld);
+  const inward=top.clampPoint(origin,new THREE.Vector3()).sub(origin);inward.y=0;inward.normalize();
+  assert(forward.dot(inward)>.99,chair.name+' faces away from the table');
+  chair.group.traverse(a=>{if(!a.isMesh)return;table.group.traverse(b=>{
+   if(!b.isMesh)return;
+   const overlap=new THREE.Box3().setFromObject(a).intersect(new THREE.Box3().setFromObject(b));
+   const size=overlap.getSize(new THREE.Vector3());
+   assert(!(size.x>.015*FT&&size.y>.015*FT&&size.z>.015*FT),chair.name+' penetrates table part');
+  })});
+ }
+});
+test('the kitchen appliance clears every cabinet part and worktop runs do not overlap at the L joint',()=>{
+ const group=assets.items.find(i=>i.kind==='kitchen').group,fridge=group.getObjectByName('Kitchen refrigerator');
+ assert(fridge);
+ const bounds=new THREE.Box3().setFromObject(fridge);
+ for(const mesh of group.children.filter(m=>m.isMesh&&m!==fridge)){
+  const size=bounds.clone().intersect(new THREE.Box3().setFromObject(mesh)).getSize(new THREE.Vector3());
+  assert(!(size.x>.01*FT&&size.y>.01*FT&&size.z>.01*FT),'Fridge intersects '+(mesh.name||mesh.geometry.type));
+ }
+ const counters=group.children.filter(m=>m.material===assets.materials.stone);
+ assert.equal(counters.length,2);
+ const overlap=new THREE.Box3().setFromObject(counters[0]).intersect(new THREE.Box3().setFromObject(counters[1])).getSize(new THREE.Vector3());
+ assert(overlap.x<.001*FT||overlap.z<.001*FT,'L worktops have coplanar overlapping top surfaces');
+ const crossRun=new THREE.Box3().setFromObject(group.children[1]);
+ for(const mesh of group.children.filter(m=>m.geometry?.name==='Inset joinery panel'&&Math.abs(m.rotation.y-Math.PI/2)<.01)){
+  const size=crossRun.clone().intersect(new THREE.Box3().setFromObject(mesh)).getSize(new THREE.Vector3());
+  assert(size.y<.01*FT||size.x<.01*FT||size.z<.01*FT,'Blind-corner front penetrates perpendicular base unit');
+ }
+});
+test('the living mat is a warm matte woven textile, not white architectural flooring',()=>{
+ const rug=assets.items.find(i=>i.kind==='rug'),mesh=rug.group.children[0];
+ assert.equal(mesh.material,assets.materials.rug);
+ assert(mesh.material.roughness>.9&&mesh.material.map&&mesh.material.bumpMap);
+ const color=mesh.material.color;
+ assert(color.r>color.g&&color.g>color.b,'Jute should have an earthy warm tint');
+ assert(color.r<.5,'The rug should not read as a near-white floor patch');
+ assert.equal(mesh.material.map.image.width,128);
+});
+test('the kitchen tap reaches down into a genuinely recessed inset steel bowl, not through an uncut counter',()=>{
+ const group=assets.items.find(i=>i.kind==='kitchen').group;
+ const sink=group.getObjectByName('Kitchen inset steel sink'),tap=group.getObjectByName('Kitchen tap spout');
+ const counter=group.getObjectByName('Kitchen cutout countertop'),carcass=group.getObjectByName('Kitchen sink cabinet carcass');
+ const outlet=tap.localToWorld(new THREE.Vector3().fromArray(tap.userData.outlet));
+ const direction=new THREE.Vector3().fromArray(tap.userData.outletDirection).transformDirection(tap.matrixWorld);
+ assert(direction.y<-.999,'Outlet must discharge downwards');
+ const relative=sink.worldToLocal(outlet.clone());
+ assert(Math.abs(relative.x)<KITCHEN_SINK.innerWidth/2*FT);
+ assert(Math.abs(relative.z)<KITCHEN_SINK.innerDepth/2*FT,'Spout must reach over the bowl');
+ const ray=new THREE.Raycaster(outlet,direction),hits=ray.intersectObjects([sink,counter,carcass],false);
+ assert.equal(hits[0]?.object,sink,'The first surface under the spout must be the sink bottom, not stone or solid cabinet');
+ assert(sink.position.y-hits[0].point.y>.5*FT,'Sink must be deep enough for ordinary washing');
+ assert.equal(ray.intersectObject(counter).length,0,'A real cutout must expose the bowl');
+ assert(hits[0].face.normal.y>.5,'Bowl interior must face into its cavity');
+ const rimRay=new THREE.Raycaster(sink.position.clone().add(new THREE.Vector3(1.09*FT,FT,0)),new THREE.Vector3(0,-1,0));
+ assert(rimRay.intersectObject(sink).length,'Raised lip must be visible from above');
 });

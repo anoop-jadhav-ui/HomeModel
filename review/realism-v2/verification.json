@@ -3,15 +3,18 @@
   "furniture": {
     "groups": 30,
     "meshes": 359,
-    "triangles": 58964,
-    "unique_geometry_buffers": 91,
-    "authored_surface_textures": 2,
+    "triangles": 58896,
+    "unique_geometry_buffers": 92,
+    "authored_surface_textures": 3,
+    "independent_lamps": 6,
+    "lamp_light_range_metres": 1.3,
+    "lamp_shadows": false,
     "surface_texture_size": [128, 128],
     "shared_pmrem_atlas_size": [768, 1024],
     "limits": {"meshes": 360, "triangles": 60000}
   },
   "checks": {
-    "integrated_tests_passed": 38,
+    "integrated_tests_passed": 48,
     "skipped_tests": 0,
     "furnishing_fit_swing_overlap": "passed",
     "viewport_sizes": [[390, 844], [320, 568], [844, 390], [667, 375]],
@@ -20,17 +23,31 @@
     "horizontal_overflow_cases": 0,
     "undersized_visible_control_cases": 0,
     "observed_runtime_errors": 0,
+    "initialization_watchdog_warnings_observed": 1,
+    "initialization_warning_recovered_to_ready": true,
     "live_entry_eye_feet": [7.3, 9.3],
     "enter_hidden_inside": true,
     "live_fly_ascended_and_returned_to_clear_walk_pose": true,
     "scene_environment_unchanged": true,
     "architecture_site_source_and_native_ifc_byte_identical_to_base": true,
-    "static_build_files_checked": 34,
-    "static_asset_module_checks": 68
+    "lamp_pointer_and_state_browser_cases": 11,
+    "lamp_pointer_and_state_browser_failures": 0,
+    "lamp_panel_fits_all_viewports_including_expanded": true,
+    "native_main_door_rough_opening_feet": [4, 7],
+    "native_nominal_main_leaf_feet": [3.7, 6.85, 0.15],
+    "display_main_leaf_feet": [3.68, 6.82, 0.15],
+    "display_leaf_gaps_feet": {"each_side": 0.01, "top": 0.01, "bottom": 0.02},
+    "display_and_navigation_door_transforms_match": true,
+    "kitchen_tap_discharge_down_inside_bowl": true,
+    "kitchen_counter_and_carcass_recess_exposed": true,
+    "static_build_files_checked": 37,
+    "static_asset_module_checks": 74
   },
   "limitations": [
     "Viewport tests run in the desktop browser, not on physical mobile hardware.",
     "Procedural assets and a generic reflection environment are not scanned or ray-traced photorealism.",
-    "Building-code, structural, accessibility and fixture-use clearances remain unverified."
+    "Building-code, structural, accessibility and fixture-use clearances remain unverified.",
+    "Non-shadowing local lamp lights may spill through nearby geometry; daylight remains unchanged.",
+    "Native CAD/IFC retain nominal closed door envelopes; small display fitting gaps are not a fabrication specification."
   ]
 }

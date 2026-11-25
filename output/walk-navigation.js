@@ -1,3 +1,5 @@
+import {doorPresentation} from './door-presentation.js';
+
 const TAU=Math.PI*2;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
@@ -35,17 +37,19 @@ function intersects(point,shape,radius){
  }
  return filled;
 }
-function doorGeometry(door,progress){
- const a=door.angle_degrees*Math.PI/180,s=door.hinge==='start'?-1:1,u=[Math.cos(a),Math.sin(a)];
+export function doorGeometry(door,progress){
+ const fit=doorPresentation(door),a=door.angle_degrees*Math.PI/180,s=fit.sign,u=[Math.cos(a),Math.sin(a)];
  const n=[-u[1],u[0]];
- const hinge=[door.x+s*(door.width/2-door.frame_width)*u[0]+door.leaf.normal_offset*n[0],door.y+s*(door.width/2-door.frame_width)*u[1]+door.leaf.normal_offset*n[1]];
+ const pivot=[door.x+fit.pivotX*u[0]-fit.pivotZ*n[0],door.y+fit.pivotX*u[1]-fit.pivotZ*n[1]];
+ const rotation=fit.angle*clamp(progress,0,1);
+ const hinge=pivot.map((v,i)=>v+fit.centerZ*(Math.sin(rotation)*u[i]-Math.cos(rotation)*n[i]));
  const start=Math.atan2(-s*u[1],-s*u[0]),end=Math.atan2(door.opens_to[1],door.opens_to[0]);
- const angle=start+angleDifference(end,start)*clamp(progress,0,1),length=door.leaf.width;
- return {hinge,start,end,length,tip:[hinge[0]+Math.cos(angle)*length,hinge[1]+Math.sin(angle)*length]};
+ const angle=start+rotation,length=fit.width;
+ return {hinge,pivot,start,end,length,tip:[hinge[0]+Math.cos(angle)*length,hinge[1]+Math.sin(angle)*length]};
 }
 function doorSweep(door){
- const d=doorGeometry(door,0),arc=[d.hinge];
- for(let i=0;i<=20;i++){const a=d.start+angleDifference(d.end,d.start)*i/20;arc.push([d.hinge[0]+Math.cos(a)*d.length,d.hinge[1]+Math.sin(a)*d.length])}
+ const d=doorGeometry(door,0),arc=[d.pivot];
+ for(let i=0;i<=20;i++){const a=d.start+angleDifference(d.end,d.start)*i/20;arc.push([d.pivot[0]+Math.cos(a)*d.length,d.pivot[1]+Math.sin(a)*d.length])}
  return polygon([arc]);
 }
 

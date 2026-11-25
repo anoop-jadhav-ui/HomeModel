@@ -53,6 +53,12 @@ iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;ba
 <style>
 #stage{display:grid;grid-template-rows:minmax(0,1fr) auto}
 #viewport{position:relative;min-width:0;min-height:0;overflow:hidden}
+#lamp-controls{position:absolute;left:12px;bottom:12px;z-index:3;max-width:min(260px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:#f9fbf7ef;border:1px solid #becac0;border-radius:9px;font-size:12px}
+#lamp-controls summary{min-height:44px;padding:12px;box-sizing:border-box;cursor:pointer}
+#lamp-controls p{margin:0 12px 8px;color:#627267}
+[data-lamp-list]{display:grid;gap:4px;padding:0 8px 8px}
+[data-lamp-list] button{text-align:left;font-size:11px;min-height:44px}
+[data-lamp-list] button[aria-pressed=true]{background:#f3dfb9;color:#65491c;border-color:#b99a61}
 #walk-dock{width:min(640px,calc(100% - 24px));justify-self:center;display:grid;grid-template-columns:140px minmax(0,1fr);gap:7px 14px;padding:10px 12px;margin:8px 0 max(8px,env(safe-area-inset-bottom));background:#f9fbf7;border:1px solid #becac0;border-radius:14px;box-shadow:0 3px 14px #253c2517}
 .dock-context{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
 .dock-place{min-width:0;flex:1}#walk-location{display:block;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
@@ -90,7 +96,8 @@ button:disabled{opacity:.42;cursor:default}
 </div>
 </nav>
 <main id="stage"><div id="viewport"><iframe id="plan" title="Dimensioned architectural cut plan" src="plan.html?embed=1"></iframe>
-<div id="crosshair"></div><div id="failure" role="alert"></div></div>
+<div id="crosshair"></div><div id="failure" role="alert"></div>
+<details id="lamp-controls" hidden><summary>Lamps · tap to switch</summary><p>Tap a visible bedside lamp, or use these switches. Pressed means on.</p><div data-lamp-list role="group" aria-label="Individual bedside lamp switches"></div></details></div>
 <section id="walk-dock" aria-label="Interior navigation player" hidden>
 <div class="dock-context"><div class="dock-place"><strong id="walk-location">Outside</strong><span id="walk-notice" role="status" aria-live="polite"></span></div>
 <div class="travel-mode" role="radiogroup" aria-label="Navigation mode">

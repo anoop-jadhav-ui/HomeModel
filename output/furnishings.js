@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js';
+import {KITCHEN_SINK,kitchenCounterGeometry,kitchenSinkGeometry} from './kitchen-fixtures.js';
 
 export const FT=.3048;
 export const point=(x,y,z)=>new THREE.Vector3(x*FT,z*FT,-y*FT);
 const material=(color,roughness=.65,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 
 export function createFurnishings(model){
- const root=new THREE.Group(),items=[];
+ const root=new THREE.Group(),items=[],lamps=[];
  const textile=color=>new THREE.MeshPhysicalMaterial({color,roughness:.92,sheen:.32,sheenColor:'#ede5d1',sheenRoughness:.85});
  const M={wood:material('#795036',.48),darkWood:material('#443125',.54),cream:material('#e8ddc8'),
   linen:textile('#dcd5c5'),green:material('#687561'),pillow:textile('#eee6d6'),black:material('#232b29'),
@@ -31,7 +32,16 @@ export function createFurnishings(model){
  const weave=surface('cloth'),grain=surface('wood');
  weave.repeat.set(16,16);grain.colorSpace=THREE.SRGBColorSpace;
  M.upholstery=textile('#aaa08b');M.cushion=textile('#72836b');M.accent=textile('#9c6852');
- M.paint=material('#667360',.56);
+ M.paint=material('#667360',.56);M.rug=material('#a18a62',.98);M.steel=material('#b5bdba',.32,1);
+ const rugData=new Uint8Array(128*128*4);
+ for(let y=0;y<128;y++)for(let x=0;x<128;x++){
+  const edge=Math.min(x,y,127-x,127-y),band=edge<5||edge>9&&edge<12;
+  const value=(band?164:218)+((x%4<2)===(y%4<2)?12:0);
+  const i=(y*128+x)*4;rugData[i]=rugData[i+1]=rugData[i+2]=value;rugData[i+3]=255;
+ }
+ const rugMap=new THREE.DataTexture(rugData,128,128);rugMap.colorSpace=THREE.SRGBColorSpace;
+ rugMap.magFilter=THREE.LinearFilter;rugMap.minFilter=THREE.LinearMipmapLinearFilter;rugMap.generateMipmaps=true;rugMap.needsUpdate=true;
+ M.rug.map=rugMap;M.rug.bumpMap=weave;M.rug.bumpScale=.0006;
  for(const mat of [M.linen,M.pillow,M.upholstery,M.cushion,M.accent]){
   mat.bumpMap=weave;mat.bumpScale=.00035;mat.roughnessMap=weave;
  }
@@ -184,7 +194,7 @@ export function createFurnishings(model){
   const mesh=new THREE.Mesh(geometry,mat);mesh.scale.set(rx*FT,h*FT,ry*FT);
   mesh.position.copy(point(x,y,z));mesh.castShadow=true;mesh.receiveShadow=true;g.add(mesh);return mesh;
  }
- function tap(g,x,y,z){
+ function tap(g,x,y,z,rotation=0){
   const geometry=cached('curved-tap',()=>{
    const curve=new THREE.CubicBezierCurve3(point(0,0,0),point(0,0,.9),point(0,-.55,.9),point(0,-.55,.55));
    const tube=new THREE.TubeGeometry(curve,16,.035*FT,8,false);
@@ -200,26 +210,39 @@ export function createFurnishings(model){
    const capped=new THREE.BufferGeometry();capped.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
    capped.setIndex(indices);capped.computeVertexNormals();capped.userData.assetSolid=true;return capped;
   });
-  const mesh=new THREE.Mesh(geometry,M.metal);mesh.position.copy(point(x,y,z));mesh.castShadow=true;g.add(mesh);
+  const mesh=new THREE.Mesh(geometry,M.metal);mesh.position.copy(point(x,y,z));mesh.rotation.y=rotation;mesh.castShadow=true;g.add(mesh);
+  mesh.userData.outlet=point(0,-.55,.55).toArray();mesh.userData.outletDirection=[0,-1,0];
   const fittings=cached('tap-fittings',()=>{
    const base=new THREE.CylinderGeometry(.07*FT,.07*FT,.09*FT,16);base.translate(0,.045*FT,0);
    const lever=new RoundedBoxGeometry(.035*FT,.04*FT,.19*FT,1,.01*FT);lever.translate(.035*FT,.16*FT,.025*FT);
    return joined([base,lever]);
   });
-  const detail=new THREE.Mesh(fittings,M.metal);detail.position.copy(mesh.position);detail.castShadow=true;g.add(detail);
+  const detail=new THREE.Mesh(fittings,M.metal);detail.position.copy(mesh.position);detail.rotation.y=rotation;detail.castShadow=true;g.add(detail);
+  return mesh;
  }
  function asset(room,name,kind,fn,{soft=false}={}){
   const group=new THREE.Group();group.name=name;root.add(group);fn(group);
   items.push({room:room.name,name,kind,soft,group});return group;
  }
- function nightstand(g,x,y,face){
+ function nightstand(g,x,y,face,room){
   box(g,1.15,1.32,1.6,x,y-face*.04,F+.95,M.wood);box(g,1.2,1.45,.12,x,y,F+1.81,M.stone);
   for(const z of [.6,1.25]){
    panel(g,1.03,.55,x,y+face*.66,F+z,M.wood,face>0?Math.PI:0);
    pull(g,x,y+face*.7,F+z,face>0?Math.PI:0);
   }
-  cylinder(g,.25,.19,.5,x,y,F+2.12,M.ceramic);cylinder(g,.38,.28,.5,x,y,F+2.6,M.cream);
-  cylinder(g,.065,.065,.13,x,y,F+2.41,M.brass,12);
+  const group=new THREE.Group();group.name=room+' bedside lamp '+(x<model.rooms.find(r=>r.name===room).x+6?'left':'right');g.add(group);
+  const baseGeometry=cached('lamp-base-and-neck',()=>{
+   const base=new THREE.CylinderGeometry(.19*FT,.25*FT,.5*FT,24);
+   const neck=new THREE.CylinderGeometry(.065*FT,.065*FT,.13*FT,12);neck.translate(0,.29*FT,0);
+   return joined([base,neck]);
+  });
+  const base=new THREE.Mesh(baseGeometry,M.ceramic);base.position.copy(point(x,y,F+2.12));base.castShadow=true;group.add(base);
+  const shade=cylinder(group,.38,.28,.5,x,y,F+2.6,M.cream.clone());
+  const bulb=cylinder(group,.07,.07,.12,x,y,F+2.53,material('#f5e4c4'),12);
+  const light=new THREE.PointLight('#ffd29b',0,1.3,2);light.position.copy(point(x,y,F+2.5));light.visible=false;group.add(light);
+  const side=x<model.rooms.find(r=>r.name===room).x+6?'left':'right';
+  const label=room.replace('Bedroom_front_right','Front bedroom').replace('Bedroom_rear_left','Rear-left bedroom').replace('Bedroom_rear_right','Rear-right bedroom')+' - '+side+' lamp';
+  lamps.push({id:room+'-'+side,label,group,shade,bulb,light,on:false});
  }
  for(const r of model.rooms.filter(r=>r.name.startsWith('Bedroom'))){
   const front=r.name==='Bedroom_front_right',cx=r.x+(front?7:4.7),head=front?r.y+.55:r.y+r.depth-.55;
@@ -242,7 +265,7 @@ export function createFurnishings(model){
     p.rotation.y=.035*dx;p.rotation.x=sign*.12;
     const seam=new THREE.Mesh(welt(2.1,1.3),M.linen);seam.position.copy(p.position);seam.rotation.copy(p.rotation);g.add(seam);
    }
-   for(const dx of [-3.6,3.6])nightstand(g,cx+dx,head-sign*.9,-sign);
+   for(const dx of [-3.6,3.6])nightstand(g,cx+dx,head-sign*.9,-sign,r.name);
   });
   asset(r,r.name+' wardrobe','wardrobe',g=>{
    const w=front?2:5.7,d=front?5.7:2,cx=front?r.x+1.3:r.x+r.width-(r.name.includes('rear_right')?3.1:8.6),cy=r.y+(front?3.3:1.3);
@@ -303,24 +326,40 @@ export function createFurnishings(model){
  asset(kitchen,'L-shaped kitchen cabinetry and appliances','kitchen',g=>{
   const x=kitchen.x,y=kitchen.y;
   box(g,2,11.4,2.3,x+1.12,y+5.9,F+1.575,M.paint);
-  box(g,9.3,2,2.3,x+6.77,y+1.12,F+1.575,M.paint);
+  const carcass=box(g,9.3,2,2.3,x+6.77,y+1.12,F+1.575,M.paint);
+  carcass.name='Kitchen sink cabinet carcass';
+  carcass.geometry=cached('hollow-kitchen-carcass',()=>{
+   const pieces=[];
+   for(const [w,d,h,dx,dy,dz]of [[9.2,1.9,.12,0,0,-1.10],[9.3,.08,2.3,0,-.96,0],
+    [.08,1.94,2.3,-4.60,.03,0],[.08,1.94,2.3,4.60,.03,0],[9.22,.08,.3,0,.92,1.0]]){
+    const piece=new THREE.BoxGeometry(w*FT,h*FT,d*FT);piece.translate(dx*FT,dz*FT,-dy*FT);pieces.push(piece);
+   }
+   return joined(pieces);
+  });
   box(g,1.7,11.1,.4,x+.99,y+5.9,F+.2,M.darkWood);
   box(g,9.1,1.7,.4,x+6.77,y+.99,F+.2,M.darkWood);
   box(g,2.12,11.5,.18,x+1.12,y+5.9,F+2.83,M.stone);
-  box(g,9.4,2.12,.18,x+6.77,y+1.12,F+2.83,M.stone);
+  const counter=new THREE.Mesh(cached('recessed-kitchen-counter',kitchenCounterGeometry),M.stone);
+  counter.name='Kitchen cutout countertop';counter.position.copy(point(x,y,F+2.74));counter.castShadow=true;counter.receiveShadow=true;g.add(counter);
   for(let i=0;i<5;i++){
-   panel(g,1.65,2.1,x+2.145,y+1.3+i*2.15,F+1.5,M.paint,Math.PI/2);
+   panel(g,1.75,2.1,x+2.145,y+3.1+i*1.85,F+1.5,M.paint,Math.PI/2);
    panel(g,1.6,2.1,x+3.1+i*1.7,y+2.145,F+1.5,M.paint,Math.PI);
-   pull(g,x+2.18,y+1.3+i*2.15,F+2.25,Math.PI/2);
+   pull(g,x+2.18,y+3.1+i*1.85,F+2.25,Math.PI/2);
    pull(g,x+3.1+i*1.7,y+2.18,F+2.25,Math.PI);
   }
-  box(g,2.45,2.5,6.3,x+4.1,y+10.55,F+3.15,M.metal);
-  box(g,.08,.1,1.7,x+5.05,y+9.25,F+3.9,M.black);
-  box(g,4.7,.8,2.25,x+6.1,y+11.5,F+6.1,M.cream);
-  for(const dx of [-1.17,1.17])panel(g,2.27,2.15,x+6.1+dx,y+11.08,F+6.1,M.cream);
-  bowl(g,.95,.6,.16,x+6.2,y+1.15,F+2.92,M.metal);
-  cylinder(g,.045,.045,.012,x+6.2,y+1.15,F+2.975,M.metal,12);
-  tap(g,x+6.2,y+1.72,F+2.95);
+  box(g,2.45,2.5,6.3,x+4.1,y+10.55,F+3.15,M.metal).name='Kitchen refrigerator';
+  const fridgeHandle=box(g,.08,.1,1.7,x+5.05,y+9.25,F+3.9,M.black);
+  fridgeHandle.geometry=cached('fridge-handle-and-freezer-reveal',()=>{
+   const reveal=new THREE.BoxGeometry(2.35*FT,.012*FT,.008*FT);reveal.translate(-.95*FT,FT,-.052*FT);
+   const freezerGrip=new THREE.BoxGeometry(.08*FT,.45*FT,.1*FT);freezerGrip.translate(0,1.5*FT,0);
+   return joined([fridgeHandle.geometry.clone(),reveal,freezerGrip]);
+  });
+  box(g,2.8,.8,2.25,x+7,y+11.5,F+6.1,M.cream).name='Kitchen upper cabinet';
+  for(const dx of [-.7,.7])panel(g,1.34,2.15,x+7+dx,y+11.08,F+6.1,M.cream);
+  const s=KITCHEN_SINK,sink=new THREE.Mesh(cached('inset-stainless-sink',kitchenSinkGeometry),M.steel);
+  sink.name='Kitchen inset steel sink';sink.position.copy(point(x+s.x,y+s.y,F+2.92));sink.castShadow=true;sink.receiveShadow=true;g.add(sink);
+  cylinder(g,.075,.075,.012,x+s.x,y+s.y,F+2.305,M.black,16).name='Kitchen sink waste';
+  tap(g,x+s.tapX,y+s.tapY,F+2.95,s.tapRotation).name='Kitchen tap spout';
   box(g,1.7,2.35,.04,x+1.15,y+6.3,F+2.96,M.black);
   const burnerGeometry=cached('burner',()=>new THREE.TorusGeometry(.2*FT,.025*FT,6,20));
   for(const dx of [-.4,.4])for(const dy of [-.65,.65]){const burner=new THREE.Mesh(burnerGeometry,M.metal);burner.rotation.x=Math.PI/2;burner.position.copy(point(x+1.15+dx,y+6.3+dy,F+3));g.add(burner)}
@@ -357,7 +396,7 @@ export function createFurnishings(model){
   });
  }
  for(const dx of [-2,0,2]){chair(cx+dx,cy-2.65,Math.PI);chair(cx+dx,cy+2.65,0)}
- chair(cx-4.1,cy,-Math.PI/2);chair(cx+4.1,cy,Math.PI/2);
+ chair(cx-4.1,cy,Math.PI/2);chair(cx+4.1,cy,-Math.PI/2);
  const hall=model.rooms.find(r=>r.name==='Hall');
  asset(hall,'Living sofa','sofa',g=>{
   const x=hall.x+1.7,y=hall.y+6.7;
@@ -377,7 +416,7 @@ export function createFurnishings(model){
   }
  });
  asset(hall,'Living coffee table','table',g=>{box(g,2.1,3.1,.12,hall.x+4.75,hall.y+6.7,F+1.35,M.wood);for(const dy of [-1.1,1.1])box(g,1.5,.12,1.3,hall.x+4.75,hall.y+6.7+dy,F+.67,M.black)});
- asset(hall,'Living rug','rug',g=>box(g,7,7,.025,hall.x+6.3,hall.y+6.7,F+.035,M.cream),{soft:true});
+ asset(hall,'Living rug','rug',g=>box(g,7,7,.025,hall.x+6.3,hall.y+6.7,F+.035,M.rug),{soft:true});
  asset(hall,'Media console and screen','media',g=>{
   box(g,.9,6.6,1.4,hall.x+hall.width-.6,hall.y+6.6,F+.8,M.wood);
   box(g,.1,4.6,2.5,hall.x+hall.width-.25,hall.y+6.6,F+3.2,M.black);
@@ -388,5 +427,5 @@ export function createFurnishings(model){
   box(g,4.6,.12,3,prayer.x+3,prayer.y+prayer.depth-.18,F+3.8,M.cream);
   for(const dx of [-1.4,1.4])cylinder(g,.15,.13,.45,prayer.x+3+dx,prayer.y+prayer.depth-.75,F+2.55,M.brass);
  });
- return {root,items,materials:M};
+ return {root,items,materials:M,lamps};
 }

@@ -10,6 +10,15 @@
     {"name": "living", "eye": [20.4, 3.6, 9.5], "target": [15.1, 7.45, 5.6]},
     {"name": "dining", "eye": [26.5, 12.9, 9.4], "target": [21.125, 18.125, 5.3]},
     {"name": "kitchen", "eye": [11.9, 8.5, 9.6], "target": [4.7, 4, 6.3]},
-    {"name": "bathroom", "eye": [40.5, 14.6, 9.5], "target": [37.9, 18.8, 5.8]}
+    {"name": "bathroom", "eye": [40.5, 14.6, 9.5], "target": [37.9, 18.8, 5.8]},
+    {"name": "junction", "eye": [12, 6, 11], "target": [6.5, 11.3, 8.5]},
+    {"name": "junction-reverse", "eye": [9.1, 10.6, 10.8], "target": [5.3, 11.8, 8.4]},
+    {"name": "dining-fix", "eye": [26.5, 12.9, 9.4], "target": [21.125, 18.125, 5.3]},
+    {"name": "dining-reverse", "eye": [15.2, 23.5, 10], "target": [21.125, 18.125, 5.3]},
+    {"name": "sink-overhead", "eye": [6.95, 1.9, 10], "target": [6.95, 1.9, 6.5]},
+    {"name": "sink-eye", "eye": [9, 5.1, 8.8], "target": [6.95, 1.9, 6.8]},
+    {"name": "rug-overview", "eye": [25, 4.1, 12.6], "target": [19.425, 7.45, 4.1]},
+    {"name": "lamp-off/on", "eye": [10.9, 29.3, 8.6], "target": [9.05, 32.05, 6.25]},
+    {"name": "entry-closed/part-open/open", "mode": "exterior", "angles_degrees": [0, 45, 90], "eye": [25.1, -7.8, 8.5], "target": [21.125, 0.375, 7.4]}
   ]
 }

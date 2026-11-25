@@ -17,13 +17,54 @@ h1,h2{font-family:Georgia,serif;line-height:1.25}a{color:#315f45}li{margin-botto
 <li><a href="https://www.ton.eu/en/14-chair-a-timeless-icon">TON No. 14</a>: a lightweight timber chair construction and 46-cm seat-height reference. The original modeled chairs now have a generic open lower back, curved upper back rail, splayed supports and stretchers, not the No. 14's protected design. The page required JavaScript; dimensions were available in its indexed manufacturer description.</li>
 <li><a href="https://www.ikea.com/us/en/p/axstad-door-matte-white-60426057/">IKEA AXSTAD fronts</a>: inset panel depth, restrained matte finish and visible frame/reveal relationships. The model uses independently authored stepped panel geometry, mounted pulls and recessed toe kicks, not downloaded cabinet fronts.</li>
 <li><a href="https://pro.duravit.com/pro/html/default/product-details.com-en.html?product=6434560&amp;nser=0998&amp;ncat=washbasins">Duravit D-Neo washbowl</a>: rounded ceramic lips, shallow inner profiles and a central waste position. Its indexed 600 x 400 x 125-mm example informed the profile relationship, not fixture sizing; existing fixture envelopes/locations are retained. Direct access returned 403.</li>
+<li><a href="https://hindware.com/p/kitchen-appliances/ks-flamingo-24x18x9-matt">Hindware Flamingo pressed kitchen sink</a>: conventional Indian-market single-bowl stainless construction, rounded internal corners, matte finish and practical inset rim. Its page lists 610 x 460 x 203 mm. This informs the kitchen only, not the bathroom basins.</li>
+<li><a href="https://anupamsinks.in/product/205b-single-bowl-with-drain-board/">Anupam 205B</a>: inset rim, deep utensil-washing bowl and central waste. The reference has a drainboard; the model retains its existing counter arrangement rather than copying the product or adding an unrequested drainboard. The generic authored sink is approximately 701 x 494 mm overall, with a 604 x 390 mm opening and approximately 189 mm depth. Dimensions are illustrative, not a purchase/installation schedule.</li>
 </ul>
 <p>References checked 25 November 2026. Pinterest was not needed. Product descriptions and indexed dimensions are inspiration, not verified installation specifications.</p>
 <h2>Runtime assets and licenses</h2>
-<p>All furniture meshes, cloth/wood surface data and decorative details are authored procedurally in <code>furnishings.js</code>. No reference photograph, commercial model, downloaded texture or copied product design is included in runtime assets.</p>
+<p>All furniture meshes, cloth/wood/jute surface data and decorative details are authored procedurally in <code>furnishings.js</code> and <code>kitchen-fixtures.js</code>. No reference photograph, commercial model, downloaded texture or copied product design is included in runtime assets.</p>
 <p><a href="vendor/THREE-LICENSE.txt">Three.js MIT license</a> covers the locally vendored Three.js 0.180.0 library, unmodified RoundedBoxGeometry and unmodified RoomEnvironment. The latter supplies an authored studio-style reflection environment, generated once on the GPU. It applies only to furniture materials, not architectural walls, base, doors or landscape. No online HDR/environment asset is loaded. Existing font licenses remain in their original notices.</p>
 <h2>Review and limits</h2>
 <p>The pass includes suspended timber bed rails, channelled upholstery, a closed two-skin draped duvet, smooth tailored cushions, seat piping, actual inset cabinet fronts and mounted hardware, open chair backs/supports, rolled ceramic rims and smoother seat rings. Cloth, painted fronts, timber, stone, glazed ceramic and metal have distinct surface responses.</p>
 <p>Matched 1600 x 1000 comparisons and exact camera poses are saved under <code>review\realism-v2</code> for bedroom, living, dining, kitchen and bathroom. The development review is isolated from the approved preview; it is not a production deployment.</p>
-<p>The existing limits remain 360 furniture meshes and 60,000 triangles, with shared buffers and two 128 x 128 authored surface textures. Browser viewport checks are not certification of performance on a physical phone. These are improved lightweight authored assets, not scanned or ray-traced photorealism. Reflections are a generic image-based environment, not a live reflection of the home. Door paths and room fit are checked, but fixture-use, structural, accessibility and building-code clearances remain unverified.</p>
+<p>The existing limits remain 360 furniture meshes and 60,000 triangles, with shared buffers and three 128 x 128 authored surface textures. Browser viewport checks are not certification of performance on a physical phone. These are improved lightweight authored assets, not scanned or ray-traced photorealism. Reflections are a generic image-based environment, not a live reflection of the home. Door paths and room fit are checked, but fixture-use, structural, accessibility and building-code clearances remain unverified.</p>
+<h2>Complete furnishing audit: 30 top-level groups</h2>
+<p>Every group below was inventoried and checked in source and transformed geometry for material response, scale, construction, orientation and fit. Representative close-ups, including reverse dining/kitchen angles, were rendered; this does not imply a photograph from every possible angle of every mesh. Six lamps are nested inside the three bed suites and are not six additional top-level groups.</p>
+<table>
+<thead><tr><th>Group</th><th>Finding / treatment</th></tr></thead>
+<tbody>
+<tr><td>Front bedroom bed suite</td><td>Supported rails, mattress/drape, compressed pillows and seams retained; both existing lamps switch independently.</td></tr>
+<tr><td>Front bedroom wardrobe</td><td>Inset warm-ivory/timber fronts and brass pulls retained; no wall/door intrusion.</td></tr>
+<tr><td>Rear-left bedroom bed suite</td><td>Same checked soft construction and bedside assemblies; two independently switched lamps.</td></tr>
+<tr><td>Rear-left bedroom wardrobe</td><td>Timber carcass, inset fronts and mounted pulls retained; fit checked independently.</td></tr>
+<tr><td>Rear-right bedroom bed suite</td><td>Same supported mattress/drape/linen construction; two independently switched lamps.</td></tr>
+<tr><td>Rear-right bedroom wardrobe</td><td>Shared materials and joinery, room-specific fit retained.</td></tr>
+<tr><td>Right bath toilet</td><td>Glazed ceramic bowl/recess/seat, separate pedestal/cistern and metal button retained.</td></tr>
+<tr><td>Right bath shower</td><td>Thin glass, chrome riser/head and matte tray retained; not a waterproofing detail.</td></tr>
+<tr><td>Right bath vanity</td><td>Recessed ceramic vessel, wood drawers and down-facing tap retained; kitchen-specific style change not applied here.</td></tr>
+<tr><td>Rear common washbasin</td><td>Wider room-specific vanity checked; ceramic/stone/timber contrast retained.</td></tr>
+<tr><td>Common WC</td><td>Hollow ceramic fixture, separate seat/cistern and metal flush retained.</td></tr>
+<tr><td>Common bath shower</td><td>Shared glass/chrome/tray construction and room-specific bounds retained.</td></tr>
+<tr><td>Attached bath toilet</td><td>Shared sanitary construction, independently checked placement retained.</td></tr>
+<tr><td>Attached bath shower</td><td>Shared construction and clearance from the neighboring toilet/vanity retained.</td></tr>
+<tr><td>Attached bath vanity</td><td>Rounded ceramic lip and distinct wood/stone/metal responses retained.</td></tr>
+<tr><td>L-shaped kitchen</td><td>Removed real upper-cabinet/fridge overlap; shortened upper cabinet with a 0.275-ft gap. Corrected blind-corner front and overlapping worktops. Added fridge freezer reveal. Replaced round vessel-like sink with recessed rectangular steel bowl, actual stone cutout and hollow cabinet carcass. Moved tap to the wall-side rim and rotated it toward the bowl; outlet points down inside the recess.</td></tr>
+<tr><td>Dining table</td><td>Timber top, eased edges, apron, tapered supports and existing small centerpiece retained.</td></tr>
+<tr><td>Dining chair 17</td><td>Long-side seat faces its nearest tabletop edge; open back/supports retained.</td></tr>
+<tr><td>Dining chair 18</td><td>Opposite long-side orientation and actual mesh clearance checked.</td></tr>
+<tr><td>Dining chair 19</td><td>Long-side orientation, cushion height and leg/table relationship checked.</td></tr>
+<tr><td>Dining chair 20</td><td>Opposite long-side orientation and clearance checked.</td></tr>
+<tr><td>Dining chair 21</td><td>Outer long-side seat faces its corresponding edge, not diagonally toward table center.</td></tr>
+<tr><td>Dining chair 22</td><td>Opposite outer long-side seat direction and clearance checked.</td></tr>
+<tr><td>Dining chair 23</td><td>Incorrect end-chair yaw reversed: seat now faces inward, back outward.</td></tr>
+<tr><td>Dining chair 24</td><td>Other end-chair yaw likewise corrected; child meshes clear solid table parts.</td></tr>
+<tr><td>Living sofa</td><td>Separate supported base, compressed seat/back cushions, piping and muted green/terracotta accents retained.</td></tr>
+<tr><td>Living coffee table</td><td>Warm wood top, eased edge and dark supports retained without changing circulation.</td></tr>
+<tr><td>Living rug</td><td>Replaced near-white finish with warm jute-like matte brown, fine woven bump and restrained border; unchanged 7 x 7-ft footprint/thickness. Architectural floor unchanged.</td></tr>
+<tr><td>Media console and screen</td><td>Timber cabinet and dark screen retained; not replaced by a luminous white panel.</td></tr>
+<tr><td>Prayer alcove cabinet</td><td>Warm timber, subdued back panel and small brass details retained; no added props.</td></tr>
+</tbody></table>
+<h2>Interaction and door presentation</h2>
+<p>Tap/click an unobstructed bedside lamp, or expand the small Lamps panel and activate a labeled native button with keyboard/touch. Each lamp keeps its own switch state across modes and furniture visibility. A warm shade/bulb response and finite-range, non-shadowing local point light are used. Walking does not extinguish switched lamps. Drag, pinch, hold, UI interaction, active movement and occluded hits do not switch hidden lamps. Plan/hidden furniture disable lights without erasing their state. There is no night-time lighting system; unshadowed local lights can spill across nearby geometry.</p>
+<p>The main native rough opening is still 4 x 7 ft. Its nominal closed native leaf was 3.70 ft wide, equal to the 3.70-ft frame clearance, not actually wider than the frame. The old animated pivot also lay at the leaf's thickness center, allowing its hinge edge to sweep into the jamb. <code>door-presentation.js</code> now applies explicit visualization-only side gaps of 0.01 ft each, top gap 0.01 ft and bottom gap 0.02 ft, giving a 3.68 x 6.82-ft displayed main leaf with unchanged 0.15-ft thickness. Its pivot lies on the swing-side corner. D1/D2 use the same fitting rule, and navigation derives the same transformed leaf centerline. Native CAD/IFC retain their nominal closed conceptual envelopes; these display fitting gaps are not a revised opening, fabricated door schedule or construction detail. No duplicate static native leaf is drawn over the animated leaf.</p>
 </html>
