@@ -1,0 +1,471 @@
+{
+  "fly": {
+    "mode": "interior",
+    "roof": true,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": false,
+    "doorStates": [
+      {
+        "name": "D_01_Front_E",
+        "open": false,
+        "progress": 1.968063216837402e-61
+      },
+      {
+        "name": "D1_01_Kitchen_Middle",
+        "open": false,
+        "progress": 1.968063220793103e-61
+      },
+      {
+        "name": "D1_02_FrontBedroom_Middle",
+        "open": false,
+        "progress": 1.968063216837402e-61
+      },
+      {
+        "name": "D1_03_RearBedroom_Left_Front",
+        "open": false,
+        "progress": 1.968063216837402e-61
+      },
+      {
+        "name": "D1_04_RearBedroom_Right_Front",
+        "open": false,
+        "progress": 1.968063216837402e-61
+      },
+      {
+        "name": "D2_01_FrontBedroom_Middle",
+        "open": false,
+        "progress": 1.968063216837402e-61
+      },
+      {
+        "name": "D2_02_Service_Front",
+        "open": false,
+        "progress": 1.968063216837402e-61
+      },
+      {
+        "name": "D2_03_Service_Front",
+        "open": false,
+        "progress": 1.968063216837402e-61
+      },
+      {
+        "name": "D2_04_RearBedroom_Right_Inside",
+        "open": false,
+        "progress": 1.968063216837402e-61
+      }
+    ],
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 806,
+    "triangles": 103336,
+    "threeRevision": "180",
+    "walking": {
+      "navigation": "fly",
+      "position": [
+        11,
+        12.379229789855154,
+        9
+      ],
+      "room": "Kitchen",
+      "inside": true,
+      "destination": null,
+      "waypoints": 0,
+      "history": [
+        "Kitchen"
+      ],
+      "historyIndex": 0
+    }
+  },
+  "flyPrimaryAvatar": 0,
+  "returned": true,
+  "walk": {
+    "mode": "interior",
+    "roof": true,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": false,
+    "doorStates": [
+      {
+        "name": "D_01_Front_E",
+        "open": false,
+        "progress": 3.2124536223192076e-62
+      },
+      {
+        "name": "D1_01_Kitchen_Middle",
+        "open": false,
+        "progress": 3.2124536287760667e-62
+      },
+      {
+        "name": "D1_02_FrontBedroom_Middle",
+        "open": false,
+        "progress": 3.2124536223192076e-62
+      },
+      {
+        "name": "D1_03_RearBedroom_Left_Front",
+        "open": false,
+        "progress": 3.2124536223192076e-62
+      },
+      {
+        "name": "D1_04_RearBedroom_Right_Front",
+        "open": false,
+        "progress": 3.2124536223192076e-62
+      },
+      {
+        "name": "D2_01_FrontBedroom_Middle",
+        "open": false,
+        "progress": 3.2124536223192076e-62
+      },
+      {
+        "name": "D2_02_Service_Front",
+        "open": false,
+        "progress": 3.2124536223192076e-62
+      },
+      {
+        "name": "D2_03_Service_Front",
+        "open": false,
+        "progress": 3.2124536223192076e-62
+      },
+      {
+        "name": "D2_04_RearBedroom_Right_Inside",
+        "open": false,
+        "progress": 3.2124536223192076e-62
+      }
+    ],
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 840,
+    "triangles": 107792,
+    "threeRevision": "180",
+    "walking": {
+      "navigation": "walk",
+      "position": [
+        11,
+        8
+      ],
+      "room": "Kitchen",
+      "inside": true,
+      "destination": null,
+      "waypoints": 0,
+      "history": [
+        "Kitchen"
+      ],
+      "historyIndex": 0
+    }
+  },
+  "eye": 5,
+  "modes": [
+    {
+      "mode": "exterior",
+      "roof": true,
+      "doors": 9,
+      "doorLeaves": 10,
+      "doorsOpen": true,
+      "doorStates": [
+        {
+          "name": "D_01_Front_E",
+          "open": true,
+          "progress": 0.6085118373907541
+        },
+        {
+          "name": "D1_01_Kitchen_Middle",
+          "open": true,
+          "progress": 0.6085118373907541
+        },
+        {
+          "name": "D1_02_FrontBedroom_Middle",
+          "open": true,
+          "progress": 0.6085118373907541
+        },
+        {
+          "name": "D1_03_RearBedroom_Left_Front",
+          "open": true,
+          "progress": 0.6085118373907541
+        },
+        {
+          "name": "D1_04_RearBedroom_Right_Front",
+          "open": true,
+          "progress": 0.6085118373907541
+        },
+        {
+          "name": "D2_01_FrontBedroom_Middle",
+          "open": true,
+          "progress": 0.6085118373907541
+        },
+        {
+          "name": "D2_02_Service_Front",
+          "open": true,
+          "progress": 0.6085118373907541
+        },
+        {
+          "name": "D2_03_Service_Front",
+          "open": true,
+          "progress": 0.6085118373907541
+        },
+        {
+          "name": "D2_04_RearBedroom_Right_Inside",
+          "open": true,
+          "progress": 0.6085118373907541
+        }
+      ],
+      "furnitureVisible": true,
+      "furnishingGroups": 30,
+      "conceptualStructureVisible": false,
+      "renderCalls": 1362,
+      "triangles": 177570,
+      "threeRevision": "180"
+    },
+    {
+      "mode": "cutaway",
+      "roof": false,
+      "doors": 9,
+      "doorLeaves": 10,
+      "doorsOpen": true,
+      "doorStates": [
+        {
+          "name": "D_01_Front_E",
+          "open": true,
+          "progress": 0.8465990197633586
+        },
+        {
+          "name": "D1_01_Kitchen_Middle",
+          "open": true,
+          "progress": 0.8465990197633586
+        },
+        {
+          "name": "D1_02_FrontBedroom_Middle",
+          "open": true,
+          "progress": 0.8465990197633586
+        },
+        {
+          "name": "D1_03_RearBedroom_Left_Front",
+          "open": true,
+          "progress": 0.8465990197633586
+        },
+        {
+          "name": "D1_04_RearBedroom_Right_Front",
+          "open": true,
+          "progress": 0.8465990197633586
+        },
+        {
+          "name": "D2_01_FrontBedroom_Middle",
+          "open": true,
+          "progress": 0.8465990197633586
+        },
+        {
+          "name": "D2_02_Service_Front",
+          "open": true,
+          "progress": 0.8465990197633586
+        },
+        {
+          "name": "D2_03_Service_Front",
+          "open": true,
+          "progress": 0.8465990197633586
+        },
+        {
+          "name": "D2_04_RearBedroom_Right_Inside",
+          "open": true,
+          "progress": 0.8465990197633586
+        }
+      ],
+      "furnitureVisible": true,
+      "furnishingGroups": 30,
+      "conceptualStructureVisible": false,
+      "renderCalls": 1355,
+      "triangles": 160143,
+      "threeRevision": "180"
+    },
+    {
+      "mode": "structure",
+      "roof": false,
+      "doors": 9,
+      "doorLeaves": 10,
+      "doorsOpen": true,
+      "doorStates": [
+        {
+          "name": "D_01_Front_E",
+          "open": true,
+          "progress": 0.9399453321046926
+        },
+        {
+          "name": "D1_01_Kitchen_Middle",
+          "open": true,
+          "progress": 0.9399453321046926
+        },
+        {
+          "name": "D1_02_FrontBedroom_Middle",
+          "open": true,
+          "progress": 0.9399453321046926
+        },
+        {
+          "name": "D1_03_RearBedroom_Left_Front",
+          "open": true,
+          "progress": 0.9399453321046926
+        },
+        {
+          "name": "D1_04_RearBedroom_Right_Front",
+          "open": true,
+          "progress": 0.9399453321046926
+        },
+        {
+          "name": "D2_01_FrontBedroom_Middle",
+          "open": true,
+          "progress": 0.9399453321046926
+        },
+        {
+          "name": "D2_02_Service_Front",
+          "open": true,
+          "progress": 0.9399453321046926
+        },
+        {
+          "name": "D2_03_Service_Front",
+          "open": true,
+          "progress": 0.9399453321046926
+        },
+        {
+          "name": "D2_04_RearBedroom_Right_Inside",
+          "open": true,
+          "progress": 0.9399453321046926
+        }
+      ],
+      "furnitureVisible": false,
+      "furnishingGroups": 30,
+      "conceptualStructureVisible": true,
+      "renderCalls": 101,
+      "triangles": 3060,
+      "threeRevision": "180"
+    },
+    {
+      "mode": "plan",
+      "roof": false,
+      "doors": 9,
+      "doorLeaves": 10,
+      "doorsOpen": true,
+      "doorStates": [
+        {
+          "name": "D_01_Front_E",
+          "open": true,
+          "progress": 0.9749830078751219
+        },
+        {
+          "name": "D1_01_Kitchen_Middle",
+          "open": true,
+          "progress": 0.9749830078751219
+        },
+        {
+          "name": "D1_02_FrontBedroom_Middle",
+          "open": true,
+          "progress": 0.9749830078751219
+        },
+        {
+          "name": "D1_03_RearBedroom_Left_Front",
+          "open": true,
+          "progress": 0.9749830078751219
+        },
+        {
+          "name": "D1_04_RearBedroom_Right_Front",
+          "open": true,
+          "progress": 0.9749830078751219
+        },
+        {
+          "name": "D2_01_FrontBedroom_Middle",
+          "open": true,
+          "progress": 0.9749830078751219
+        },
+        {
+          "name": "D2_02_Service_Front",
+          "open": true,
+          "progress": 0.9749830078751219
+        },
+        {
+          "name": "D2_03_Service_Front",
+          "open": true,
+          "progress": 0.9749830078751219
+        },
+        {
+          "name": "D2_04_RearBedroom_Right_Inside",
+          "open": true,
+          "progress": 0.9749830078751219
+        }
+      ],
+      "furnitureVisible": false,
+      "furnishingGroups": 30,
+      "conceptualStructureVisible": false,
+      "renderCalls": 0,
+      "triangles": 0,
+      "threeRevision": "180"
+    }
+  ],
+  "reset": {
+    "mode": "interior",
+    "roof": true,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": false,
+    "doorStates": [
+      {
+        "name": "D_01_Front_E",
+        "open": false,
+        "progress": 0.31681564494770004
+      },
+      {
+        "name": "D1_01_Kitchen_Middle",
+        "open": false,
+        "progress": 0.31681564494770004
+      },
+      {
+        "name": "D1_02_FrontBedroom_Middle",
+        "open": false,
+        "progress": 0.31681564494770004
+      },
+      {
+        "name": "D1_03_RearBedroom_Left_Front",
+        "open": false,
+        "progress": 0.31681564494770004
+      },
+      {
+        "name": "D1_04_RearBedroom_Right_Front",
+        "open": false,
+        "progress": 0.31681564494770004
+      },
+      {
+        "name": "D2_01_FrontBedroom_Middle",
+        "open": false,
+        "progress": 0.31681564494770004
+      },
+      {
+        "name": "D2_02_Service_Front",
+        "open": false,
+        "progress": 0.31681564494770004
+      },
+      {
+        "name": "D2_03_Service_Front",
+        "open": false,
+        "progress": 0.31681564494770004
+      },
+      {
+        "name": "D2_04_RearBedroom_Right_Inside",
+        "open": false,
+        "progress": 0.31681564494770004
+      }
+    ],
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 1137,
+    "triangles": 147894,
+    "threeRevision": "180",
+    "walking": {
+      "navigation": "walk",
+      "position": [
+        21,
+        -9
+      ],
+      "room": "Outside / illustrative approach",
+      "inside": false,
+      "destination": null,
+      "waypoints": 0,
+      "history": [],
+      "historyIndex": -1
+    }
+  }
+}

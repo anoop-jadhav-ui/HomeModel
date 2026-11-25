@@ -1,0 +1,27 @@
+{
+  "base": "d6624a38a25fc4ac9fe9935330402f5d15e058d8",
+  "behavior": "Only the approached reachable doorway opens in grounded Walk; paired entry leaves act together. Doors latch open until the next Walk session. Enter home is removed.",
+  "clearance": "Existing walker radius, frames, furniture, real leaf collisions and reserved moving-door sweeps are retained. Unsafe sweep occupancy defers opening with a step-back message.",
+  "automated": {
+    "integratedTests": 63,
+    "frequenciesHz": [10, 60, 120],
+    "entry": "Actual default-spawn approach and inside-to-outside traversal, only entrance opened, no heading change",
+    "privateDoors": "Kitchen both sides and reverse; guided Kitchen, Right bath and Attached bath",
+    "negativeCases": "Moving away, parallel, beyond five-foot Euclidean range, occluded, Fly, unsafe occupied swing",
+    "staticFiles": 49,
+    "assetChecks": 112
+  },
+  "rendered": {
+    "desktopEntry": "desktop-entry.json: native [21,-9] to [21,3.272393724981244], only main entry open, every sample collision-free, heading0 and local eyes5ft",
+    "desktopExit": "desktop-transitions.json entry-exit: native [21.125,4.6] to [21.125,-3.2448434680615303], only main entry open",
+    "kitchenOut": "desktop-guided.json kitchenOut/trace: [11,8] to [11,14.209150743834565], only kitchen door open. This completes the earlier partial kitchen-out trace in desktop-transitions.json.",
+    "kitchenIn": "desktop-transitions.json kitchen-in: [11,17.5] to [11,10.634949799659447], only kitchen door open",
+    "guidedPauseResume": "desktop-guided.json: actual Pause/Play controls stop/resume route, then arrive in Kitchen",
+    "mobile": "mobile-entry.json:390x844 iframe; actual arrow-pad Space-key binding traverses from default outside spawn into Hall; only entrance open, no horizontal overflow, no heading change, local eyes5ft",
+    "fly": "modes-fly.json: near closed kitchen door while flying opens no doors, zero primary-camera avatar draws; return restores safe [11,8] at local eyes5ft",
+    "modes": "Exterior/Cutaway preserve open-door presentation; Structure/Plan load; next Walk resets proximity targets",
+    "images": ["entry-before.png", "entry-opening.png", "entry-after.png", "entry-exit.png", "kitchen-out.png", "kitchen-in.png", "mobile-entry.png"]
+  },
+  "unchanged": "Native CAD/IFC/source archives, architectural dimensions/openings, furniture, scale reference, walls/roof/exhaust/site and parked services",
+  "limitations": "Desktop browser and mobile-sized viewport, not physical touch hardware or physical-phone performance. Visualization convenience, not automatic-door hardware. Production deployment not independently verified."
+}

@@ -183,25 +183,26 @@ export function createWalkMap(model,furniture=[],doorProgress=()=>1,furnitureVis
   const found=search(from,allowed,start,new Set(goals.keys()));
   return found?{room:goals.get(found.goal),path:found.path}:null;
  }
- function canClose(point){
-  return !doors.some(door=>{
-   return sweeps.get(door.name).some(shape=>intersects(point,shape,radius+.08));
-  });
+ function canMoveDoor(name,point){
+  const sweep=sweeps.get(name);
+  if(!sweep)throw new Error('Unknown moving door '+name);
+  return !sweep.some(shape=>intersects(point,shape,radius+.08));
  }
+ function canClose(point){return doors.every(door=>canMoveDoor(door.name,point))}
  function floorHeight(p){
   if(p[1]>=0)return model.dimensions.floor_elevation;
   const tread=entry.run/entry.steps,index=clamp(Math.floor((p[1]+entry.run)/tread)+1,0,entry.steps);
   return grade+(floor-grade)*index/entry.steps;
  }
- return {radius,entry,floorHeight,isFree,lineFree,move,nearest,route,closestRoom,canClose,furnitureClear,
+ return {radius,entry,floorHeight,isFree,lineFree,move,nearest,route,closestRoom,canClose,canMoveDoor,furnitureClear,
   roomAt:p=>p[1]<0?'Outside / illustrative approach':model.rooms.find(r=>roomContains(r.name,p))?.name||'Circulation'};
 }
 
 export class WalkController{
- constructor(map){this.map=map;this.position=[0,0];this.velocity=[0,0];this.bearing=0;this.targetBearing=0;this.tilt=0;this.targetTilt=0;this.path=[];this.room=null;this.guidedLook=false;this.arrived=false;this.stalled=0}
+ constructor(map,routeMap=map){this.map=map;this.routeMap=routeMap;this.position=[0,0];this.velocity=[0,0];this.bearing=0;this.targetBearing=0;this.tilt=0;this.targetTilt=0;this.path=[];this.room=null;this.guidedLook=false;this.arrived=false;this.stalled=0}
  place(position,bearing,tilt){this.position=[...position];this.velocity=[0,0];this.bearing=this.targetBearing=bearing;this.tilt=this.targetTilt=tilt;this.path=[];this.guidedLook=false}
  goTo(preferred,room,aim){
-  const path=this.map.route(this.position,preferred,room);
+  const path=this.routeMap.route(this.position,preferred,room);
   if(!path)return false;
   this.followRoute(path,room,aim);return true;
  }
@@ -221,7 +222,7 @@ export class WalkController{
   if(this.position[1]<0&&this.position[1]>-this.map.entry.run-.5)speed*=.65;
   if(this.path.length){
    while(this.path.length&&distance(this.position,this.path[0])<.22&&
-    (this.path.length===1||this.map.lineFree(this.position,this.path[1])))this.path.shift();
+    (this.path.length===1||this.routeMap.lineFree(this.position,this.path[1])))this.path.shift();
    if(this.path.length){
     const target=this.path[0],dx=target[0]-this.position[0],dy=target[1]-this.position[1],length=Math.hypot(dx,dy);
     this.targetBearing=heading(dx,dy);this.targetTilt=-.04;
