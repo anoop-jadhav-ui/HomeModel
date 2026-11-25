@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jadhav Nivaas | Conceptual structure assumptions</title>
+<style>body{max-width:860px;margin:36px auto;padding:0 22px;background:#f7f4ed;color:#26382e;font:16px/1.6 system-ui,sans-serif}h1,h2{font-family:Georgia,serif}strong{color:#75400b}td,th{padding:9px;text-align:left;border-bottom:1px solid #d5d9d2}code{overflow-wrap:anywhere}a{color:#315f45}</style>
+<h1>Conceptual structure study</h1>
+<p><strong>NOT ENGINEERED. NOT FOR CONSTRUCTION.</strong> This separate viewer mode is a discussion diagram, not a structural scheme, sizing exercise, analysis model or approval. No structural drawings, soil report, loading, site survey, wind/seismic parameters, jurisdiction or design-code inputs have been supplied.</p>
+<h2>Reading the diagram</h2>
+<table><thead><tr><th>Display</th><th>Meaning and limits</th></tr></thead><tbody>
+<tr><td>Blue column study markers</td><td>Provisional reference stations at selected perimeter architectural wall-axis intersections. The 12 stations are diagram examples only, not a proposed or adequate column count. Interior supports are deliberately not invented. The sketch's handwritten column count/size has not been validated or adopted.</td></tr>
+<tr><td>Dashed blue beam axes</td><td>Possible perimeter beam relationships between reference stations at architectural wall-top level. These are axes, not sized beam solids. Continuity, joint behavior, span capacity, reinforcement and actual bearing are unknown.</td></tr>
+<tr><td>Amber dashed lines/endpoints</td><td>Unresolved relationships: support/transfer beneath the four existing monitor corners and across the full open hall/dining connection. They are questions, not vertical roof posts, transfer beams or verified load paths. Other hip-roof/truss supports, internal gravity support and lateral stability are also unresolved, even where no amber line is drawn.</td></tr>
+<tr><td>Gray/green floor slab</td><td>The exact existing architectural slab envelope. Its thickness/location do not establish slab structural adequacy, spans, materials, bearing, reinforcement or a foundation design.</td></tr>
+<tr><td>Roof envelope toggle</td><td>Existing architectural hip-roof and monitor-cap outlines, not rafters, purlins, trusses or a designed roof diaphragm.</td></tr>
+<tr><td>Wall context toggle</td><td>Optional outlines of the approved native walls and actual door/window voids. A wall outline does not identify a load-bearing wall. No approved walls/openings were moved to accommodate the diagram.</td></tr>
+<tr><td>Lower datum outlines</td><td>Existing local illustrative grade and finished-floor references. Columns stop at finished floor; the amber bases explicitly leave support below unresolved. No footing, plinth/grade beam, excavation or subgrade structural system is inferred.</td></tr>
+</tbody></table>
+<h2>Editable source and shared geometry</h2>
+<p><code>output\structure-settings.js</code> centralizes architectural wall-axis references, selected station indices, colors and column-marker display width. The 0.30-ft marker width is a graphic symbol, <strong>not a real member section</strong>. It must not be used to order materials or size columns. Beam axes intentionally have no physical section dimensions.</p>
+<p><code>output\structural-concept.js</code> derives marker locations, floor/wall-top/monitor levels, slab and roof/wall reference geometry from the same <code>review-data.js</code> used by all other modes. In the current model, local grade is +2 ft, FFL +4 ft and wall top +14 ft; this is not a surveyed/sea-level datum. Updates must regenerate the architectural export first, then the diagram consumes those updated references. Missing references fail explicitly.</p>
+<p>All diagram objects live in a separate hidden-by-default group with provisional/non-engineered metadata. Exterior, Cutaway, Walk/Fly and Plan retain their approved architectural/furnishing geometry. Mode changes alter visibility and camera only. Structure mode hides the actual furnished scene and offers independent context/envelope toggles; leaving it restores the prior furniture/roof preferences.</p>
+<h2>Native CAD / IFC and review boundary</h2>
+<p><code>Home.FCStd</code>, <code>Home.ifc</code>, the parametric architectural inputs, source sketches and archives are retained unchanged. This branch does <strong>not</strong> add guessed structural objects to those architectural files and does not provide a structural IFC/CAD package. The editable conceptual source is the separate viewer module/settings. No structural quantities, loads, foundation sizes, reinforcement, safety factors or construction details are generated.</p>
+<p>A licensed local structural engineer must determine the actual gravity/lateral system, column/wall/beam layout, bearing, member sizes, joints, slab system, foundations, soil response and roof/monitor transfer paths. In particular, the open central space and raised monitor must be resolved rather than assuming a rectangle drawn in a viewer is supported. Construction, demolition or procurement must not be based on this study.</p>
+<p><a href="index.html">Return to the viewer</a> | <a href="Guide.md">Editing guide</a></p>
+</html>

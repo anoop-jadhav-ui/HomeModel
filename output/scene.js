@@ -7,6 +7,7 @@ import {createWallSections,nativeFrameProfile,createBoxSection} from './wall-sec
 import {createSite} from './site.js';
 import {createLampControls} from './lamp-controls.js';
 import {doorPresentation} from './door-presentation.js';
+import {createStructuralConcept} from './structural-concept.js';
 
 const model=window.HOME_MODEL,stage=document.getElementById('viewport'),status=document.getElementById('status');
 const grade=model.dimensions.ground_elevation,eyeHeight=model.navigation.eye_height;
@@ -66,6 +67,7 @@ try{
   const mesh=new THREE.Mesh(g,mat);mesh.name=ob.name;mesh.castShadow=true;mesh.receiveShadow=true;
   (ob.group==='Roof'?roofGroup:structure).add(mesh);
  }
+ const structuralConcept=createStructuralConcept(model);scene.add(structuralConcept.root);
  const furnishing=createFurnishings(model);scene.add(furnishing.root);
  const environment=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);
  const furnitureEnvironment=pmrem.fromScene(environment,.04);
@@ -155,6 +157,15 @@ try{
   enabled:()=>mode!=='plan'&&furnishing.root.visible,
   canTap:()=>!keys.size&&!touchPointers.size&&!pendingRequest&&!walker.path.length});
  const planFrame=document.getElementById('plan'),walkControls=document.getElementById('walk-controls'),dock=document.getElementById('walk-dock');
+ const structureNote=document.getElementById('structure-note'),structureControls=document.getElementById('structure-controls');
+ const levels=structuralConcept.root.userData.levels,signed=n=>(n>=0?'+':'')+n;
+ document.getElementById('structure-levels').textContent=`Local datum: grade ${signed(levels.grade)} ft / FFL ${signed(levels.floor)} ft / wall top ${signed(levels.wallTop)} ft`;
+ document.getElementById('structure-context').onclick=event=>{
+  const visible=!structuralConcept.context.visible;structuralConcept.setContext(visible);event.currentTarget.setAttribute('aria-pressed',String(visible));
+ };
+ document.getElementById('structure-roof').onclick=event=>{
+  const visible=!structuralConcept.roof.visible;structuralConcept.setRoof(visible);event.currentTarget.setAttribute('aria-pressed',String(visible));
+ };
  const notice=document.getElementById('walk-notice'),location=document.getElementById('walk-location');
  const enterButton=document.getElementById('enter-home'),playButton=document.getElementById('play-walk');
  const previousButton=document.getElementById('previous-room'),nextButton=document.getElementById('next-room');
@@ -207,7 +218,7 @@ try{
   if(!open){stopTravel();walker.velocity=[0,0]}
   doorsOpen=open;return true;
  }
- function setFurniture(visible){furnishing.root.visible=visible;lampControls.sync();document.getElementById('furniture').setAttribute('aria-pressed',String(visible));if(!walk)furniturePreference=visible}
+ function setFurniture(visible){furnishing.root.visible=visible;lampControls.sync();document.getElementById('furniture').setAttribute('aria-pressed',String(visible));if(!walk&&mode!=='structure')furniturePreference=visible}
  function clipping(enabled){wallSections.visible=enabled;for(const cap of openingCaps)cap.visible=enabled;for(const m of clipMaterials){m.clippingPlanes=enabled?[clip]:[];m.clipShadows=true;m.needsUpdate=true}}
  function roomView(name){
   const r=model.rooms.find(x=>x.name===name);if(!r)throw new Error('Unknown interior room '+name);
@@ -280,18 +291,26 @@ try{
   const startingWalk=next==='interior'&&mode!=='interior';
   mode=next;walk=next==='interior';clearMovement();stopTravel();planFrame.style.display=next==='plan'?'block':'none';
   document.body.dataset.view=next;dock.hidden=!walk;document.getElementById('files').open=false;
-  for(const id of ['exterior','cutaway','interior','plan-view']){
-   const active=id===(next==='plan'?'plan-view':next),button=document.getElementById(id);
+  const viewId=next==='plan'?'plan-view':next==='structure'?'structure-view':next;
+  for(const id of ['exterior','cutaway','interior','plan-view','structure-view']){
+   const active=id===viewId,button=document.getElementById(id);
    button.classList.toggle('active',active);button.setAttribute('aria-checked',String(active));button.tabIndex=active?0:-1;
   }
   const focused=document.activeElement;
-  if((focused.id==='roof'&&next!=='exterior')||(focused.id==='furniture'&&['interior','plan'].includes(next)))
-   document.getElementById(next==='plan'?'plan-view':next).focus({preventScroll:true});
+  if((focused.id==='roof'&&next!=='exterior')||(focused.id==='furniture'&&['interior','plan','structure'].includes(next))||
+   (structureControls.contains(focused)&&next!=='structure'))
+   document.getElementById(viewId).focus({preventScroll:true});
   orbit.enabled=!walk&&next!=='plan';document.getElementById('crosshair').style.display=walk?'block':'none';
   clipping(next==='cutaway');
-  site.root.visible=next==='exterior'||walk;approach.visible=next!=='plan';
+  site.root.visible=next==='exterior'||walk;approach.visible=next!=='plan'&&next!=='structure';
+  structuralConcept.root.visible=next==='structure';structure.visible=next!=='structure';ground.visible=next!=='structure';
+  structureNote.hidden=structureControls.hidden=next!=='structure';
   if(next==='exterior'){setRoof(preferences.exterior.roof);setDoors(true);setFurniture(furniturePreference);const cx=(site.bounds.minX+site.bounds.maxX)/2,cy=(site.bounds.minY+site.bounds.maxY)/2;camera.position.copy(point(cx+44,cy-57,grade+41));orbit.target.copy(point(cx,cy,grade+3))}
   if(next==='cutaway'){setRoof(false);setDoors(true);setFurniture(furniturePreference);camera.position.copy(point(50,-24,52));orbit.target.copy(point(21,17,model.dimensions.floor_elevation))}
+  if(next==='structure'){
+   setRoof(false);setFurniture(false);
+   camera.position.copy(point(model.dimensions.width+32,-38,levels.wallTop+32));orbit.target.copy(point(model.dimensions.width/2,model.dimensions.depth/2,levels.wallTop-2));
+  }
   if(walk){
    setRoof(true);setFurniture(true);
    if(startingWalk){
@@ -308,6 +327,7 @@ try{
   if(orbit.enabled)orbit.update();updateDock();lampControls.sync();
  }
  for(const id of ['exterior','cutaway','interior'])document.getElementById(id).onclick=()=>view(id);
+ document.getElementById('structure-view').onclick=()=>view('structure');
  function wireRadioKeyboard(group){
   const buttons=[...group.querySelectorAll('[role=radio]')];
   group.addEventListener('keydown',event=>{
@@ -383,8 +403,8 @@ try{
  }
  requestAnimationFrame(animate);
  status.textContent='Ready';status.title='Three.js · '+furnishing.items.length+' authored furnishing groups · Door swings assumed';
- window.homeScene={view,focusRoom,nextRoom,previousRoom,setNavigationMode,setDoors,scene,camera,orbit,renderer,furnishing,walker,flight,walkMap,approach,wallSections,site,
-  state:()=>({mode,roof:roofGroup.visible,doors:doors.length,doorsOpen,furnitureVisible:furnishing.root.visible,furnishingGroups:furnishing.items.length,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,threeRevision:THREE.REVISION,
+ window.homeScene={view,focusRoom,nextRoom,previousRoom,setNavigationMode,setDoors,scene,camera,orbit,renderer,furnishing,walker,flight,walkMap,approach,wallSections,site,structuralConcept,architecture:structure,
+  state:()=>({mode,roof:roofGroup.visible,doors:doors.length,doorsOpen,furnitureVisible:furnishing.root.visible,furnishingGroups:furnishing.items.length,conceptualStructureVisible:structuralConcept.root.visible,renderCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,threeRevision:THREE.REVISION,
    walking:walk?{navigation,position:[...activePosition()],room:walkMap.roomAt(activePosition()),inside:insideHome(),destination,waypoints:walker.path.length,history:[...history],historyIndex}:undefined})};
  clearTimeout(window.sceneLoadTimer);document.getElementById('failure').style.display='none';
 }catch(error){

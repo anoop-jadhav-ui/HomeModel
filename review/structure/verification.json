@@ -1,0 +1,70 @@
+{
+  "scope": "CONCEPT_ONLY_NOT_ENGINEERED",
+  "branch": "feat/conceptual-structure",
+  "architecturalBase": "809cb192f9a0341a593f703c9d90504b99c15815",
+  "preview": {"url":"http://127.0.0.1:8768/","canvas":"home-structure-review","mobileCanvas":"home-structure-mobile"},
+  "nativeArchitecture": {
+    "unchanged": true,
+    "FCStdGitBlob": "0a09172ecb7ac3cc879d2bc70435b7fc82ec4a46",
+    "IFCGitBlob": "e917860e8d31afad39176390963e370c4b0327eb",
+    "structuralCADOrIFCExportAdded": false
+  },
+  "automated": {
+    "command": "node --test structural-concept.test.mjs navigation.test.mjs wall-sections.test.mjs furnishings.test.mjs lamp-controls.test.mjs door-presentation.test.mjs site.test.mjs validate-deployment.test.mjs",
+    "passed": 53,
+    "failed": 0,
+    "staticBuild": {"command":"npm run build","files":40,"assetAndModuleChecks":82},
+    "focusedChecks": [
+      "Actual default marker bounds remain clear of every exported door/window/OPEN aperture.",
+      "Native slab vertices are reused in the correct units and coordinate mapping; input export is not mutated.",
+      "Amber monitor endpoints use actual corner bottoms; hall question spans the original full 16-ft opening.",
+      "All diagram/reference bounds translate coherently when the shared datum changes.",
+      "Missing native references and nonpositive marker dimensions fail explicitly; geometry remains finite and lightweight."
+    ]
+  },
+  "browser": {
+    "desktopChecksPassed": [
+      "Concept isolates architecture/site/approach/furniture and shows visible non-engineered warning.",
+      "Wall context and roof-envelope toggles control separate reference objects only.",
+      "Hidden structure controls transfer keyboard focus to the selected normal mode.",
+      "Cutaway restores original architecture and saved furniture preference.",
+      "Exterior roof/furniture preferences survive Structure.",
+      "Hidden lamp lights disable without losing saved individual switch state.",
+      "Interior starts in a collision-clear entrance position; Fly returns to safe walking.",
+      "Plan remains the approved separate architectural plan.",
+      "Five-mode arrow-key radio navigation leaves exactly one checked/tabbable mode."
+    ],
+    "structureDefaultRender": {"drawCalls":18,"meshTriangles":156},
+    "structureWithWallContext": {"drawCalls":19,"meshTriangles":156},
+    "finalEntryRoute":{"outsideFeet":[21,-9],"enteredHallFeet":[21,0.7684865658358697],"inside":true,"flyReturnClear":true,"restoredStructureStatus":"Ready"},
+    "responsiveModesInOrder": ["exterior","cutaway","interior","plan","structure"],
+    "responsiveCases": [
+      {"viewport":[320,568],"renderHeights":[345,345,219,396,193]},
+      {"viewport":[390,844],"renderHeights":[621,621,493,672,489]},
+      {"viewport":[667,375],"renderHeights":[214,214,122,265,137]},
+      {"viewport":[844,390],"renderHeights":[280,280,137,280,195]}
+    ],
+    "responsiveCasesPassed":20,
+    "responsiveAssertions":["No horizontal overflow","All visible buttons at least 44 x 44 CSS px","Exactly one selected mode","Warning visible only in Structure"],
+    "responsiveAdjustment":"Compacted Structure warning and omitted duplicate datum line on short landscape screens; 667 x 375 Structure render height improved from 115 to 137 CSS px.",
+    "deviceLimit":"Real browser responsive viewports, not a physical low-end-phone GPU or FPS benchmark."
+  },
+  "images": {
+    "structure-overview.png":"Live desktop diagram with roof envelope; warning added to saved render.",
+    "structure-context.png":"Same desktop camera with exact native wall/opening context; warning retained.",
+    "structure-open-span.png":"Closer hall/monitor support-question detail with roof envelope off; not a whole-building fit.",
+    "structure-mobile-render.png":"Live render at a 390 x 844 responsive viewport, with review warning; not a full-page UI screenshot."
+  },
+  "cameraFeet": {
+    "desktopOverview":{"position":[74.25,-38,46],"target":[21.125,17.125,12]},
+    "openSpanDetail":{"position":[58,-5,29],"target":[21,15,12]},
+    "coordinateMapping":"Three.js = (x, z, -y) * 0.3048"
+  },
+  "limits":[
+    "Twelve perimeter study markers and their 0.30-ft graphic widths are not a structural column layout/count or member sizes.",
+    "Dashed beam axes have no physical section; roof/slab/wall outlines are architectural references only.",
+    "No verified roof/monitor transfer, internal gravity support, lateral system, slab adequacy, joint design, foundation, soil or loading design.",
+    "No reinforcement, safe spans, structural quantities or construction approval.",
+    "New structural feature remains local/unmerged/unpushed pending separate authorization."
+  ]
+}
