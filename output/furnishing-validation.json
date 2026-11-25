@@ -8,7 +8,7 @@
     "Hard furniture avoids all ten conceptual leaf sectors in nine door assemblies",
     "Batched pull bounds retain real separate parts, not a blocking combined envelope"
   ],
-  "solid_asset_meshes": 351,
+  "solid_asset_meshes": 355,
   "minimum_local_solid_extent_ft": 0.004921259885296968,
   "limitations": [
     "Not a building-code, accessibility, egress or fixture-use-clearance assessment",
@@ -370,8 +370,8 @@
       "bounds_ft": {
         "xmin": 1.449999903130719,
         "xmax": 6.05000009686928,
-        "ymin": 19.690999998066214,
-        "ymax": 21.004999998541564
+        "ymin": 19.35599999806621,
+        "ymax": 21.00499999902771
       },
       "assumed_door_sweep_hits": 0
     }

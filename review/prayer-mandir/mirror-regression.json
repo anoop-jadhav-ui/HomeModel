@@ -1,0 +1,9 @@
+{
+  "walkPrimary": 0,
+  "walkReflection": 20,
+  "eye": 5,
+  "failure": "",
+  "flyPrimary": 0,
+  "flyReflection": 20,
+  "returned": true
+}

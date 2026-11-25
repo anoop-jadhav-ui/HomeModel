@@ -1,0 +1,254 @@
+{
+  "base": "7f9b942dd8439f5114fc13b7f475a3889f255a3e",
+  "units": "mm; bounds arrays are Three.js world X,Y(up),Z(depth): width,height,depth",
+  "newBounds": [
+    1402.0800590515137,
+    1905.00009059906,
+    502.61545181274414
+  ],
+  "oldBounds": [
+    1402.0800590515137,
+    1615.4400055122373,
+    400.5072499827147
+  ],
+  "bottomAboveFFLMM": 0.000015068054137756803,
+  "clearFrontApproachMM": 1899.2087478637698,
+  "meshes": 355,
+  "triangles": 69264,
+  "previousMeshes": 351,
+  "previousTriangles": 62900,
+  "additionalLights": 0,
+  "additionalRuntimeImagesOrModels": 0,
+  "existingTextures": 7,
+  "matchedCameras": [
+    {
+      "name": "front",
+      "eye": [
+        3.75,
+        13.85,
+        9
+      ],
+      "aim": [
+        3.75,
+        20.3,
+        7.1
+      ],
+      "fov": 65,
+      "width": 1000,
+      "height": 800
+    },
+    {
+      "name": "oblique",
+      "eye": [
+        8,
+        14.8,
+        9
+      ],
+      "aim": [
+        3.75,
+        20.3,
+        7.1
+      ],
+      "fov": 65,
+      "width": 1000,
+      "height": 800
+    }
+  ],
+  "independentAccessoryPairs": [
+    {
+      "a": "Mandir unlit samai lamp",
+      "b": "Mandir unlit samai lamp",
+      "conservativeAABBSeparationMM": 816.8640049743652
+    },
+    {
+      "a": "Mandir unlit samai lamp",
+      "b": "Mandir offering thali",
+      "conservativeAABBSeparationMM": 18.288003439903335
+    },
+    {
+      "a": "Mandir unlit samai lamp",
+      "b": "Central pedestal/kalash/coconut/leaves assembly",
+      "conservativeAABBSeparationMM": 277.70356602207016
+    },
+    {
+      "a": "Mandir unlit samai lamp",
+      "b": "Mandir offering thali",
+      "conservativeAABBSeparationMM": 566.9280034399031
+    },
+    {
+      "a": "Mandir unlit samai lamp",
+      "b": "Central pedestal/kalash/coconut/leaves assembly",
+      "conservativeAABBSeparationMM": 204.55156602207003
+    },
+    {
+      "a": "Mandir offering thali",
+      "b": "Central pedestal/kalash/coconut/leaves assembly",
+      "conservativeAABBSeparationMM": 27.767564487608087
+    }
+  ],
+  "compared": [
+    {
+      "name": "Bedroom_front_right bed suite",
+      "unchanged": true
+    },
+    {
+      "name": "Bedroom_front_right wardrobe",
+      "unchanged": true
+    },
+    {
+      "name": "Bedroom_rear_left bed suite",
+      "unchanged": true
+    },
+    {
+      "name": "Bedroom_rear_left wardrobe",
+      "unchanged": true
+    },
+    {
+      "name": "Bedroom_rear_right bed suite",
+      "unchanged": true
+    },
+    {
+      "name": "Bedroom_rear_right wardrobe",
+      "unchanged": true
+    },
+    {
+      "name": "Bath_right toilet",
+      "unchanged": true
+    },
+    {
+      "name": "Bath_right shower",
+      "unchanged": true
+    },
+    {
+      "name": "Bath_right vanity",
+      "unchanged": true
+    },
+    {
+      "name": "Rear common washbasin",
+      "unchanged": true
+    },
+    {
+      "name": "Common WC sanitary fixture",
+      "unchanged": true
+    },
+    {
+      "name": "Common bath shower",
+      "unchanged": true
+    },
+    {
+      "name": "Attached_bath toilet",
+      "unchanged": true
+    },
+    {
+      "name": "Attached_bath shower",
+      "unchanged": true
+    },
+    {
+      "name": "Attached_bath vanity",
+      "unchanged": true
+    },
+    {
+      "name": "L-shaped kitchen cabinetry and appliances",
+      "unchanged": true
+    },
+    {
+      "name": "Dining table",
+      "unchanged": true
+    },
+    {
+      "name": "Dining chair 17",
+      "unchanged": true
+    },
+    {
+      "name": "Dining chair 18",
+      "unchanged": true
+    },
+    {
+      "name": "Dining chair 19",
+      "unchanged": true
+    },
+    {
+      "name": "Dining chair 20",
+      "unchanged": true
+    },
+    {
+      "name": "Dining chair 21",
+      "unchanged": true
+    },
+    {
+      "name": "Dining chair 22",
+      "unchanged": true
+    },
+    {
+      "name": "Dining chair 23",
+      "unchanged": true
+    },
+    {
+      "name": "Dining chair 24",
+      "unchanged": true
+    },
+    {
+      "name": "Living sofa",
+      "unchanged": true
+    },
+    {
+      "name": "Living coffee table",
+      "unchanged": true
+    },
+    {
+      "name": "Living rug",
+      "unchanged": true
+    },
+    {
+      "name": "Media console and screen",
+      "unchanged": true
+    }
+  ],
+  "preserved": [
+    {
+      "path": "parameters.json",
+      "sha256": "32f8f7a745dfcd67da17825ef2d554f49a6da7f9aa90f78b9900ba19d617c222",
+      "unchanged": true
+    },
+    {
+      "path": "output\\Home.FCStd",
+      "sha256": "e958e6374a837eb8c8beee4052e0099bc8e3288f307e2d7c254ffbecc3b85f31",
+      "unchanged": true
+    },
+    {
+      "path": "output\\Home.ifc",
+      "sha256": "e0165c902670fbc9038664e9cd765e3656cca32cbe201eea2de32bcbeb6c8cfb",
+      "unchanged": true
+    },
+    {
+      "path": "output\\review-data.js",
+      "sha256": "6a48eff2795693f88d40097432391b87e6409f7fe7a4e99b6b298e3b1ca02db9",
+      "unchanged": true
+    },
+    {
+      "path": "output\\scene.js",
+      "sha256": "2cbdb3cf84011da3953f7e7419bb4bf599f762880d827bfd6912f8226d93c6e6",
+      "unchanged": true
+    },
+    {
+      "path": "output\\walk-navigation.js",
+      "sha256": "85a3716a1e2852e2cfc058c725cbd6dffd081d858962e04417a722e21a7a428b",
+      "unchanged": true
+    },
+    {
+      "path": "output\\door-proximity.js",
+      "sha256": "b6f659c6e5b66ee9fedbfe42df16f0dec150ce6fab4d1e7244242bac15937eb6",
+      "unchanged": true
+    },
+    {
+      "path": "output\\walker-avatar.js",
+      "sha256": "c2c0d151055fe78b4d4fc4585ea2783adabd055156c6ac052edf221750ddfa3a",
+      "unchanged": true
+    },
+    {
+      "path": "output\\scene-mirrors.js",
+      "sha256": "94d01c88f590dc30c116419abe9a2e7c65cefaa4ef473f9d1488689a38dc3f5f",
+      "unchanged": true
+    }
+  ]
+}

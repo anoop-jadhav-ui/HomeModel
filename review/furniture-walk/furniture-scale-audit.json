@@ -962,22 +962,38 @@
       "bounds": {
         "name": "Prayer alcove cabinet",
         "worldXMM": 1402.08,
-        "worldYMM": 400.507,
-        "heightMM": 1615.44,
+        "worldYMM": 502.615,
+        "heightMM": 1905,
         "bottomAboveFFLMM": 0,
-        "topAboveFFLMM": 1615.44
+        "topAboveFFLMM": 1905
       },
       "parts": [
         {
           "name": "Prayer cabinet body",
-          "worldXMM": 1371.6,
-          "worldYMM": 350.52,
-          "heightMM": 701.04,
-          "bottomAboveFFLMM": 0,
-          "topAboveFFLMM": 701.04
+          "worldXMM": 1316.736,
+          "worldYMM": 438.912,
+          "heightMM": 505.968,
+          "bottomAboveFFLMM": 48.768,
+          "topAboveFFLMM": 554.736
+        },
+        {
+          "name": "Mandir stone altar",
+          "worldXMM": 1402.08,
+          "worldYMM": 487.68,
+          "heightMM": 30.48,
+          "bottomAboveFFLMM": 579.12,
+          "topAboveFFLMM": 609.6
+        },
+        {
+          "name": "Mandir central offering pedestal",
+          "worldXMM": 320.04,
+          "worldYMM": 198.12,
+          "heightMM": 42.672,
+          "bottomAboveFFLMM": 609.6,
+          "topAboveFFLMM": 652.272
         }
       ],
-      "finding": "Custom prayer cabinet body1372 x351 x701mm; decorative back reaches1615mm. No universal product size applies. No scale change."
+      "finding": "Original domestic timber mandir1402mm wide x1905mm high,488mm body/altar depth (about503mm including pulls); altar610mm above floor. Deeper/lower than the former cabinet, same centre/width; actual clear-room/window/approach fit checked. Reference dimensions and assumptions: Mandir-reference-note.html. Not a selected product or certified ritual/ergonomic/fire-safety installation."
     }
   ],
   "lamps": [

@@ -1,0 +1,21 @@
+{
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "input": "Actual arrow-pad Space-key binding in mobile-sized iframe, not physical touch hardware",
+  "start": [
+    3.75,
+    16.3
+  ],
+  "end": [
+    5.5403274263978854,
+    16.3
+  ],
+  "bearing": 0,
+  "allFree": true,
+  "eyeError": 0,
+  "doorsOpened": [],
+  "noEnterHome": true,
+  "groups": 30,
+  "failure": ""
+}

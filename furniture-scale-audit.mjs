@@ -1,6 +1,6 @@
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import * as THREE from 'three';
-import {createFurnishings,FT} from './output/furnishings.js';
+import {createFurnishings,furnishingBounds,FT} from './output/furnishings.js';
 
 const source=readFileSync(new URL('./output/review-data.js',import.meta.url),'utf8');
 const model=JSON.parse(source.slice('window.HOME_MODEL='.length,-1)),assets=createFurnishings(model);
@@ -10,10 +10,13 @@ const namedParts=new Set(['Mattress','Bed headboard','Nightstand body','Nightsta
  'Wardrobe carcass','Toilet seat','Vanity body','Vanity countertop','Vanity washbowl','Vanity mirror',
  'Shower tray','Shower head','Kitchen refrigerator','Kitchen hob','Kitchen inset steel sink',
  'Extractor capture canopy','Dining tabletop','Dining seat cushion','Sofa seat cushion',
- 'Coffee tabletop','Media console body','Media screen','Prayer cabinet body']);
+ 'Coffee tabletop','Media console body','Media screen','Prayer cabinet body','Mandir stone altar','Mandir central offering pedestal']);
 function measure(object){
- const box=new THREE.Box3().setFromObject(object),size=box.getSize(new THREE.Vector3());
- return {name:object.name,worldXMM:round(size.x*1000),worldYMM:round(size.z*1000),
+ return measureBounds(object.name,new THREE.Box3().setFromObject(object));
+}
+function measureBounds(name,box){
+ const size=box.getSize(new THREE.Vector3());
+ return {name,worldXMM:round(size.x*1000),worldYMM:round(size.z*1000),
   heightMM:round(size.y*1000),bottomAboveFFLMM:round((box.min.y-floor)*1000),
   topAboveFFLMM:round((box.max.y-floor)*1000)};
 }
@@ -28,10 +31,15 @@ const findings={
  sofa:'Compact3-seat sofa2042 x808 x836mm; measured cushion top about451mm. Consistent with a45cm seat reference, not an exact product replica.',
  rug:'2134 x2134mm; custom loose rug, not a standard-size claim. No scale change.',
  media:'2012mm-wide shallow console, about300mm maximum projection including pulls. Screen about63in diagonal; not a purchased TV/cabinet. No scale change.',
- cabinet:'Custom prayer cabinet body1372 x351 x701mm; decorative back reaches1615mm. No universal product size applies. No scale change.'
+ cabinet:'Original domestic timber mandir1402mm wide x1905mm high,488mm body/altar depth (about503mm including pulls); altar610mm above floor. Deeper/lower than the former cabinet, same centre/width; actual clear-room/window/approach fit checked. Reference dimensions and assumptions: Mandir-reference-note.html. Not a selected product or certified ritual/ergonomic/fire-safety installation.'
 };
 const inventory=assets.items.map(item=>{
- const parts=[];item.group.traverse(object=>{if(namedParts.has(object.name))parts.push(measure(object))});
+ const parts=[];item.group.traverse(object=>{
+  if(namedParts.has(object.name))parts.push(measure(object));
+  if(object.userData.partNames)object.userData.partNames.forEach((name,i)=>{
+   if(namedParts.has(name))parts.push(measureBounds(name,furnishingBounds(object)[i]));
+  });
+ });
  return {room:item.room,name:item.name,kind:item.kind,bounds:measure(item.group),parts,
   finding:item.name==='Dining table'?'1829 x914mm top; measured height corrected783 to750mm. Supports/aprons/centerpiece follow; footprint and eight chair locations retained. Eight places are compact, not certified comfortable capacity.':
    item.name==='Living coffee table'?'640 x945mm top at430mm; normal low-table proportions, retained.':findings[item.kind]};
@@ -48,7 +56,7 @@ const html=`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="vie
 <style>body{max-width:1200px;margin:32px auto;padding:0 20px;font:15px/1.6 system-ui;color:#293d32}table{border-collapse:collapse;width:100%}td,th{border:1px solid #bac6bb;padding:10px;text-align:left;vertical-align:top}td:nth-child(2){font-size:12px}ul{padding-left:16px}aside{background:#fff1d8;padding:16px}@media(max-width:700px){table,tbody,tr,td{display:block}thead{display:none}tr{margin:18px 0}}</style>
 <h1>Furniture scale and free-walking review</h1>
 <p>Measured from actual transformed meshes, in millimetres. Each size is world X x world Y x height, followed by its top above finished floor. Rotated furniture swaps plan axes. The1625.6mm person and1524mm eye datum are unchanged.</p>
-<aside>Generic furnishings, not a purchasing schedule or installation/ergonomic certification. CAD/IFC, room dimensions, door openings and all furniture footprints/locations remain unchanged. The tall488mm toilet seats, compact792mm shower trays and compact eight-chair dining arrangement need actual product/user trials before depending on comfort or usable clearances.</aside>
+<aside>Generic furnishings, not a purchasing schedule or installation/ergonomic certification. CAD/IFC, room dimensions, door openings and the other29 furniture footprints/locations remain unchanged. The Prayer mandir alone has a revised depth/height at its existing centre/width; see <a href="Mandir-reference-note.html">references and scale</a>. The tall488mm toilet seats, compact792mm shower trays and compact eight-chair dining arrangement need actual product/user trials before depending on comfort or usable clearances.</aside>
 <h2>Outcome</h2><p>No feet/metres conversion or wholesale furniture overscale defect was found. The dining seats were actually491mm, not the previously cited460mm reference. They are now460mm, with a matching750mm-high table instead of783mm. Supports and tabletop props follow the revised heights. Other measured dimensions are retained rather than arbitrarily shrinking items to make circulation easier.</p>
 <h2>Dimension references, not universal limits</h2><ul>
 <li><a href="https://www.ton.eu/en/14-chair-a-timeless-icon">TON14</a>: official indexed dimensions46cm seat,84cm total height; direct text page remains JavaScript-only. Modeled chair is independently authored and not a replica.</li>

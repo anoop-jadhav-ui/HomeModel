@@ -5,6 +5,7 @@ import {furnitureSurfaces,metricSurfaceUV} from './furniture-surfaces.js';
 
 export const FT=.3048;
 export const point=(x,y,z)=>new THREE.Vector3(x*FT,z*FT,-y*FT);
+export const PRAYER_MANDIR=Object.freeze({width:4.6,depth:1.6,height:6.25,platformHeight:2,rearGap:.12,centerFromLeft:3});
 const material=(color,roughness=.65,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 export function furnishingBounds(mesh){
  return mesh.userData.partBounds?.map(box=>box.clone().applyMatrix4(mesh.matrixWorld))??
@@ -517,13 +518,136 @@ export function createFurnishings(model){
  });
  const prayer=model.rooms.find(r=>r.name==='Prayer');
  asset(prayer,'Prayer alcove cabinet','cabinet',g=>{
-  box(g,4.5,1.15,2.3,prayer.x+3,prayer.y+prayer.depth-.725,F+1.15,M.wood).name='Prayer cabinet body';
-  for(const dx of [-1.12,1.12]){
-   panel(g,2.17,2.1,prayer.x+3+dx,prayer.y+prayer.depth-1.33,F+1.15,M.wood);
-   pull(g,prayer.x+3+dx-Math.sign(dx)*.78,prayer.y+prayer.depth-1.325,F+1.45,0,true);
+  const {width:w,depth:d,height:h,platformHeight:p,rearGap,centerFromLeft}=PRAYER_MANDIR;
+  const x=prayer.x+centerFromLeft,back=prayer.y+prayer.depth-rearGap;
+  g.userData.mandir={...PRAYER_MANDIR,label:'Timber home mandir',unlit:true,deitySelected:false};
+  function block(name,width,depth,height,xx,yy,zz,mat=M.wood){
+   const geometry=cached(['mandir-block',width,depth,height].join(':'),()=>new THREE.BoxGeometry(width*FT,height*FT,depth*FT));
+   const mesh=new THREE.Mesh(geometry,mat);mesh.name=name;mesh.position.copy(point(x+xx,back+yy,F+zz));
+   mesh.castShadow=mesh.receiveShadow=true;g.add(mesh);return mesh;
   }
-  box(g,4.6,.12,3,prayer.x+3,prayer.y+prayer.depth-.18,F+3.8,M.cream);
-  for(const dx of [-1.4,1.4])cylinder(g,.15,.13,.45,prayer.x+3+dx,prayer.y+prayer.depth-.75,F+2.55,M.brass);
+  function turned(name,profile,xx,yy,zz,mat=M.brass,segments=12){
+   const key='mandir-lathe:'+JSON.stringify(profile)+':'+segments;
+   const geometry=cached(key,()=>new THREE.LatheGeometry(profile.map(([r,z])=>new THREE.Vector2(r*FT,z*FT)),segments));
+   const mesh=new THREE.Mesh(geometry,mat);mesh.name=name;mesh.position.copy(point(x+xx,back+yy,F+zz));
+   mesh.castShadow=mesh.receiveShadow=true;g.add(mesh);return mesh;
+  }
+  function relief(name,shape,depth,xx,yy,zz,mat){
+   const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:depth*FT,bevelEnabled:false,curveSegments:4}),mat);
+   mesh.name=name;mesh.position.copy(point(x+xx,back+yy,F+zz));mesh.castShadow=mesh.receiveShadow=true;g.add(mesh);return mesh;
+  }
+  block('Mandir stepped plinth',w-.08,d-.06,.16,0,-d/2,.08,M.darkWood);
+  block('Prayer cabinet body',w-.28,d-.16,p-.34,0,-d/2,p/2-.01);
+  block('Mandir cabinet top moulding',w-.04,d-.04,.12,0,-d/2,p-.14);
+  block('Mandir stone altar',w,d,.10,0,-d/2,p-.05,M.stone);
+  for(const z of [.64,p-.64]){
+   const y=back-d+.055;
+   const front=panel(g,w-.56,.66,x,y,F+z,M.wood);front.name='Mandir storage drawer front';
+   pull(g,x,y+.005,F+z,0);
+  }
+  block('Mandir pale shrine backdrop',w-.70,.08,h-p-.65,0,-.04,p+(h-p-.65)/2,M.cream);
+  for(const side of [-1,1]){
+   block('Mandir back stile',.10,.10,h-p-.60,side*(w/2-.37),-.10,p+(h-p-.60)/2);
+   const columnHeight=h-p-.66,r=.15;
+   turned('Mandir turned timber pillar',[[0,0],[r,0],[r,.12],[.12,.17],[.12,.28],[.09,.36],
+    [.09,columnHeight-.40],[.12,columnHeight-.30],[r,columnHeight-.20],[r,columnHeight],[0,columnHeight]],
+    side*(w/2-.28),-d+.25,p,M.wood);
+   for(const z of [.22,columnHeight-.26])
+    turned('Mandir pillar brass collar',[[0,0],[.125,0],[.125,.035],[0,.035]],side*(w/2-.28),-d+.25,p+z);
+   block('Mandir rear corner post',.10,.12,columnHeight,side*(w/2-.16),-.12,p+columnHeight/2);
+   for(const yy of [-d+.23,-.23])
+    block('Mandir jaali vertical stile',.08,.10,columnHeight,side*(w/2-.16),yy,p+columnHeight/2);
+   for(const z of [.10,columnHeight-.10])
+    block('Mandir lattice rail',.10,d-.34,.10,side*(w/2-.16),-d/2,p+z);
+   const diamond=new THREE.Shape(),a=(d-.46)/2,b=.46,t=.065;
+   diamond.moveTo(0,b*FT);diamond.lineTo(a*FT,0);diamond.lineTo(0,-b*FT);diamond.lineTo(-a*FT,0);diamond.closePath();
+   const hole=new THREE.Path();hole.moveTo(0,(b-t)*FT);hole.lineTo(-(a-t)*FT,0);
+   hole.lineTo(0,-(b-t)*FT);hole.lineTo((a-t)*FT,0);hole.closePath();diamond.holes.push(hole);
+   for(let row=0;row<3;row++){
+    const lattice=relief('Mandir open diamond jaali',diamond,.06,side*(w/2-.16)-.03,-d/2,p+.61+row*(columnHeight-1.22)/2,M.wood);
+    lattice.rotation.y=Math.PI/2;
+   }
+  }
+  const span=w/2-.18,inner=span-.30,base=h-1.52,top=h-.55;
+  const arch=new THREE.Shape();arch.moveTo(-span*FT,base*FT);arch.lineTo(-span*FT,top*FT);
+  arch.lineTo(span*FT,top*FT);arch.lineTo(span*FT,base*FT);arch.lineTo(inner*FT,base*FT);
+  arch.bezierCurveTo((inner-.04)*FT,(base+.48)*FT,(inner-.42)*FT,(base+.30)*FT,(inner-.60)*FT,(base+.50)*FT);
+  arch.bezierCurveTo((inner-.72)*FT,(base+.70)*FT,.35*FT,(base+.54)*FT,0,(base+.80)*FT);
+  arch.bezierCurveTo(-.35*FT,(base+.54)*FT,(-inner+.72)*FT,(base+.70)*FT,(-inner+.60)*FT,(base+.50)*FT);
+  arch.bezierCurveTo((-inner+.42)*FT,(base+.30)*FT,(-inner+.04)*FT,(base+.48)*FT,-inner*FT,base*FT);
+  arch.closePath();relief('Mandir cusped timber torana',arch,.12,0,-d+.20,0,M.wood);
+  block('Mandir canopy cornice',w-.06,d-.06,.14,0,-d/2,h-.48);
+  block('Mandir back head rail',w-.20,.16,.16,0,-.10,h-.60);
+  block('Mandir canopy fascia',w-.14,d-.12,.12,0,-d/2,h-.39,M.darkWood);
+  block('Mandir canopy top cap',w,d,.10,0,-d/2,h-.36);
+  turned('Mandir brass crown finial',[[0,0],[.07,0],[.09,.035],[.08,.08],[.105,.13],[.075,.20],[.02,.25],[0,.31]],0,-d/2,h-.31);
+  for(const xx of [-1.08,0,1.08]){
+   const z=xx?h-1.65:h-1.40;
+   turned('Mandir hanging bell',[[0,.22],[.025,.22],[.045,.18],[.06,.08],[.10,.015],[.12,0],
+    [.12,-.025],[.09,-.025],[.075,.01],[.045,.07],[.032,.15],[0,.17]],xx,-d+.40,z);
+   turned('Mandir bell clapper',[[0,0],[.025,0],[.025,.035],[.009,.10],[0,.10]],xx,-d+.40,z-.012, M.brass,8);
+   const suspension=h-.54-z-.22;
+   turned('Mandir bell suspension',[[0,0],[.008,0],[.008,suspension],[0,suspension]],xx,-d+.40,z+.22,M.brass,6);
+  }
+  const petal=new THREE.Shape();petal.moveTo(0,.10*FT);petal.quadraticCurveTo(-.19*FT,.28*FT,0,.50*FT);
+  petal.quadraticCurveTo(.19*FT,.28*FT,0,.10*FT);petal.closePath();
+  for(let i=0;i<8;i++){
+   const mesh=relief('Mandir floral brass relief',petal,.018,0,-.08,p+2.06,M.brass);mesh.rotation.z=i*Math.PI/4;
+  }
+  const medallion=turned('Mandir floral centre',[[0,0],[.105,0],[.105,.035],[0,.035]],0,-.08,p+2.06);
+  medallion.rotation.x=Math.PI/2;
+  block('Mandir central offering pedestal',1.05,.65,.14,.12,-.58,p+.07,M.stone);
+  turned('Mandir kalash vessel',[[0,0],[.12,0],[.15,.04],[.18,.19],[.15,.34],[.10,.39],
+   [.10,.43],[.13,.45],[.13,.48],[.09,.48],[.08,.43],[.08,.39],[.11,.32],[.14,.19],[.11,.06],[0,.06]],
+   .12,-.58,p+.14);
+  turned('Mandir coconut',[[0,0],[.11,.04],[.12,.16],[.09,.27],[.02,.36],[0,.38]],.12,-.58,p+.56,M.darkWood,10);
+  const leaf=new THREE.Shape();leaf.moveTo(0,0);leaf.quadraticCurveTo(-.10*FT,.22*FT,0,.48*FT);
+  leaf.quadraticCurveTo(.10*FT,.22*FT,0,0);leaf.closePath();
+  for(let i=0;i<5;i++){
+   const a=i*Math.PI*2/5;
+   const mesh=relief('Mandir kalash mango leaf',leaf,.012,.12+Math.sin(a)*.115,-.58-Math.cos(a)*.115,p+.61,M.leaf);
+   mesh.rotation.set(1.95,a,0,'YXZ');
+  }
+  for(const side of [-1,1]){
+   turned('Mandir unlit samai lamp',[[0,0],[.18,0],[.20,.04],[.18,.08],[.10,.12],[.065,.18],
+    [.04,.60],[.09,.65],[.12,.70],[.19,.76],[.21,.80],[.20,.84],[.16,.83],[.11,.78],
+    [.06,.76],[.04,.86],[.055,.90],[.015,.96],[0,1.02]],side*1.55,-d+.55,p);
+   turned('Mandir unlit cotton wick',[[0,0],[.009,0],[.009,.07],[0,.07]],side*1.55,-d+.36,p+.79,M.cream,6);
+  }
+  turned('Mandir offering thali',[[0,0],[.33,0],[.38,.025],[.38,.055],[.35,.055],[.32,.025],[0,.025]],-.90,-d+.44,p);
+  const flowers=material('#d89b37',.88),blossom=new THREE.CylinderGeometry(.055*FT,.055*FT,.06*FT,12,1);
+  flowers.bumpMap=weave;flowers.bumpScale=.0003;
+  const pos=blossom.attributes.position;
+  for(let i=0;i<pos.count;i++){
+   const a=Math.atan2(pos.getZ(i),pos.getX(i)),f=1+.14*Math.cos(a*6);
+   pos.setX(i,pos.getX(i)*f);pos.setZ(i,pos.getZ(i)*f);
+  }
+  blossom.computeVertexNormals();blossom.rotateX(Math.PI/2);
+  for(const side of [-1,1])block('Mandir toran fixing pin',.035,.16,.035,side*1.21,-.14,p+2.62,M.brass);
+  for(let i=0;i<31;i++){
+   const a=i/30*Math.PI,mesh=new THREE.Mesh(blossom,flowers);
+   mesh.name='Mandir marigold toran';mesh.position.copy(point(x+Math.cos(a)*1.21,back-.18,F+p+2.62-Math.sin(a)*1.35));g.add(mesh);
+   if(i){
+    const b=(i-1)/30*Math.PI,start=point(x+Math.cos(b)*1.21,back-.18,F+p+2.62-Math.sin(b)*1.35);
+    const end=mesh.position,axis=end.clone().sub(start),geometry=new THREE.CylinderGeometry(.006*FT,.006*FT,axis.length()+.004*FT,6);
+    const cord=new THREE.Mesh(geometry,M.brass);cord.name='Mandir continuous toran cord';cord.position.copy(start.add(end).multiplyScalar(.5));
+    cord.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),axis.normalize());g.add(cord);
+   }
+  }
+  // Batch decorative solids without turning the open joinery into a blocking envelope.
+  const batches=new Map();
+  for(const mesh of [...g.children]){
+   if(!mesh.isMesh||mesh.userData.hardware||mesh.geometry.name==='Inset joinery panel'||mesh.name==='Prayer cabinet body')continue;
+   mesh.updateMatrix();mesh.geometry.computeBoundingBox();
+   if(!batches.has(mesh.material))batches.set(mesh.material,[]);
+   batches.get(mesh.material).push(mesh);
+  }
+  for(const [mat,meshes]of batches){
+   const combined=new THREE.Mesh(joined(meshes.map(mesh=>mesh.geometry.clone().applyMatrix4(mesh.matrix))),mat);
+   combined.name='Mandir detailed '+(mat===M.brass?'brassware':mat===M.wood||mat===M.darkWood?'timber':mat===flowers?'marigold toran':'altar and backdrop');
+   combined.userData={partNames:meshes.map(mesh=>mesh.name),partBounds:meshes.map(mesh=>mesh.geometry.boundingBox.clone().applyMatrix4(mesh.matrix))};
+   combined.castShadow=combined.receiveShadow=true;g.remove(...meshes);g.add(combined);
+  }
  });
  for(const item of items){
   const pulls=item.group.children.filter(child=>child.userData.hardware);

@@ -1,0 +1,394 @@
+{
+  "entry": {
+    "mode": "interior",
+    "roof": true,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": false,
+    "doorStates": [
+      {
+        "name": "D_01_Front_E",
+        "open": true,
+        "progress": 0.9999999999949006
+      },
+      {
+        "name": "D1_01_Kitchen_Middle",
+        "open": false,
+        "progress": 2.947927653772764e-295
+      },
+      {
+        "name": "D1_02_FrontBedroom_Middle",
+        "open": false,
+        "progress": 2.947927653772764e-295
+      },
+      {
+        "name": "D1_03_RearBedroom_Left_Front",
+        "open": false,
+        "progress": 2.947927653772764e-295
+      },
+      {
+        "name": "D1_04_RearBedroom_Right_Front",
+        "open": false,
+        "progress": 2.947927653772764e-295
+      },
+      {
+        "name": "D2_01_FrontBedroom_Middle",
+        "open": false,
+        "progress": 2.947927653772764e-295
+      },
+      {
+        "name": "D2_02_Service_Front",
+        "open": false,
+        "progress": 2.947927653772764e-295
+      },
+      {
+        "name": "D2_03_Service_Front",
+        "open": false,
+        "progress": 2.947927653772764e-295
+      },
+      {
+        "name": "D2_04_RearBedroom_Right_Inside",
+        "open": false,
+        "progress": 2.947927653772764e-295
+      }
+    ],
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 1686,
+    "triangles": 232854,
+    "threeRevision": "180",
+    "walking": {
+      "navigation": "walk",
+      "position": [
+        21,
+        3.207828311532335
+      ],
+      "room": "Hall",
+      "inside": true,
+      "destination": null,
+      "waypoints": 0,
+      "history": [
+        "Hall"
+      ],
+      "historyIndex": 0
+    }
+  },
+  "allFree": true,
+  "maxEyeError": 8.881784197001252e-16,
+  "maxHeading": 0,
+  "approach": {
+    "mode": "interior",
+    "roof": true,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": false,
+    "doorStates": [
+      {
+        "name": "D_01_Front_E",
+        "open": false,
+        "progress": 1.9746588533524151e-07
+      },
+      {
+        "name": "D1_01_Kitchen_Middle",
+        "open": false,
+        "progress": 5.821151440594488e-302
+      },
+      {
+        "name": "D1_02_FrontBedroom_Middle",
+        "open": false,
+        "progress": 5.821151440594488e-302
+      },
+      {
+        "name": "D1_03_RearBedroom_Left_Front",
+        "open": false,
+        "progress": 5.821151440594488e-302
+      },
+      {
+        "name": "D1_04_RearBedroom_Right_Front",
+        "open": false,
+        "progress": 5.821151440594488e-302
+      },
+      {
+        "name": "D2_01_FrontBedroom_Middle",
+        "open": false,
+        "progress": 5.821151440594488e-302
+      },
+      {
+        "name": "D2_02_Service_Front",
+        "open": false,
+        "progress": 5.821151440594488e-302
+      },
+      {
+        "name": "D2_03_Service_Front",
+        "open": false,
+        "progress": 5.821151440594488e-302
+      },
+      {
+        "name": "D2_04_RearBedroom_Right_Inside",
+        "open": false,
+        "progress": 5.821151440594488e-302
+      }
+    ],
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 717,
+    "triangles": 104422,
+    "threeRevision": "180",
+    "walking": {
+      "navigation": "walk",
+      "position": [
+        3.75,
+        18.805754654207156
+      ],
+      "room": "Prayer",
+      "inside": true,
+      "destination": null,
+      "waypoints": 0,
+      "history": [
+        "Hall",
+        "Prayer"
+      ],
+      "historyIndex": 1
+    }
+  },
+  "altarStop": [
+    3.75,
+    18.805754654207156
+  ],
+  "fly": {
+    "mode": "interior",
+    "roof": true,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": false,
+    "doorStates": [
+      {
+        "name": "D_01_Front_E",
+        "open": false,
+        "progress": 4.9872304914168497e-08
+      },
+      {
+        "name": "D1_01_Kitchen_Middle",
+        "open": false,
+        "progress": 1.4701994681461444e-302
+      },
+      {
+        "name": "D1_02_FrontBedroom_Middle",
+        "open": false,
+        "progress": 1.4701994681461444e-302
+      },
+      {
+        "name": "D1_03_RearBedroom_Left_Front",
+        "open": false,
+        "progress": 1.4701994681461444e-302
+      },
+      {
+        "name": "D1_04_RearBedroom_Right_Front",
+        "open": false,
+        "progress": 1.4701994681461444e-302
+      },
+      {
+        "name": "D2_01_FrontBedroom_Middle",
+        "open": false,
+        "progress": 1.4701994681461444e-302
+      },
+      {
+        "name": "D2_02_Service_Front",
+        "open": false,
+        "progress": 1.4701994681461444e-302
+      },
+      {
+        "name": "D2_03_Service_Front",
+        "open": false,
+        "progress": 1.4701994681461444e-302
+      },
+      {
+        "name": "D2_04_RearBedroom_Right_Inside",
+        "open": false,
+        "progress": 1.4701994681461444e-302
+      }
+    ],
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 710,
+    "triangles": 103310,
+    "threeRevision": "180",
+    "walking": {
+      "navigation": "fly",
+      "position": [
+        3.75,
+        18.805754654207156,
+        9
+      ],
+      "room": "Prayer",
+      "inside": true,
+      "destination": null,
+      "waypoints": 0,
+      "history": [
+        "Hall",
+        "Prayer"
+      ],
+      "historyIndex": 1
+    }
+  },
+  "flyPrimaryAvatar": 0,
+  "returned": true,
+  "restored": {
+    "mode": "interior",
+    "roof": true,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": false,
+    "doorStates": [
+      {
+        "name": "D_01_Front_E",
+        "open": false,
+        "progress": 1.262988507483582e-08
+      },
+      {
+        "name": "D1_01_Kitchen_Middle",
+        "open": false,
+        "progress": 3.7231987476270294e-303
+      },
+      {
+        "name": "D1_02_FrontBedroom_Middle",
+        "open": false,
+        "progress": 3.7231987476270294e-303
+      },
+      {
+        "name": "D1_03_RearBedroom_Left_Front",
+        "open": false,
+        "progress": 3.7231987476270294e-303
+      },
+      {
+        "name": "D1_04_RearBedroom_Right_Front",
+        "open": false,
+        "progress": 3.7231987476270294e-303
+      },
+      {
+        "name": "D2_01_FrontBedroom_Middle",
+        "open": false,
+        "progress": 3.7231987476270294e-303
+      },
+      {
+        "name": "D2_02_Service_Front",
+        "open": false,
+        "progress": 3.7231987476270294e-303
+      },
+      {
+        "name": "D2_03_Service_Front",
+        "open": false,
+        "progress": 3.7231987476270294e-303
+      },
+      {
+        "name": "D2_04_RearBedroom_Right_Inside",
+        "open": false,
+        "progress": 3.7231987476270294e-303
+      }
+    ],
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 717,
+    "triangles": 104422,
+    "threeRevision": "180",
+    "walking": {
+      "navigation": "walk",
+      "position": [
+        3.75,
+        18.805754654207156
+      ],
+      "room": "Prayer",
+      "inside": true,
+      "destination": null,
+      "waypoints": 0,
+      "history": [
+        "Hall",
+        "Prayer"
+      ],
+      "historyIndex": 1
+    }
+  },
+  "arrived": {
+    "mode": "interior",
+    "roof": true,
+    "doors": 9,
+    "doorLeaves": 10,
+    "doorsOpen": false,
+    "doorStates": [
+      {
+        "name": "D_01_Front_E",
+        "open": false,
+        "progress": 5.398211509801538e-29
+      },
+      {
+        "name": "D1_01_Kitchen_Middle",
+        "open": true,
+        "progress": 0.9999999998201327
+      },
+      {
+        "name": "D1_02_FrontBedroom_Middle",
+        "open": false,
+        "progress": 2.5e-323
+      },
+      {
+        "name": "D1_03_RearBedroom_Left_Front",
+        "open": false,
+        "progress": 2.5e-323
+      },
+      {
+        "name": "D1_04_RearBedroom_Right_Front",
+        "open": false,
+        "progress": 2.5e-323
+      },
+      {
+        "name": "D2_01_FrontBedroom_Middle",
+        "open": false,
+        "progress": 2.5e-323
+      },
+      {
+        "name": "D2_02_Service_Front",
+        "open": false,
+        "progress": 2.5e-323
+      },
+      {
+        "name": "D2_03_Service_Front",
+        "open": false,
+        "progress": 2.5e-323
+      },
+      {
+        "name": "D2_04_RearBedroom_Right_Inside",
+        "open": false,
+        "progress": 2.5e-323
+      }
+    ],
+    "furnitureVisible": true,
+    "furnishingGroups": 30,
+    "conceptualStructureVisible": false,
+    "renderCalls": 690,
+    "triangles": 94412,
+    "threeRevision": "180",
+    "walking": {
+      "navigation": "walk",
+      "position": [
+        9.965387581748871,
+        7.924565478710972
+      ],
+      "room": "Kitchen",
+      "inside": true,
+      "destination": null,
+      "waypoints": 0,
+      "history": [
+        "Hall",
+        "Prayer",
+        "Kitchen"
+      ],
+      "historyIndex": 2
+    }
+  },
+  "noEnterHome": true,
+  "failure": ""
+}

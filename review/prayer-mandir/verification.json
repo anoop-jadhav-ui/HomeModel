@@ -1,0 +1,37 @@
+{
+  "base": "7f9b942dd8439f5114fc13b7f475a3889f255a3e",
+  "branch": "feat/prayer-mandir",
+  "design": "Original warm timber domestic mandir with cusped torana, turned pillars, supported open diamond jaali, stone altar/two storage drawers, hollow bells/clappers/suspensions, mounted floral relief, kalash/coconut/mango leaves, two unlit samai lamps, thali and threaded marigold toran. No deity or sect selected.",
+  "research": [
+    "https://aarsunwoods.com/product/wooden-puja-mandir-for-home/",
+    "https://www.architecturaldigest.in/web-stories/8-ways-to-design-a-serene-pooja-room/"
+  ],
+  "overlapReview": {
+    "corrected": "Found a real thali-to-pedestal intersection in the first design; moved the plate and lamps apart without shrinking them. Seated floral applique against its backdrop, connected jaali to side stiles, and positioned leaves around the kalash rim.",
+    "independentAssemblies": "Two samai lamps, offering thali and central pedestal/kalash/coconut/leaf assembly have disjoint actual transformed component-union bounds in all six pair checks. Smallest conservative AABB separation18.288mm is geometric display clearance, NOT a fire or use-clearance specification.",
+    "architecture": "Actual rendered geometry:18 native wall solids and26 complete door/window frame/glazing assemblies checked; no shrine intersections. Adjacent south window unchanged.",
+    "intendedContacts": "Plinth/carcass/drawers and mounted pulls; joined timber frame; stone support and altar-to-accessories; pedestal-to-kalash and vessel-mouth foliage/coconut; wicks in unlit lamps; bell/clapper/suspension assemblies; flower applique and toran fixing/thread.",
+    "evidence": ["geometry-verification.json", "rendered-architecture-clearance.json", "after-front.png", "after-oblique.png"]
+  },
+  "scale": {
+    "widthMM": 1402.08,
+    "heightMM": 1905,
+    "bodyDepthMM": 487.68,
+    "overallDepthIncludingPullsMM": 502.615,
+    "altarTopAboveFFLMM": 609.6,
+    "clearFloorFromRoomFrontToForemostHandleMM": 1899.209,
+    "retained": "Existing centre/width and8x8ft Prayer room. Other29 furnishing groups' vertex/index/normal/UV buffers, world transforms and material values match the approved baseline; native CAD/IFC/parameters/scene/navigation/proximity/avatar/mirror sources match by SHA256."
+  },
+  "validation": {
+    "integratedTestsPassed": 64,
+    "solidFixtureAndRoomDoorSweepValidation": "passed",
+    "staticFiles": 50,
+    "assetChecks": 114,
+    "desktop": "Actual free entry opens only paired main entrance; no heading change and exact5ft local eyes. Prayer approach safely stops at altar; Fly primary avatar absent and safe return succeeds; guided route from Prayer to Kitchen arrives with only kitchen door opened.",
+    "mobile": "390x844 iframe; no horizontal overflow; actual arrow-pad Space-key binding strafes continuously in Prayer, no unrelated door opens, all samples free and eyes5ft. Not physical-touch/phone certification.",
+    "mirrors": "Walk/Fly primary avatar0, reflected avatar20 draws, safe return succeeds; same unchanged avatar source.",
+    "matchedImages": "before-front/after-front and before-oblique/after-oblique use identical native camera/aim,65degree FOV,1000x800 render target and walker pose; before geometry is approved master.",
+    "furnishingCost": "355 meshes/69264 triangles versus351/62900 previously; bounded70k triangle allowance, retained360-mesh cap and seven authored surface textures. No added lights, reflectors, runtime image/model assets or network dependencies."
+  },
+  "limitations": "Illustrative editable viewer furniture, not a selected product, engineered joinery, accessibility/ritual/fire-safety installation or physical-phone performance certification. Architectural CAD/IFC and parked plumbing/electrical work are unchanged."
+}

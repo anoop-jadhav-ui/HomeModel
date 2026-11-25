@@ -1,0 +1,33 @@
+{
+  "method": "Conservative world-space bounding boxes of actual rendered native wall solids and full opening/frame/glazing assemblies",
+  "nativeWallsChecked": 18,
+  "openingAssembliesChecked": 26,
+  "wallHits": [],
+  "openingHits": [],
+  "mandirBoundsMetres": {
+    "min": [
+      0.4419599771499634,
+      1.2192000150680542,
+      -6.402324199676514
+    ],
+    "max": [
+      1.844040036201477,
+      3.1242001056671143,
+      -5.8997087478637695
+    ]
+  },
+  "windowBoundsMetres": {
+    "min": [
+      0.01371599982547747,
+      2.1335999924659728,
+      -5.8293000075340276
+    ],
+    "max": [
+      0.11430000017452255,
+      3.352800007534027,
+      -4.610099992465973
+    ]
+  },
+  "windowIntersects": false,
+  "notes": "Altar/cabinet support and joinery contacts are checked separately; no construction or fire-safety certification."
+}

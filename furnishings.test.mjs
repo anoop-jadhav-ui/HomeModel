@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
-import {createFurnishings,furnishingBounds,FT} from './output/furnishings.js';
+import {createFurnishings,furnishingBounds,FT,PRAYER_MANDIR} from './output/furnishings.js';
 import {KITCHEN_SINK} from './output/kitchen-fixtures.js';
 
 const source=readFileSync(new URL('./output/review-data.js',import.meta.url),'utf8');
@@ -87,9 +87,56 @@ test('refinement keeps the source immutable, shares geometry and stays within th
  assert.equal(JSON.stringify(model),original);
  assert.equal(assets.items.length,30);
  assert(meshes<=360,`${meshes} meshes`);
- assert(triangles<=64000,`${triangles} triangles`);
+ assert(triangles<=70000,`${triangles} triangles; detailed mandir allowance must remain bounded`);
  assert(geometries.size<meshes/2,'Repeated legs, drawers and cushions should share buffers');
  assert.equal(textures.size,7);
+});
+test('the mandir fits its existing room/window and keeps a supported610mm altar and1905mm overall height',()=>{
+ const room=model.rooms.find(r=>r.name==='Prayer'),group=assets.items.find(item=>item.room==='Prayer').group;
+ const bounds=new THREE.Box3().setFromObject(group),floor=model.dimensions.floor_elevation*FT;
+ assert(Math.abs(bounds.min.y-floor)<1e-6,'Mandir plinth must sit on the actual finished floor');
+ assert(Math.abs((bounds.max.y-floor)/FT-PRAYER_MANDIR.height)<1e-6);
+ assert(Math.abs((bounds.max.x-bounds.min.x)/FT-PRAYER_MANDIR.width)<1e-6);
+ assert(bounds.min.x>room.x*FT&&bounds.max.x<(room.x+room.width)*FT);
+ assert(-bounds.min.z<(room.y+room.depth)*FT&&-bounds.max.z>room.y*FT);
+ const parts=group.children.flatMap(mesh=>(mesh.userData.partNames??[mesh.name]).map((name,i)=>({
+  name,bounds:mesh.userData.partBounds?furnishingBounds(mesh)[i]:new THREE.Box3().setFromObject(mesh)})));
+ const named=name=>parts.filter(part=>part.name===name);
+ const altar=named('Mandir stone altar')[0].bounds,body=group.getObjectByName('Prayer cabinet body');
+ assert(Math.abs((altar.max.y-floor)*1000-609.6)<.01);
+ assert(altar.min.y-new THREE.Box3().setFromObject(body).max.y<.03);
+ for(const name of ['Mandir unlit samai lamp','Mandir offering thali'])
+  for(const part of named(name))assert(Math.abs(part.bounds.min.y-altar.max.y)<1e-6,name+' floats above the altar');
+ const pedestal=named('Mandir central offering pedestal')[0].bounds,kalash=named('Mandir kalash vessel')[0].bounds;
+ assert(Math.abs(pedestal.min.y-altar.max.y)<1e-6&&Math.abs(kalash.min.y-pedestal.max.y)<1e-6);
+ const separate=[...named('Mandir unlit samai lamp'),...named('Mandir offering thali'),...named('Mandir central offering pedestal')];
+ for(let i=0;i<separate.length;i++)for(let j=i+1;j<separate.length;j++)
+  assert(!separate[i].bounds.intersectsBox(separate[j].bounds),separate[i].name+' collides with '+separate[j].name);
+ for(const item of separate)for(const frame of [...named('Mandir turned timber pillar'),...named('Mandir jaali vertical stile')])
+  assert(!item.bounds.intersectsBox(frame.bounds),item.name+' clips the shrine frame');
+ const backdrop=named('Mandir pale shrine backdrop')[0].bounds;
+ for(const item of [...named('Mandir kalash vessel'),...named('Mandir coconut'),...named('Mandir kalash mango leaf')]){
+  assert(!item.bounds.intersectsBox(backdrop),item.name+' clips the backdrop');
+  for(const other of [...named('Mandir unlit samai lamp'),...named('Mandir offering thali')])
+   assert(!item.bounds.intersectsBox(other.bounds),item.name+' collides with '+other.name);
+ }
+ for(const relief of [...named('Mandir floral brass relief'),...named('Mandir floral centre')])
+  assert(Math.abs(relief.bounds.min.z-backdrop.max.z)<1e-6,'Floral applique must mount on the backdrop, not float');
+ for(const name of ['Mandir hanging bell','Mandir bell clapper','Mandir bell suspension'])assert.equal(named(name).length,3,name);
+ assert.equal(named('Mandir open diamond jaali').length,6);
+ for(const diamond of named('Mandir open diamond jaali'))
+  assert(named('Mandir jaali vertical stile').some(stile=>stile.bounds.intersectsBox(diamond.bounds)),'Jaali needs real side joinery support');
+ for(const part of named('Mandir open diamond jaali')){
+  const centre=part.bounds.getCenter(new THREE.Vector3());
+  const ray=new THREE.Raycaster(new THREE.Vector3(part.bounds.max.x+.005*FT,centre.y,centre.z),new THREE.Vector3(-1,0,0),0,.08*FT);
+  assert.equal(ray.intersectObjects(group.children,false).length,0,'Jaali diamond must have a real opening, not a painted grid');
+ }
+ assert.equal(group.userData.mandir.deitySelected,false);
+ assert.equal(group.userData.mandir.unlit,true);
+ const approach=room.y+room.depth-PRAYER_MANDIR.rearGap-PRAYER_MANDIR.depth-room.y;
+ assert(approach>6,'Do not consume the existing clear floor approach');
+ const window=model.plan.openings.find(item=>item.name==='W1_01_Left_S');
+ assert(-bounds.max.z/FT>window.y+window.width/2,'Mandir must not spread across the adjacent glazing');
 });
 test('draped bedding retains continuous smooth normals across duplicate bevel vertices',()=>{
  const quilt=assets.items.find(i=>i.kind==='bed').group.children.find(m=>m.geometry?.name==='Draped duvet');
